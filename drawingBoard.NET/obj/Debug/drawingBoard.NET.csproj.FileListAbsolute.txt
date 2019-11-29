@@ -1,9 +1,0 @@
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\obj\Debug\drawingBoard.NET.Properties.Resources.resources
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\obj\Debug\drawingBoard.NET.csproj.GenerateResource.cache
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\obj\Debug\drawingBoard.NET.csproj.CoreCompileInputs.cache
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\bin\Debug\drawingBoard.NET.exe.config
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\bin\Debug\drawingBoard.NET.exe
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\bin\Debug\drawingBoard.NET.pdb
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\obj\Debug\drawingBoard.NET.exe
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\obj\Debug\drawingBoard.NET.pdb
-M:\PROG\WORKSPACE\C#\drawingBoard.NET\drawingBoard.NET\obj\Debug\drawingBoard.NET.csprojAssemblyReference.cache

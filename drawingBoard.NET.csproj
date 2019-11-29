@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{80663461-BEE2-441E-838F-2E1E26F088D9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>drawingBoard.NET</RootNamespace>
+    <RootNamespace>drawingBoard</RootNamespace>
     <AssemblyName>drawingBoard.NET</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
