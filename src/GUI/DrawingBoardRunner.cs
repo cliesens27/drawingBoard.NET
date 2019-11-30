@@ -6,12 +6,16 @@ using System.Windows.Forms;
 namespace drawingBoard.GUI {
 	public static class DrawingBoardRunner {
 		public static DrawMethod DrawMethod { get; set; } = null;
-		public static double TargetFrameRate { get; set; } = 30;
 		public static int Width { get; private set; } = -1;
 		public static int Height { get; private set; } = -1;
 		public static int X { get; private set; } = -1;
 		public static int Y { get; private set; } = -1;
 		private static DrawingBoard db;
+
+		public static double TargetFrameRate {
+			get => db.TargetFrameRate;
+			set => db.TargetFrameRate = value;
+		}
 
 		private static void Init() {
 			Application.EnableVisualStyles();

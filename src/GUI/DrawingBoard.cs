@@ -9,7 +9,7 @@ namespace drawingBoard.GUI {
 
 	public partial class DrawingBoard : Form {
 		public DrawMethod Draw { get; set; } = null;
-		public readonly double TARGET_FRAME_RATE;
+		public double TargetFrameRate { get; set; }
 		private readonly Stopwatch stopwatch;
 		private readonly double startTime;
 		private double lastTime;
@@ -45,7 +45,7 @@ namespace drawingBoard.GUI {
 			while (IsApplicationIdle()) {
 				double elapsedTime = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency;
 
-				if (elapsedTime - lastTime > 1.0 / TARGET_FRAME_RATE) {
+				if (elapsedTime - lastTime > 1.0 / TargetFrameRate) {
 					lastTime = elapsedTime;
 					mainPictureBox.Invalidate();
 					Console.WriteLine("DRAW");
