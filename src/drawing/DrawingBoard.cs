@@ -103,6 +103,9 @@ namespace drawingBoard.drawing {
 
 		public void NoFill() => fill = false;
 
+		public void Line(Graphics g, float x1, float y1, float x2, float y2) =>
+			g.DrawLine(currentPen, x1, y1, x2, y2);
+
 		public void Rectangle(Graphics g, float x, float y, float w, float h) {
 			if (fill) {
 				g.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
