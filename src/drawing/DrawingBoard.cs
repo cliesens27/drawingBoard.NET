@@ -102,10 +102,10 @@ namespace drawingBoard.drawing {
 
 		public void Rectangle(Graphics g, float x, float y, float w, float h) {
 			if (fill) {
-				g.FillRectangle(currentBrush, x - 0.5f * w, y - 0.5f * h, w, h);
+				g.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
 			}
 
-			g.DrawRectangle(currentPen, x - 0.5f * w, y - 0.5f * h, w, h);
+			g.DrawRectangle(currentPen, x - w, y - h, 2 * w, 2 * h);
 		}
 
 		public void Square(Graphics g, float x, float y, float r) => Rectangle(g, x, y, r, r);
