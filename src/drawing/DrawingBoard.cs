@@ -9,7 +9,9 @@ namespace drawingBoard.drawing {
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
 		private MainForm mainForm;
+		private SolidBrush currentBrush;
 		private Pen currentPen;
+		private bool fill;
 
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
@@ -61,8 +63,6 @@ namespace drawingBoard.drawing {
 			screenY = y;
 
 			SetDefaultSettings();
-
-			currentPen = new Pen(Color.Black, 1);
 		}
 
 		public void Draw() {
@@ -75,17 +75,50 @@ namespace drawingBoard.drawing {
 
 		public void Stroke(Color color) => currentPen.Color = color;
 
-		public void Stroke(int grey) => Stroke(Color.FromArgb(grey, grey, grey));
+		public void Stroke(int grey) => Stroke(grey, grey, grey);
 
-		public void Stroke(int grey, int a) => Stroke(Color.FromArgb(a, grey, grey, grey));
+		public void Stroke(int grey, int a) => Stroke(grey, grey, grey, a);
 
 		public void Stroke(int r, int g, int b) => Stroke(Color.FromArgb(r, g, b));
 
 		public void Stroke(int r, int g, int b, int a) => Stroke(Color.FromArgb(a, r, g, b));
 
-		public void Ellipse(Graphics g, float x, float y, float rx, float ry) {
-			g.DrawEllipse(currentPen, x, y, rx, ry);
+		public void StrokeWidth(float w) => currentPen.Width = w;
+
+		public void Fill(Color color) {
+			fill = true;
+			currentBrush.Color = color;
 		}
+
+		public void Fill(int grey) => Fill(grey, grey, grey);
+
+		public void Fill(int grey, int a) => Fill(grey, grey, grey, a);
+
+		public void Fill(int r, int g, int b) => Fill(Color.FromArgb(r, g, b));
+
+		public void Fill(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
+
+		public void NoFill() => fill = false;
+
+		public void Rectangle(Graphics g, float x, float y, float w, float h) {
+			if (fill) {
+				g.FillEllipse(currentBrush, x - 0.5f * w, y - 0.5f * h, w, h);
+			}
+
+			g.DrawRectangle(currentPen, x - 0.5f * w, y - 0.5f * h, w, h);
+		}
+
+		public void Square(Graphics g, float x, float y, float r) => Rectangle(g, x, y, r, r);
+
+		public void Ellipse(Graphics g, float x, float y, float rx, float ry) {
+			if (fill) {
+				g.FillEllipse(currentBrush, x - rx, y - ry, 2 * rx, 2 * ry);
+			}
+
+			g.DrawEllipse(currentPen, x - rx, y - ry, 2 * rx, 2 * ry);
+		}
+
+		public void Circle(Graphics g, float x, float y, float r) => Ellipse(g, x, y, r, r);
 
 		public void SaveToPNG(string path) {
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
@@ -105,6 +138,10 @@ namespace drawingBoard.drawing {
 			DrawMethod = null;
 			TargetFrameRate = 30;
 			Title = "Application";
+
+			currentPen = new Pen(Color.Black, 1);
+			currentBrush = new SolidBrush(Color.Black);
+			fill = false;
 		}
 	}
 }
