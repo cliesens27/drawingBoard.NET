@@ -7,22 +7,19 @@ using System.Windows.Forms;
 namespace drawingBoard.GUI {
 	public delegate void DrawMethod(Graphics graphics);
 
-	public partial class DrawingForm : Form {
-		public DrawMethod Draw { get; set; } = null;
-		public double TargetFrameRate { get; set; }
+	public partial class MainForm : Form {
 		private readonly Stopwatch stopwatch;
 		private readonly double startTime;
 		private double lastTime;
 
-		private DrawingForm() : this(null) { }
+		public DrawMethod Draw { get; set; }
+		public double TargetFrameRate { get; set; }
 
-		private DrawingForm(DrawMethod drawMethod) {
+		private MainForm() {
 			InitializeComponent();
 
 			ClientSize = new Size(1, 1);
 			StartPosition = FormStartPosition.CenterScreen;
-			Text = "Program";
-			Draw = drawMethod;
 
 			Application.Idle += Run;
 
@@ -32,14 +29,12 @@ namespace drawingBoard.GUI {
 			startTime = lastTime = 0;
 		}
 
-		public DrawingForm(int width, int height, DrawMethod drawMethod) : this(drawMethod) {
+		public MainForm(int width, int height) : this() {
 			ClientSize = new Size(width, height);
 			mainPictureBox.Size = new Size(width, height);
 		}
 
-		public DrawingForm(int width, int height, int x, int y, DrawMethod drawMethod) : this(width, height, drawMethod) {
-			Location = new Point(x, y);
-		}
+		public MainForm(int width, int height, int x, int y) : this(width, height) => Location = new Point(x, y);
 
 		private void Run(object sender, EventArgs e) {
 			while (IsIdle()) {
@@ -52,25 +47,21 @@ namespace drawingBoard.GUI {
 			}
 		}
 
-		private bool IsIdle() => PeekMessage(out NativeMessage result, IntPtr.Zero, 0, 0, 0) == 0;
+		private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 
-		private void mainPictureBox_Paint(object sender, PaintEventArgs e) {
-			if (Draw != null) {
-				Draw(e.Graphics);
-			}
-		}
+		private void mainPictureBox_Paint(object sender, PaintEventArgs e) => Draw(e.Graphics);
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct NativeMessage {
-			public IntPtr Handle;
-			public uint Message;
-			public IntPtr WParameter;
-			public IntPtr LParameter;
-			public uint Time;
-			public Point Location;
+		public struct Message {
+			public IntPtr handle;
+			public int message;
+			public IntPtr wParameter;
+			public IntPtr lParameter;
+			public int time;
+			public Point location;
 		}
 
 		[DllImport("user32.dll")]
-		public static extern int PeekMessage(out NativeMessage message, IntPtr window, uint filterMin, uint filterMax, uint remove);
+		public static extern int PeekMessage(out Message msg, IntPtr window, int filterMin, int filterMax, int removeMsg);
 	}
 }

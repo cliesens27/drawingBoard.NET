@@ -5,18 +5,31 @@ using System.Windows.Forms;
 
 namespace drawingBoard.GUI {
 	public class DrawingBoard {
-		public DrawMethod DrawMethod { get; set; } = null;
-		public double TargetFrameRate { get; set; }
+		private readonly int width = -1;
+		private readonly int height = -1;
+		private readonly int screenX = -1;
+		private readonly int screenY = -1;
+		private MainForm mainForm;
+
+		public DrawMethod DrawMethod {
+			get => mainForm.Draw;
+			set => mainForm.Draw = value;
+		}
+
+		public double TargetFrameRate {
+			get => mainForm.TargetFrameRate;
+			set => mainForm.TargetFrameRate = value;
+		}
+
+		public string Title {
+			get => mainForm.Text;
+			set => mainForm.Text = value;
+		}
+
 		public int Xmin => 0;
 		public int Ymin => 0;
-		public int Xmax => frameWidth;
-		public int Ymax => frameHeight;
-
-		private DrawingForm drawingForm;
-		private int frameWidth = -1;
-		private int frameHeight = -1;
-		private int screenX = -1;
-		private int screenY = -1;
+		public int Xmax => width;
+		public int Ymax => height;
 
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
@@ -26,10 +39,19 @@ namespace drawingBoard.GUI {
 		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
 
 		public DrawingBoard(int width, int height, int x, int y) : this() {
-			frameWidth = width;
-			frameHeight = height;
+			if (screenX != -1 && screenY != -1) {
+				mainForm = new MainForm(width, height, x, y);
+			}
+			else {
+				mainForm = new MainForm(width, height);
+			}
+
+			this.width = width;
+			this.height = height;
 			screenX = x;
 			screenY = y;
+
+			SetDefaultSettings();
 		}
 
 		public void Draw() {
@@ -37,29 +59,26 @@ namespace drawingBoard.GUI {
 				throw new Exception("Error, you must set the DrawMethod property before calling Draw()");
 			}
 
-			if (screenX != -1 && screenY != -1) {
-				drawingForm = new DrawingForm(frameWidth, frameHeight, screenX, screenY, DrawMethod);
-			}
-			else {
-				drawingForm = new DrawingForm(frameWidth, frameHeight, DrawMethod);
-			}
-
-			drawingForm.TargetFrameRate = TargetFrameRate;
-
-			Application.Run(drawingForm);
+			Application.Run(mainForm);
 		}
 
 		public void SaveToPNG(string path) {
-			Bitmap fullBitmap = new Bitmap(drawingForm.Width, drawingForm.Height);
-			drawingForm.DrawToBitmap(fullBitmap, new Rectangle(Point.Empty, drawingForm.Size));
+			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
+			mainForm.DrawToBitmap(fullBitmap, new Rectangle(Point.Empty, mainForm.Size));
 
-			Point clientOrigin = drawingForm.PointToScreen(Point.Empty);
-			Rectangle clientRect = new Rectangle(new Point(clientOrigin.X - drawingForm.Bounds.X, clientOrigin.Y - drawingForm.Bounds.Y), drawingForm.ClientSize);
+			Point clientOrigin = mainForm.PointToScreen(Point.Empty);
+			Rectangle clientRect = new Rectangle(new Point(clientOrigin.X - mainForm.Bounds.X, clientOrigin.Y - mainForm.Bounds.Y), mainForm.ClientSize);
 
 			Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb);
 			fullBitmap.Dispose();
 
 			clientAreaBitmap.Save(path, ImageFormat.Png);
+		}
+
+		private void SetDefaultSettings() {
+			DrawMethod = null;
+			TargetFrameRate = 30;
+			Title = "Application";
 		}
 	}
 }
