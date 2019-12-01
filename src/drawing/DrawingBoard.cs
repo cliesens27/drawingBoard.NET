@@ -135,12 +135,12 @@ namespace drawingBoard.drawing {
 		}
 
 		public void UndoRotation(Graphics g) {
-			g.RotateTransform(currentRotation);
+			g.RotateTransform(-currentRotation);
 			currentRotation = 0;
 		}
 
 		public void UndoTranslation(Graphics g) {
-			g.TranslateTransform(currentTranslationX, currentTranslationY);
+			g.TranslateTransform(-currentTranslationX, -currentTranslationY);
 			currentTranslationX = 0;
 			currentTranslationY = 0;
 		}
