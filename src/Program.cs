@@ -4,17 +4,15 @@ using drawingBoard.GUI;
 namespace drawingBoard {
 	public static class Program {
 		public static void Main() {
-			DrawingBoard.Init(500, 500);
+			DrawingBoard db = new DrawingBoard(500, 500);
 
-			DrawingBoard.TargetFrameRate = 60;
+			db.TargetFrameRate = 60;
 
-			DrawingBoard.DrawMethod = (g) => {
-				g.DrawLine(new Pen(Color.Red, 5), DrawingBoard.Xmin, DrawingBoard.Ymin, DrawingBoard.Xmax, DrawingBoard.Ymax);
-
-				DrawingBoard.SaveToPNG(@"C:\Users\Cesarnijunana27\Downloads\test.png");
+			db.DrawMethod = (g) => {
+				g.DrawLine(new Pen(Color.Red, 5), db.Xmin, db.Ymin, db.Xmax, db.Ymax);
 			};
 
-			DrawingBoard.Draw();
+			db.Draw();
 		}
 	}
 }

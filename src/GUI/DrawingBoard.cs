@@ -4,37 +4,35 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace drawingBoard.GUI {
-	public static class DrawingBoard {
-		public static DrawMethod DrawMethod { get; set; } = null;
-		public static double TargetFrameRate { get; set; }
-		public static int Xmin => 0;
-		public static int Ymin => 0;
-		public static int Xmax => frameWidth;
-		public static int Ymax => frameHeight;
+	public class DrawingBoard {
+		public DrawMethod DrawMethod { get; set; } = null;
+		public double TargetFrameRate { get; set; }
+		public int Xmin => 0;
+		public int Ymin => 0;
+		public int Xmax => frameWidth;
+		public int Ymax => frameHeight;
 
-		private static DrawingForm drawingForm;
-		private static int frameWidth = -1;
-		private static int frameHeight = -1;
-		private static int screenX = -1;
-		private static int screenY = -1;
+		private DrawingForm drawingForm;
+		private int frameWidth = -1;
+		private int frameHeight = -1;
+		private int screenX = -1;
+		private int screenY = -1;
 
-		private static void Init() {
+		private DrawingBoard() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 		}
 
-		public static void Init(int width, int height) => Init(width, height, -1, -1);
+		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
 
-		public static void Init(int width, int height, int x, int y) {
-			Init();
-
+		public DrawingBoard(int width, int height, int x, int y) : this() {
 			frameWidth = width;
 			frameHeight = height;
 			screenX = x;
 			screenY = y;
 		}
 
-		public static void Draw() {
+		public void Draw() {
 			if (DrawMethod == null) {
 				throw new Exception("Error, you must set the DrawMethod property before calling Draw()");
 			}
@@ -51,7 +49,7 @@ namespace drawingBoard.GUI {
 			Application.Run(drawingForm);
 		}
 
-		public static void SaveToPNG(string path) {
+		public void SaveToPNG(string path) {
 			Bitmap fullBitmap = new Bitmap(drawingForm.Width, drawingForm.Height);
 			drawingForm.DrawToBitmap(fullBitmap, new Rectangle(Point.Empty, drawingForm.Size));
 
