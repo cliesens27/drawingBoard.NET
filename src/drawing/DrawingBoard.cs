@@ -35,6 +35,10 @@ namespace drawingBoard.drawing {
 		public int Xmax => Width;
 		public int Ymax => Height;
 
+		public double FrameRate => mainForm.FrameCount / mainForm.TotalElapsedTime;
+		public double TotalElapsedTime => mainForm.TotalElapsedTime;
+		public int FrameCount => mainForm.FrameCount;
+
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);

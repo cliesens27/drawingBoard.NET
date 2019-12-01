@@ -9,24 +9,23 @@ namespace drawingBoard.GUI {
 
 	public partial class MainForm : Form {
 		private readonly Stopwatch stopwatch;
-		private readonly double startTime;
-		private double lastTime;
+		private double lastRedrawTime;
 
 		public DrawMethod Draw { get; set; }
 		public double TargetFrameRate { get; set; }
+		public double TotalElapsedTime { get; private set; }
+		public int FrameCount { get; private set; }
 
 		private MainForm() {
 			InitializeComponent();
-
-			ClientSize = new Size(1, 1);
 			StartPosition = FormStartPosition.CenterScreen;
-
 			Application.Idle += Run;
 
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
 
-			startTime = lastTime = 0;
+			lastRedrawTime = 0;
+			FrameCount = 0;
 		}
 
 		public MainForm(int width, int height) : this() {
@@ -38,11 +37,12 @@ namespace drawingBoard.GUI {
 
 		private void Run(object sender, EventArgs e) {
 			while (IsIdle()) {
-				double elapsedTime = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency;
+				TotalElapsedTime = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency;
 
-				if (elapsedTime - lastTime > 1.0 / TargetFrameRate) {
-					lastTime = elapsedTime;
+				if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate) {
+					lastRedrawTime = TotalElapsedTime;
 					mainPictureBox.Invalidate();
+					FrameCount++;
 				}
 			}
 		}

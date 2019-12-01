@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using drawingBoard.drawing;
 
 namespace drawingBoard {
@@ -14,8 +15,6 @@ namespace drawingBoard {
 				g.DrawEllipse(bluePen, db.Xcenter - 100, db.Ycenter - 100, 200, 200);
 				g.DrawLine(bluePen, db.Xmin, db.Ymin, db.Xmax, db.Ymax);
 				g.DrawLine(bluePen, db.Xmin, db.Ymax, db.Xmax, db.Ymin);
-
-				db.SaveToPNG("test.png");
 			};
 
 			db.Draw();
