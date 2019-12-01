@@ -34,7 +34,7 @@ namespace drawingBoard.GUI {
 
 		public DrawingForm(int width, int height, DrawMethod drawMethod) : this(drawMethod) {
 			ClientSize = new Size(width, height);
-			SetComponents();
+			mainPictureBox.Size = new Size(width, height);
 		}
 
 		public DrawingForm(int width, int height, int x, int y, DrawMethod drawMethod) : this(width, height, drawMethod) {
@@ -48,12 +48,17 @@ namespace drawingBoard.GUI {
 				if (elapsedTime - lastTime > 1.0 / TargetFrameRate) {
 					lastTime = elapsedTime;
 					mainPictureBox.Invalidate();
-					Console.WriteLine("DRAW");
 				}
 			}
 		}
 
 		private bool IsIdle() => PeekMessage(out NativeMessage result, IntPtr.Zero, 0, 0, 0) == 0;
+
+		private void mainPictureBox_Paint(object sender, PaintEventArgs e) {
+			if (Draw != null) {
+				Draw(e.Graphics);
+			}
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NativeMessage {
@@ -67,15 +72,5 @@ namespace drawingBoard.GUI {
 
 		[DllImport("user32.dll")]
 		public static extern int PeekMessage(out NativeMessage message, IntPtr window, uint filterMin, uint filterMax, uint remove);
-
-		private void SetComponents() {
-			mainPictureBox.Size = new Size(Size.Width, Size.Height);
-		}
-
-		private void mainPictureBox_Paint(object sender, PaintEventArgs e) {
-			if (Draw != null) {
-				Draw(e.Graphics);
-			}
-		}
 	}
 }
