@@ -9,9 +9,12 @@ namespace drawingBoard.drawing {
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
 		private MainForm mainForm;
-		private SolidBrush currentBrush;
 		private Pen currentPen;
+		private SolidBrush currentBrush;
 		private bool fill;
+		private float currentRotation;
+		private float currentTranslationX;
+		private float currentTranslationY;
 
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
@@ -120,6 +123,28 @@ namespace drawingBoard.drawing {
 
 		public void Circle(Graphics g, float x, float y, float r) => Ellipse(g, x, y, r, r);
 
+		public void Rotate(Graphics g, float degrees) {
+			currentRotation += degrees;
+			g.RotateTransform(degrees);
+		}
+
+		public void Translate(Graphics g, float dx, float dy) {
+			currentTranslationX += dx;
+			currentTranslationY += dy;
+			g.TranslateTransform(dx, dy);
+		}
+
+		public void UndoRotation(Graphics g) {
+			g.RotateTransform(currentRotation);
+			currentRotation = 0;
+		}
+
+		public void UndoTranslation(Graphics g) {
+			g.TranslateTransform(currentTranslationX, currentTranslationY);
+			currentTranslationX = 0;
+			currentTranslationY = 0;
+		}
+
 		public void SaveToPNG(string path) {
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
 			mainForm.DrawToBitmap(fullBitmap, new Rectangle(Point.Empty, mainForm.Size));
@@ -142,6 +167,9 @@ namespace drawingBoard.drawing {
 			currentPen = new Pen(Color.Black, 1);
 			currentBrush = new SolidBrush(Color.Black);
 			fill = false;
+			currentRotation = 0;
+			currentTranslationX = 0;
+			currentTranslationY = 0;
 		}
 	}
 }
