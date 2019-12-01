@@ -102,7 +102,7 @@ namespace drawingBoard.drawing {
 
 		public void Rectangle(Graphics g, float x, float y, float w, float h) {
 			if (fill) {
-				g.FillEllipse(currentBrush, x - 0.5f * w, y - 0.5f * h, w, h);
+				g.FillRectangle(currentBrush, x - 0.5f * w, y - 0.5f * h, w, h);
 			}
 
 			g.DrawRectangle(currentPen, x - 0.5f * w, y - 0.5f * h, w, h);
