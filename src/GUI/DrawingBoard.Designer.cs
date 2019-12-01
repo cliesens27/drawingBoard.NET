@@ -1,5 +1,5 @@
 ﻿namespace drawingBoard.GUI {
-	partial class DrawingBoard {
+	partial class DrawingForm {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>

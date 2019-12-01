@@ -4,18 +4,15 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace drawingBoard.GUI {
-	public static class DrawingBoardRunner {
+	public static class DrawingBoard {
 		public static DrawMethod DrawMethod { get; set; } = null;
 		public static int Width { get; private set; } = -1;
 		public static int Height { get; private set; } = -1;
 		public static int X { get; private set; } = -1;
 		public static int Y { get; private set; } = -1;
-		private static DrawingBoard db;
+		private static DrawingForm db;
 
-		public static double TargetFrameRate {
-			get => db.TargetFrameRate;
-			set => db.TargetFrameRate = value;
-		}
+		public static double TargetFrameRate { get; set; }
 
 		private static void Init() {
 			Application.EnableVisualStyles();
@@ -39,11 +36,13 @@ namespace drawingBoard.GUI {
 			}
 
 			if (X != -1 && Y != -1) {
-				db = new DrawingBoard(Width, Height, X, Y, DrawMethod);
+				db = new DrawingForm(Width, Height, X, Y, DrawMethod);
 			}
 			else {
-				db = new DrawingBoard(Width, Height, DrawMethod);
+				db = new DrawingForm(Width, Height, DrawMethod);
 			}
+
+			db.TargetFrameRate = TargetFrameRate;
 
 			Application.Run(db);
 		}

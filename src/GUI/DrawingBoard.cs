@@ -7,16 +7,16 @@ using System.Windows.Forms;
 namespace drawingBoard.GUI {
 	public delegate void DrawMethod(Graphics graphics);
 
-	public partial class DrawingBoard : Form {
+	public partial class DrawingForm : Form {
 		public DrawMethod Draw { get; set; } = null;
 		public double TargetFrameRate { get; set; }
 		private readonly Stopwatch stopwatch;
 		private readonly double startTime;
 		private double lastTime;
 
-		private DrawingBoard() : this(null) { }
+		private DrawingForm() : this(null) { }
 
-		private DrawingBoard(DrawMethod drawMethod) {
+		private DrawingForm(DrawMethod drawMethod) {
 			InitializeComponent();
 
 			ClientSize = new Size(1, 1);
@@ -32,17 +32,17 @@ namespace drawingBoard.GUI {
 			startTime = lastTime = 0;
 		}
 
-		public DrawingBoard(int width, int height, DrawMethod drawMethod) : this(drawMethod) {
+		public DrawingForm(int width, int height, DrawMethod drawMethod) : this(drawMethod) {
 			ClientSize = new Size(width, height);
 			SetComponents();
 		}
 
-		public DrawingBoard(int width, int height, int x, int y, DrawMethod drawMethod) : this(width, height, drawMethod) {
+		public DrawingForm(int width, int height, int x, int y, DrawMethod drawMethod) : this(width, height, drawMethod) {
 			Location = new Point(x, y);
 		}
 
 		private void Run(object sender, EventArgs e) {
-			while (IsApplicationIdle()) {
+			while (IsIdle()) {
 				double elapsedTime = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency;
 
 				if (elapsedTime - lastTime > 1.0 / TargetFrameRate) {
@@ -53,10 +53,7 @@ namespace drawingBoard.GUI {
 			}
 		}
 
-		private bool IsApplicationIdle() {
-			NativeMessage result;
-			return PeekMessage(out result, IntPtr.Zero, (uint) 0, (uint) 0, (uint) 0) == 0;
-		}
+		private bool IsIdle() => PeekMessage(out NativeMessage result, IntPtr.Zero, 0, 0, 0) == 0;
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct NativeMessage {
