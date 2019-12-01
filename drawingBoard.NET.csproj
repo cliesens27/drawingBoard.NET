@@ -49,12 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\GUI\DrawingBoardRunner.cs" />
-    <Compile Include="src\GUI\DrawingBoard.cs">
+    <Compile Include="src\GUI\DrawingBoard.cs" />
+    <Compile Include="src\GUI\DrawingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\GUI\DrawingBoard.Designer.cs">
-      <DependentUpon>DrawingBoard.cs</DependentUpon>
+    <Compile Include="src\GUI\DrawingForm.Designer.cs">
+      <DependentUpon>DrawingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,8 +67,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="src\GUI\DrawingBoard.resx">
-      <DependentUpon>DrawingBoard.cs</DependentUpon>
+    <EmbeddedResource Include="src\GUI\DrawingForm.resx">
+      <DependentUpon>DrawingForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
