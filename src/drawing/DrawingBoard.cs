@@ -2,8 +2,9 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using drawingBoard.GUI;
 
-namespace drawingBoard.GUI {
+namespace drawingBoard.drawing {
 	public class DrawingBoard {
 		private readonly int width = -1;
 		private readonly int height = -1;
