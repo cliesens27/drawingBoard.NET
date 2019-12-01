@@ -6,11 +6,12 @@ using drawingBoard.GUI;
 
 namespace drawingBoard.drawing {
 	public class DrawingBoard {
-		private readonly int width = -1;
-		private readonly int height = -1;
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
 		private MainForm mainForm;
+
+		public int Width { get; private set; } = -1;
+		public int Height { get; private set; } = -1;
 
 		public DrawMethod DrawMethod {
 			get => mainForm.Draw;
@@ -29,8 +30,10 @@ namespace drawingBoard.drawing {
 
 		public int Xmin => 0;
 		public int Ymin => 0;
-		public int Xmax => width;
-		public int Ymax => height;
+		public int Xcenter => Width / 2;
+		public int Ycenter => Height / 2;
+		public int Xmax => Width;
+		public int Ymax => Height;
 
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
@@ -47,8 +50,8 @@ namespace drawingBoard.drawing {
 				mainForm = new MainForm(width, height);
 			}
 
-			this.width = width;
-			this.height = height;
+			this.Width = width;
+			this.Height = height;
 			screenX = x;
 			screenY = y;
 
@@ -74,6 +77,7 @@ namespace drawingBoard.drawing {
 			fullBitmap.Dispose();
 
 			clientAreaBitmap.Save(path, ImageFormat.Png);
+			clientAreaBitmap.Dispose();
 		}
 
 		private void SetDefaultSettings() {

@@ -9,8 +9,13 @@ namespace drawingBoard {
 			db.TargetFrameRate = 60;
 			db.Title = "My Application";
 			db.DrawMethod = (g) => {
-				g.DrawLine(new Pen(Color.Blue, 15), db.Xmin, db.Ymin, db.Xmax, db.Ymax);
-				g.DrawLine(new Pen(Color.Blue, 15), db.Xmin, db.Ymax, db.Xmax, db.Ymin);
+				Pen bluePen = new Pen(Color.Blue, 15);
+
+				g.DrawEllipse(bluePen, db.Xcenter - 100, db.Ycenter - 100, 200, 200);
+				g.DrawLine(bluePen, db.Xmin, db.Ymin, db.Xmax, db.Ymax);
+				g.DrawLine(bluePen, db.Xmin, db.Ymax, db.Xmax, db.Ymin);
+
+				db.SaveToPNG("test.png");
 			};
 
 			db.Draw();
