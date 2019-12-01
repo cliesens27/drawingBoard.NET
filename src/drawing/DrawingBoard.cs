@@ -9,6 +9,7 @@ namespace drawingBoard.drawing {
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
 		private MainForm mainForm;
+		private Pen currentPen;
 
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
@@ -54,12 +55,14 @@ namespace drawingBoard.drawing {
 				mainForm = new MainForm(width, height);
 			}
 
-			this.Width = width;
-			this.Height = height;
+			Width = width;
+			Height = height;
 			screenX = x;
 			screenY = y;
 
 			SetDefaultSettings();
+
+			currentPen = new Pen(Color.Black, 1);
 		}
 
 		public void Draw() {
@@ -68,6 +71,20 @@ namespace drawingBoard.drawing {
 			}
 
 			Application.Run(mainForm);
+		}
+
+		public void Stroke(Color color) => currentPen.Color = color;
+
+		public void Stroke(int grey) => Stroke(Color.FromArgb(grey, grey, grey));
+
+		public void Stroke(int grey, int a) => Stroke(Color.FromArgb(a, grey, grey, grey));
+
+		public void Stroke(int r, int g, int b) => Stroke(Color.FromArgb(r, g, b));
+
+		public void Stroke(int r, int g, int b, int a) => Stroke(Color.FromArgb(a, r, g, b));
+
+		public void Ellipse(Graphics g, float x, float y, float rx, float ry) {
+			g.DrawEllipse(currentPen, x, y, rx, ry);
 		}
 
 		public void SaveToPNG(string path) {
