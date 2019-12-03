@@ -78,13 +78,13 @@ namespace drawingBoard.drawing {
 
 		public void Stroke(Color color) => currentPen.Color = color;
 
-		public void Stroke(int grey) => Stroke(grey, grey, grey);
+		public void Stroke(byte grey) => Stroke(grey, grey, grey);
 
-		public void Stroke(int grey, int a) => Stroke(grey, grey, grey, a);
+		public void Stroke(byte grey, byte a) => Stroke(grey, grey, grey, a);
 
-		public void Stroke(int r, int g, int b) => Stroke(Color.FromArgb(r, g, b));
+		public void Stroke(byte r, byte g, byte b) => Stroke(Color.FromArgb(r, g, b));
 
-		public void Stroke(int r, int g, int b, int a) => Stroke(Color.FromArgb(a, r, g, b));
+		public void Stroke(byte r, byte g, byte b, byte a) => Stroke(Color.FromArgb(a, r, g, b));
 
 		public void StrokeWidth(float w) => currentPen.Width = w;
 
@@ -93,13 +93,13 @@ namespace drawingBoard.drawing {
 			currentBrush.Color = color;
 		}
 
-		public void Fill(int grey) => Fill(grey, grey, grey);
+		public void Fill(byte grey) => Fill(grey, grey, grey);
 
-		public void Fill(int grey, int a) => Fill(grey, grey, grey, a);
+		public void Fill(byte grey, byte a) => Fill(grey, grey, grey, a);
 
-		public void Fill(int r, int g, int b) => Fill(Color.FromArgb(r, g, b));
+		public void Fill(byte r, byte g, byte b) => Fill(Color.FromArgb(r, g, b));
 
-		public void Fill(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
+		public void Fill(byte r, byte g, byte b, byte a) => Fill(Color.FromArgb(a, r, g, b));
 
 		public void NoFill() => fill = false;
 
