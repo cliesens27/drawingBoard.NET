@@ -12,9 +12,13 @@ namespace drawingBoard.GUI {
 		private double lastRedrawTime;
 
 		public DrawMethod Draw { get; set; }
+		public double FrameRate { get; set; }
 		public double TargetFrameRate { get; set; }
 		public double TotalElapsedTime { get; private set; }
-		public int FrameCount { get; private set; }
+		public int TotalFrameCount { get; private set; }
+
+		private double CurrentElapsedTime { get; set; }
+		private int CurrentFrameCount { get; set; }
 
 		private MainForm() {
 			InitializeComponent();
@@ -25,7 +29,7 @@ namespace drawingBoard.GUI {
 			stopwatch.Start();
 
 			lastRedrawTime = 0;
-			FrameCount = 0;
+			TotalFrameCount = 0;
 		}
 
 		public MainForm(int width, int height) : this() {
@@ -42,8 +46,28 @@ namespace drawingBoard.GUI {
 				if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate) {
 					lastRedrawTime = TotalElapsedTime;
 					mainPictureBox.Invalidate();
-					FrameCount++;
+					TotalFrameCount++;
+
+					ComputeFrameRate();
 				}
+			}
+		}
+
+		private void ComputeFrameRate() {
+			const double INTERVAL = 0.25;
+			const int MIN_NB_FRAMES = 10;
+
+			if (TotalElapsedTime > 0) {
+				CurrentFrameCount++;
+
+				if (TotalElapsedTime - CurrentElapsedTime > INTERVAL && CurrentFrameCount > MIN_NB_FRAMES) {
+					FrameRate = CurrentFrameCount / (TotalElapsedTime - CurrentElapsedTime);
+					CurrentElapsedTime = TotalElapsedTime;
+					CurrentFrameCount = 0;
+				}
+			}
+			else {
+				FrameRate = 0;
 			}
 		}
 
