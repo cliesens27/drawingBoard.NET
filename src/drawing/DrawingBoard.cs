@@ -164,6 +164,12 @@ namespace drawingBoard.drawing {
 		public void DrawString(Graphics g, string str, float x, float y)
 			=> g.DrawString(str, currentFont, currentBrush, x, y);
 
+		public void DrawString(Graphics g, string str, float x, float y, bool bold, bool italic) {
+			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
+			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
+			g.DrawString(str, font, currentBrush, x, y);
+		}
+
 		public void SaveToPNG(string path) {
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
 			mainForm.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, mainForm.Size));
