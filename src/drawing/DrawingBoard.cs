@@ -8,6 +8,7 @@ namespace drawingBoard.drawing {
 	public class DrawingBoard {
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
+		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
 		private SolidBrush currentBrush;
@@ -103,6 +104,8 @@ namespace drawingBoard.drawing {
 
 		public void NoFill() => fill = false;
 
+		public void Point(Graphics g, float x, float y) => g.DrawLine(currentPen, x, y, x, y);
+
 		public void Line(Graphics g, float x1, float y1, float x2, float y2) =>
 			g.DrawLine(currentPen, x1, y1, x2, y2);
 
@@ -156,11 +159,16 @@ namespace drawingBoard.drawing {
 			currentTranslationY = 0;
 		}
 
+		public void Font(Font font) => currentFont = font;
+
+		public void DrawString(Graphics g, string str, float x, float y)
+			=> g.DrawString(str, currentFont, currentBrush, x, y);
+
 		public void SaveToPNG(string path) {
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
-			mainForm.DrawToBitmap(fullBitmap, new Rectangle(Point.Empty, mainForm.Size));
+			mainForm.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, mainForm.Size));
 
-			Point clientOrigin = mainForm.PointToScreen(Point.Empty);
+			Point clientOrigin = mainForm.PointToScreen(System.Drawing.Point.Empty);
 			Rectangle clientRect = new Rectangle(new Point(clientOrigin.X - mainForm.Bounds.X, clientOrigin.Y - mainForm.Bounds.Y), mainForm.ClientSize);
 
 			Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb);
@@ -175,6 +183,7 @@ namespace drawingBoard.drawing {
 			TargetFrameRate = 30;
 			Title = "Application";
 
+			currentFont = new Font("cambria", 12);
 			currentPen = new Pen(Color.Black, 1);
 			currentBrush = new SolidBrush(Color.Black);
 			fill = false;
