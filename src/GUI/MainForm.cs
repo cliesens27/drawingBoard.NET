@@ -134,5 +134,19 @@ namespace drawingBoard.GUI {
 		public static extern int PeekMessage(out Message msg, IntPtr window, int filterMin, int filterMax, int removeMsg);
 
 		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
+
+		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e) {
+			if (MousePressed != null) {
+				Console.WriteLine("PRESS");
+				MousePressed();
+			}
+		}
+
+		private void mainPictureBox_MouseUp(object sender, MouseEventArgs e) {
+			if (MouseReleased != null) {
+				Console.WriteLine("RELEASE");
+				MouseReleased();
+			}
+		}
 	}
 }
