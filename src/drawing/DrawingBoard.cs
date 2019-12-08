@@ -25,6 +25,26 @@ namespace drawingBoard.drawing {
 			set => mainForm.Draw = value;
 		}
 
+		public KeyPressedMethod KeyPressed {
+			get => mainForm.KeyPressed;
+			set => mainForm.KeyPressed = value;
+		}
+
+		public KeyReleasedMethod KeyReleased {
+			get => mainForm.KeyReleased;
+			set => mainForm.KeyReleased = value;
+		}
+
+		public MousePressedMethod MousePressed {
+			get => mainForm.MousePressed;
+			set => mainForm.MousePressed = value;
+		}
+
+		public MouseReleasedMethod MouseReleased {
+			get => mainForm.MouseReleased;
+			set => mainForm.MouseReleased = value;
+		}
+
 		public double TargetFrameRate {
 			get => mainForm.TargetFrameRate;
 			set => mainForm.TargetFrameRate = value;
@@ -45,6 +65,8 @@ namespace drawingBoard.drawing {
 		public double FrameRate => mainForm.FrameRate;
 		public double TotalElapsedTime => mainForm.TotalElapsedTime;
 		public int FrameCount => mainForm.TotalFrameCount;
+		public int MouseX => Control.MousePosition.X;
+		public int MouseY => Control.MousePosition.Y;
 
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
@@ -186,6 +208,11 @@ namespace drawingBoard.drawing {
 
 		private void SetDefaultSettings() {
 			DrawMethod = null;
+			KeyPressed = null;
+			KeyReleased = null;
+			MousePressed = null;
+			MouseReleased = null;
+
 			TargetFrameRate = 30;
 			Title = "Application";
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -6,17 +7,27 @@ using System.Windows.Forms;
 
 namespace drawingBoard.GUI {
 	public delegate void DrawMethod(Graphics graphics);
+	public delegate void KeyPressedMethod(char key);
+	public delegate void KeyReleasedMethod(char key);
+	public delegate void MousePressedMethod(char key);
+	public delegate void MouseReleasedMethod(char key);
 
 	public partial class MainForm : Form {
 		private readonly Stopwatch stopwatch;
 		private double lastRedrawTime;
 
 		public DrawMethod Draw { get; set; }
+		public KeyPressedMethod KeyPressed { get; set; }
+		public KeyReleasedMethod KeyReleased { get; set; }
+		public MousePressedMethod MousePressed { get; set; }
+		public MouseReleasedMethod MouseReleased { get; set; }
 		public double FrameRate { get; set; }
 		public double TargetFrameRate { get; set; }
 		public double TotalElapsedTime { get; private set; }
 		public int TotalFrameCount { get; private set; }
 
+		private List<char> PressedKeys { get; set; }
+		private List<char> ReleasedKeys { get; set; }
 		private double CurrentElapsedTime { get; set; }
 		private int CurrentFrameCount { get; set; }
 
@@ -24,6 +35,9 @@ namespace drawingBoard.GUI {
 			InitializeComponent();
 			StartPosition = FormStartPosition.CenterScreen;
 			Application.Idle += Run;
+
+			PressedKeys = new List<char>();
+			ReleasedKeys = new List<char>();
 
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
@@ -44,6 +58,9 @@ namespace drawingBoard.GUI {
 				TotalElapsedTime = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency;
 
 				if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate) {
+					CheckKeyboardInput();
+					CheckMouseInput();
+
 					lastRedrawTime = TotalElapsedTime;
 					mainPictureBox.Invalidate();
 					TotalFrameCount++;
@@ -51,6 +68,34 @@ namespace drawingBoard.GUI {
 					ComputeFrameRate();
 				}
 			}
+		}
+
+		private void CheckKeyboardInput() {
+			if (KeyPressed != null || KeyReleased != null) {
+				if (KeyPressed != null) {
+					foreach (char key in PressedKeys) {
+						KeyPressed(key);
+					}
+				}
+
+				if (KeyReleased != null) {
+					foreach (char key in ReleasedKeys) {
+						KeyReleased(key);
+					}
+				}
+
+				ReleasedKeys.Clear();
+
+				foreach (char key in PressedKeys) {
+					ReleasedKeys.Add(key);
+				}
+
+				PressedKeys.Clear();
+			}
+		}
+
+		private void CheckMouseInput() {
+
 		}
 
 		private void ComputeFrameRate() {
@@ -87,5 +132,7 @@ namespace drawingBoard.GUI {
 
 		[DllImport("user32.dll")]
 		public static extern int PeekMessage(out Message msg, IntPtr window, int filterMin, int filterMax, int removeMsg);
+
+		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
 	}
 }

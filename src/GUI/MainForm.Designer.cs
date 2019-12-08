@@ -37,14 +37,15 @@
 			this.mainPictureBox.TabStop = false;
 			this.mainPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPictureBox_Paint);
 			// 
-			// DrawingForm
+			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(120, 73);
 			this.Controls.Add(this.mainPictureBox);
-			this.Name = "DrawingForm";
+			this.Name = "MainForm";
 			this.Text = "Program";
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainForm_KeyPress);
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
 			this.ResumeLayout(false);
 
