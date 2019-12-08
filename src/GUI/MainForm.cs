@@ -9,8 +9,8 @@ namespace drawingBoard.GUI {
 	public delegate void DrawMethod(Graphics graphics);
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);
-	public delegate void MousePressedMethod(char key);
-	public delegate void MouseReleasedMethod(char key);
+	public delegate void MousePressedMethod();
+	public delegate void MouseReleasedMethod();
 
 	public partial class MainForm : Form {
 		private readonly Stopwatch stopwatch;
