@@ -26,8 +26,8 @@ namespace drawingBoard.GUI {
 		public double TotalElapsedTime { get; private set; }
 		public int TotalFrameCount { get; private set; }
 
-		private List<char> PressedKeys { get; set; }
-		private List<char> ReleasedKeys { get; set; }
+		private HashSet<char> PressedKeys { get; set; }
+		private HashSet<char> ReleasedKeys { get; set; }
 		private double CurrentElapsedTime { get; set; }
 		private int CurrentFrameCount { get; set; }
 
@@ -36,8 +36,8 @@ namespace drawingBoard.GUI {
 			StartPosition = FormStartPosition.CenterScreen;
 			Application.Idle += Run;
 
-			PressedKeys = new List<char>();
-			ReleasedKeys = new List<char>();
+			PressedKeys = new HashSet<char>();
+			ReleasedKeys = new HashSet<char>();
 
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
