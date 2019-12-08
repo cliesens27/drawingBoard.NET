@@ -19,7 +19,11 @@ namespace drawingBoard {
 			};
 
 			db.KeyPressed = (key) => {
-				Console.WriteLine(key);
+				Console.WriteLine($"PRESSED {key}");
+			};
+
+			db.KeyReleased = (key) => {
+				Console.WriteLine($"RELEASED {key}");
 			};
 
 			db.Draw();
