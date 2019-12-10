@@ -70,7 +70,7 @@ namespace drawingBoard.drawing {
 		public double FrameRate => mainForm.FrameRate;
 		public double TotalElapsedTime => mainForm.TotalElapsedTime;
 		public int FrameCount => mainForm.TotalFrameCount;
-		public int MouseX => Control.MousePosition.X - mainForm.Location.X;
+		public int MouseX => Control.MousePosition.X - (mainForm.Location.X + 5);
 		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 25);
 
 		private DrawingBoard() {
