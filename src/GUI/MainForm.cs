@@ -30,7 +30,7 @@ namespace drawingBoard.GUI {
 
 		private List<char> PressedKeys { get; set; }
 		private List<char> ReleasedKeys { get; set; }
-		private bool MouseDown { get; set; }
+		private bool IsMousePressed { get; set; }
 		private double CurrentElapsedTime { get; set; }
 		private int CurrentFrameCount { get; set; }
 
@@ -98,7 +98,7 @@ namespace drawingBoard.GUI {
 		}
 
 		private void CheckMouseInput() {
-			if (MouseDragged != null && MouseDown) {
+			if (MouseDragged != null && IsMousePressed) {
 				MouseDragged();
 			}
 		}
@@ -126,7 +126,7 @@ namespace drawingBoard.GUI {
 		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
 
 		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e) {
-			MouseDown = true;
+			IsMousePressed = true;
 
 			if (MousePressed != null) {
 				MousePressed();
@@ -134,7 +134,7 @@ namespace drawingBoard.GUI {
 		}
 
 		private void mainPictureBox_MouseUp(object sender, MouseEventArgs e) {
-			MouseDown = false;
+			IsMousePressed = false;
 
 			if (MouseReleased != null) {
 				MouseReleased();
