@@ -116,6 +116,8 @@ namespace drawingBoard.drawing {
 
 		public void StrokeWidth(float w) => currentPen.Width = w;
 
+		public void NoStroke() => currentPen.Width = 0;
+
 		public void Fill(Color color) {
 			fill = true;
 			currentBrush.Color = color;
@@ -131,7 +133,7 @@ namespace drawingBoard.drawing {
 
 		public void NoFill() => fill = false;
 
-		public void Point(Graphics g, float x, float y) => g.DrawLine(currentPen, x, y, x, y);
+		public void Point(Graphics g, float x, float y) => Circle(g, x, y, 1);
 
 		public void Line(Graphics g, float x1, float y1, float x2, float y2) =>
 			g.DrawLine(currentPen, x1, y1, x2, y2);
