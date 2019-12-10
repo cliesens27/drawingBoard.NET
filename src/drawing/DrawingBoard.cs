@@ -71,7 +71,7 @@ namespace drawingBoard.drawing {
 		public double TotalElapsedTime => mainForm.TotalElapsedTime;
 		public int FrameCount => mainForm.TotalFrameCount;
 		public int MouseX => Control.MousePosition.X - mainForm.Location.X;
-		public int MouseY => Control.MousePosition.Y - mainForm.Location.Y;
+		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 25);
 
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
@@ -116,7 +116,7 @@ namespace drawingBoard.drawing {
 
 		public void StrokeWidth(float w) => currentPen.Width = w;
 
-		public void NoStroke() => currentPen.Width = 0;
+		public void NoStroke() => currentPen.Color = Color.FromArgb(0, 0, 0, 0);
 
 		public void Fill(Color color) {
 			fill = true;
