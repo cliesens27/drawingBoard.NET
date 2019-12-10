@@ -11,6 +11,7 @@ namespace drawingBoard.GUI {
 	public delegate void KeyReleasedMethod(char key);
 	public delegate void MousePressedMethod();
 	public delegate void MouseReleasedMethod();
+	public delegate void MouseDraggedMethod();
 
 	public partial class MainForm : Form {
 		private readonly Stopwatch stopwatch;
@@ -21,6 +22,7 @@ namespace drawingBoard.GUI {
 		public KeyReleasedMethod KeyReleased { get; set; }
 		public MousePressedMethod MousePressed { get; set; }
 		public MouseReleasedMethod MouseReleased { get; set; }
+		public MouseDraggedMethod MouseDragged { get; set; }
 		public double FrameRate { get; set; }
 		public double TargetFrameRate { get; set; }
 		public double TotalElapsedTime { get; private set; }
@@ -28,6 +30,7 @@ namespace drawingBoard.GUI {
 
 		private List<char> PressedKeys { get; set; }
 		private List<char> ReleasedKeys { get; set; }
+		private bool MouseDown { get; set; }
 		private double CurrentElapsedTime { get; set; }
 		private int CurrentFrameCount { get; set; }
 
@@ -95,7 +98,9 @@ namespace drawingBoard.GUI {
 		}
 
 		private void CheckMouseInput() {
-
+			if (MouseDragged != null && MouseDown) {
+				MouseDragged();
+			}
 		}
 
 		private void ComputeFrameRate() {
@@ -116,9 +121,27 @@ namespace drawingBoard.GUI {
 			}
 		}
 
-		private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
-
 		private void mainPictureBox_Paint(object sender, PaintEventArgs e) => Draw(e.Graphics);
+
+		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
+
+		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e) {
+			MouseDown = true;
+
+			if (MousePressed != null) {
+				MousePressed();
+			}
+		}
+
+		private void mainPictureBox_MouseUp(object sender, MouseEventArgs e) {
+			MouseDown = false;
+
+			if (MouseReleased != null) {
+				MouseReleased();
+			}
+		}
+
+		private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Message {
@@ -132,21 +155,5 @@ namespace drawingBoard.GUI {
 
 		[DllImport("user32.dll")]
 		public static extern int PeekMessage(out Message msg, IntPtr window, int filterMin, int filterMax, int removeMsg);
-
-		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
-
-		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e) {
-			if (MousePressed != null) {
-				Console.WriteLine("PRESS");
-				MousePressed();
-			}
-		}
-
-		private void mainPictureBox_MouseUp(object sender, MouseEventArgs e) {
-			if (MouseReleased != null) {
-				Console.WriteLine("RELEASE");
-				MouseReleased();
-			}
-		}
 	}
 }

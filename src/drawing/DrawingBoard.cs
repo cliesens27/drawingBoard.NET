@@ -45,6 +45,11 @@ namespace drawingBoard.drawing {
 			set => mainForm.MouseReleased = value;
 		}
 
+		public MouseDraggedMethod MouseDragged {
+			get => mainForm.MouseDragged;
+			set => mainForm.MouseDragged = value;
+		}
+
 		public double TargetFrameRate {
 			get => mainForm.TargetFrameRate;
 			set => mainForm.TargetFrameRate = value;
@@ -212,6 +217,7 @@ namespace drawingBoard.drawing {
 			KeyReleased = null;
 			MousePressed = null;
 			MouseReleased = null;
+			MouseDragged = null;
 
 			TargetFrameRate = 30;
 			Title = "Application";
