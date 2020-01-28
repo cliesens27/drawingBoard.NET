@@ -1,5 +1,6 @@
 ﻿namespace drawingBoard.src.drawing {
-	public enum RectMode {
+	public enum RectangleMode {
+		CORNER,
 		CORNERS,
 		CENTER
 	}

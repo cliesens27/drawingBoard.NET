@@ -9,6 +9,7 @@ namespace drawingBoard.drawing {
 	public class DrawingBoard {
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
+		private RectangleMode rectMode;
 		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
@@ -18,7 +19,6 @@ namespace drawingBoard.drawing {
 		private float currentTranslationX;
 		private float currentTranslationY;
 
-		public RectMode RectMode { get; set; }
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
 
@@ -62,6 +62,11 @@ namespace drawingBoard.drawing {
 			set => mainForm.Text = value;
 		}
 
+		public double FrameRate => mainForm.FrameRate;
+		public double TotalElapsedTime => mainForm.TotalElapsedTime;
+		public int FrameCount => mainForm.TotalFrameCount;
+		public int MouseX => Control.MousePosition.X - (mainForm.Location.X + 5);
+		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 25);
 		public int Xmin => 0;
 		public int Ymin => 0;
 		public int Xcenter => Width / 2;
@@ -69,16 +74,10 @@ namespace drawingBoard.drawing {
 		public int Xmax => Width;
 		public int Ymax => Height;
 
-		public double FrameRate => mainForm.FrameRate;
-		public double TotalElapsedTime => mainForm.TotalElapsedTime;
-		public int FrameCount => mainForm.TotalFrameCount;
-		public int MouseX => Control.MousePosition.X - (mainForm.Location.X + 5);
-		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 25);
-
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			RectMode = RectMode.CENTER;
+			RectMode(RectangleMode.CENTER);
 		}
 
 		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
@@ -98,6 +97,8 @@ namespace drawingBoard.drawing {
 
 			SetDefaultSettings();
 		}
+
+		public void RectMode(RectangleMode mode) => rectMode = mode;
 
 		public void Draw() {
 			if (DrawMethod == null) {
@@ -150,15 +151,22 @@ namespace drawingBoard.drawing {
 		}
 
 		public void Rectangle(Graphics g, float x, float y, float w, float h) {
-			switch (RectMode) {
-				case RectMode.CORNERS:
+			switch (rectMode) {
+				case RectangleMode.CORNER:
 					if (fill) {
 						g.FillRectangle(currentBrush, x, y, w, h);
 					}
 
 					g.DrawRectangle(currentPen, x, y, w, h);
 					break;
-				case RectMode.CENTER:
+				case RectangleMode.CORNERS:
+					if (fill) {
+						g.FillRectangle(currentBrush, x, y, w - x, h - y);
+					}
+
+					g.DrawRectangle(currentPen, x, y, w - x, h - y);
+					break;
+				case RectangleMode.CENTER:
 					if (fill) {
 						g.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
 					}

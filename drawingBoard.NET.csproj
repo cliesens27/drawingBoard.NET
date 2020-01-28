@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\drawing\DrawingBoard.cs" />
-    <Compile Include="src\drawing\RectMode.cs" />
+    <Compile Include="src\drawing\RectangleMode.cs" />
     <Compile Include="src\GUI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
