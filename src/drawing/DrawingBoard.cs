@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using drawingBoard.GUI;
+using drawingBoard.src.drawing;
 
 namespace drawingBoard.drawing {
 	public class DrawingBoard {
@@ -17,6 +18,7 @@ namespace drawingBoard.drawing {
 		private float currentTranslationX;
 		private float currentTranslationY;
 
+		public RectMode RectMode { get; set; }
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
 
@@ -76,6 +78,7 @@ namespace drawingBoard.drawing {
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			RectMode = RectMode.CENTER;
 		}
 
 		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
@@ -147,11 +150,22 @@ namespace drawingBoard.drawing {
 		}
 
 		public void Rectangle(Graphics g, float x, float y, float w, float h) {
-			if (fill) {
-				g.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
-			}
+			switch (RectMode) {
+				case RectMode.CORNERS:
+					if (fill) {
+						g.FillRectangle(currentBrush, x, y, w, h);
+					}
 
-			g.DrawRectangle(currentPen, x - w, y - h, 2 * w, 2 * h);
+					g.DrawRectangle(currentPen, x, y, w, h);
+					break;
+				case RectMode.CENTER:
+					if (fill) {
+						g.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
+					}
+
+					g.DrawRectangle(currentPen, x - w, y - h, 2 * w, 2 * h);
+					break;
+			}
 		}
 
 		public void Square(Graphics g, float x, float y, float r) => Rectangle(g, x, y, r, r);
