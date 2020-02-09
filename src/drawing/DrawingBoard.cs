@@ -22,6 +22,8 @@ namespace drawingBoard.drawing {
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
 
+		private Graphics Graphics => mainForm.Graphics;
+
 		public DrawMethod DrawMethod {
 			get => mainForm.Draw;
 			set => mainForm.Draw = value;
@@ -77,7 +79,6 @@ namespace drawingBoard.drawing {
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			RectMode(RectangleMode.CENTER);
 		}
 
 		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
@@ -98,8 +99,6 @@ namespace drawingBoard.drawing {
 			SetDefaultSettings();
 		}
 
-		public void RectMode(RectangleMode mode) => rectMode = mode;
-
 		public void Draw() {
 			if (DrawMethod == null) {
 				throw new Exception("Error, you must set the DrawMethod property before calling Draw()");
@@ -107,6 +106,8 @@ namespace drawingBoard.drawing {
 
 			Application.Run(mainForm);
 		}
+
+		public void RectMode(RectangleMode mode) => rectMode = mode;
 
 		public void Stroke(Color color) => currentPen.Color = color;
 
@@ -137,88 +138,88 @@ namespace drawingBoard.drawing {
 
 		public void NoFill() => fill = false;
 
-		public void Point(Graphics g, float x, float y) => Circle(g, x, y, 1);
+		public void Point(float x, float y) => Circle(x, y, 1);
 
-		public void Line(Graphics g, float x1, float y1, float x2, float y2) =>
-			g.DrawLine(currentPen, x1, y1, x2, y2);
+		public void Line(float x1, float y1, float x2, float y2) =>
+			Graphics.DrawLine(currentPen, x1, y1, x2, y2);
 
-		public void Rectangle(Graphics g, Rectangle rect) {
+		public void Rectangle(Rectangle rect) {
 			if (fill) {
-				g.FillRectangle(currentBrush, rect);
+				Graphics.FillRectangle(currentBrush, rect);
 			}
 
-			g.DrawRectangle(currentPen, rect);
+			Graphics.DrawRectangle(currentPen, rect);
 		}
 
-		public void Rectangle(Graphics g, float x, float y, float w, float h) {
+		public void Rectangle(float x, float y, float w, float h) {
 			switch (rectMode) {
 				case RectangleMode.CORNER:
 					if (fill) {
-						g.FillRectangle(currentBrush, x, y, w, h);
+						Graphics.FillRectangle(currentBrush, x, y, w, h);
 					}
 
-					g.DrawRectangle(currentPen, x, y, w, h);
+					Graphics.DrawRectangle(currentPen, x, y, w, h);
 					break;
 				case RectangleMode.CORNERS:
 					if (fill) {
-						g.FillRectangle(currentBrush, x, y, w - x, h - y);
+						Graphics.FillRectangle(currentBrush, x, y, w - x, h - y);
 					}
 
-					g.DrawRectangle(currentPen, x, y, w - x, h - y);
+					Graphics.DrawRectangle(currentPen, x, y, w - x, h - y);
 					break;
 				case RectangleMode.CENTER:
 					if (fill) {
-						g.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
+						Graphics.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
 					}
 
-					g.DrawRectangle(currentPen, x - w, y - h, 2 * w, 2 * h);
+					Graphics.DrawRectangle(currentPen, x - w, y - h, 2 * w, 2 * h);
 					break;
 			}
 		}
 
-		public void Square(Graphics g, float x, float y, float r) => Rectangle(g, x, y, r, r);
+		public void Square(float x, float y, float r) => Rectangle(x, y, r, r);
 
-		public void Ellipse(Graphics g, float x, float y, float rx, float ry) {
+		public void Ellipse(float x, float y, float rx, float ry) {
 			if (fill) {
-				g.FillEllipse(currentBrush, x - rx, y - ry, 2 * rx, 2 * ry);
+				Graphics.FillEllipse(currentBrush, x - rx, y - ry, 2 * rx, 2 * ry);
 			}
 
-			g.DrawEllipse(currentPen, x - rx, y - ry, 2 * rx, 2 * ry);
+			Graphics.DrawEllipse(currentPen, x - rx, y - ry, 2 * rx, 2 * ry);
 		}
 
-		public void Circle(Graphics g, float x, float y, float r) => Ellipse(g, x, y, r, r);
+		public void Circle(float x, float y, float r) => Ellipse(x, y, r, r);
 
-		public void Rotate(Graphics g, float degrees) {
+		public void Rotate(float degrees) {
 			currentRotation += degrees;
-			g.RotateTransform(degrees);
+			Graphics.RotateTransform(degrees);
 		}
 
-		public void Translate(Graphics g, float dx, float dy) {
+		public void Translate(float dx, float dy) {
 			currentTranslationX += dx;
 			currentTranslationY += dy;
-			g.TranslateTransform(dx, dy);
+			Graphics.TranslateTransform(dx, dy);
 		}
 
-		public void UndoRotation(Graphics g) {
-			g.RotateTransform(-currentRotation);
+		public void UndoRotation() {
+			Graphics.RotateTransform(-currentRotation);
 			currentRotation = 0;
 		}
 
-		public void UndoTranslation(Graphics g) {
-			g.TranslateTransform(-currentTranslationX, -currentTranslationY);
+		public void UndoTranslation() {
+			Graphics.TranslateTransform(-currentTranslationX, -currentTranslationY);
 			currentTranslationX = 0;
 			currentTranslationY = 0;
 		}
 
 		public void Font(Font font) => currentFont = font;
 
-		public void DrawString(Graphics g, string str, float x, float y)
-			=> g.DrawString(str, currentFont, currentBrush, x, y);
+		public void DrawString(string str, float x, float y)
+			=> Graphics.DrawString(str, currentFont, currentBrush, x, y);
 
-		public void DrawString(Graphics g, string str, float x, float y, bool bold, bool italic) {
+		public void DrawString(string str, float x, float y, bool bold, bool italic) {
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
-			g.DrawString(str, font, currentBrush, x, y);
+			Graphics.DrawString(str, font, currentBrush, x, y);
 		}
 
 		public void SaveToPNG(string path) {
@@ -250,6 +251,8 @@ namespace drawingBoard.drawing {
 			currentPen = new Pen(Color.Black, 1);
 			currentBrush = new SolidBrush(Color.Black);
 			fill = false;
+			RectMode(RectangleMode.CENTER);
+
 			currentRotation = 0;
 			currentTranslationX = 0;
 			currentTranslationY = 0;

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace drawingBoard.GUI {
-	public delegate void DrawMethod(Graphics graphics);
+	public delegate void DrawMethod();
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);
 	public delegate void MousePressedMethod();
@@ -23,6 +23,7 @@ namespace drawingBoard.GUI {
 		public MousePressedMethod MousePressed { get; set; }
 		public MouseReleasedMethod MouseReleased { get; set; }
 		public MouseDraggedMethod MouseDragged { get; set; }
+		public Graphics Graphics { get; private set; }
 		public double FrameRate { get; set; }
 		public double TargetFrameRate { get; set; }
 		public double TotalElapsedTime { get; private set; }
@@ -121,9 +122,10 @@ namespace drawingBoard.GUI {
 			}
 		}
 
-		private void mainPictureBox_Paint(object sender, PaintEventArgs e) => Draw(e.Graphics);
-
-		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
+		private void mainPictureBox_Paint(object sender, PaintEventArgs e) {
+			Graphics = e.Graphics;
+			Draw();
+		}
 
 		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e) {
 			IsMousePressed = true;
@@ -140,6 +142,8 @@ namespace drawingBoard.GUI {
 				MouseReleased();
 			}
 		}
+
+		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
 
 		private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 
