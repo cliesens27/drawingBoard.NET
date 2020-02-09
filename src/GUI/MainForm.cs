@@ -14,6 +14,9 @@ namespace drawingBoard.GUI {
 	public delegate void MouseDraggedMethod();
 
 	public partial class MainForm : Form {
+
+		#region Fields & Properties
+
 		private readonly Stopwatch stopwatch;
 		private double lastRedrawTime;
 
@@ -34,6 +37,10 @@ namespace drawingBoard.GUI {
 		private bool IsMousePressed { get; set; }
 		private double CurrentElapsedTime { get; set; }
 		private int CurrentFrameCount { get; set; }
+
+		#endregion
+
+		#region Constructors
 
 		private MainForm() {
 			InitializeComponent();
@@ -56,6 +63,8 @@ namespace drawingBoard.GUI {
 		}
 
 		public MainForm(int width, int height, int x, int y) : this(width, height) => Location = new Point(x, y);
+
+		#endregion
 
 		private void Run(object sender, EventArgs e) {
 			while (IsIdle()) {
