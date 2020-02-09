@@ -1,4 +1,4 @@
-﻿namespace drawingBoard.src.drawing {
+﻿namespace DrawingBoard.Drawing.Constants {
 	public enum RectangleMode {
 		CORNER,
 		CORNERS,

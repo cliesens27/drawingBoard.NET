@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace drawingBoard.GUI {
+namespace DrawingBoard.Drawing.Constants.Render {
 	public delegate void DrawMethod();
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);

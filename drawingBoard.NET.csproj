@@ -51,15 +51,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\drawing\DrawingBoard.cs" />
-    <Compile Include="src\drawing\RectangleMode.cs" />
-    <Compile Include="src\GUI\MainForm.cs">
+    <Compile Include="Drawing\DrawingBoard.cs" />
+    <Compile Include="Drawing\Constants\RectangleMode.cs" />
+    <Compile Include="Render\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\GUI\MainForm.Designer.cs">
+    <Compile Include="Render\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -70,7 +69,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="src\GUI\MainForm.resx">
+    <EmbeddedResource Include="Render\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
