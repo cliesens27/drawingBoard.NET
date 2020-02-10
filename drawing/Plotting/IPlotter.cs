@@ -5,7 +5,7 @@ using drawingBoard.Utils;
 
 namespace drawingBoard.Drawing.Plotting {
 	internal abstract class IPlotter {
-		protected const int AXES_OFFSET = 25;
+		protected const int AXES_OFFSET = 35;
 		protected Rectangle plotBounds;
 		protected Rectangle axesBounds;
 		protected float zeroX;
@@ -25,18 +25,30 @@ namespace drawingBoard.Drawing.Plotting {
 			zeroX = (float) Mathlib.Misc.Utils.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
 			zeroY = (float) Mathlib.Misc.Utils.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
 
+			DrawBackground(db);
+			DrawAxes(db);
+			LabelAxes(db);
+		}
+
+		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys)
+			=> InitPlot(db, xs, ys, 0, 0, db.Width, db.Height);
+
+		private void DrawBackground(DrawingBoard db) {
 			db.NoStroke();
 			db.Fill(255);
 			db.Rectangle(plotBounds);
+		}
 
+		private void DrawAxes(DrawingBoard db) {
 			db.NoFill();
 			db.StrokeWidth(2);
 			db.Stroke(0);
 			db.Rectangle(axesBounds);
 		}
 
-		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys)
-			=> InitPlot(db, xs, ys, 0, 0, db.Width, db.Height);
+		private void LabelAxes(DrawingBoard db) {
+
+		}
 
 		public void Plot(DrawingBoard db, int[] xs, int[] ys)
 			=> Plot(db, ArrayUtils.IntToDouble(xs), ArrayUtils.IntToDouble(ys));
