@@ -107,6 +107,8 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 
 		#endregion
 
+		#region Misc
+
 		private void SetDefaultSettings() {
 			DrawMethod = null;
 			KeyPressed = null;
@@ -152,6 +154,8 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 		}
 
 		public void RectMode(RectangleMode mode) => rectMode = mode;
+
+		#endregion
 
 		#region Stroke
 
