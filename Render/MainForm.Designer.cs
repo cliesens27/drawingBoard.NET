@@ -24,7 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.mainPictureBox = new System.Windows.Forms.PictureBox();
-			((System.ComponentModel.ISupportInitialize) (this.mainPictureBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// mainPictureBox
@@ -43,12 +43,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
 			this.ClientSize = new System.Drawing.Size(120, 73);
 			this.Controls.Add(this.mainPictureBox);
+			this.ForeColor = System.Drawing.Color.White;
 			this.Name = "MainForm";
 			this.Text = "Program";
 			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainForm_KeyPress);
-			((System.ComponentModel.ISupportInitialize) (this.mainPictureBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
 			this.ResumeLayout(false);
 
 		}
