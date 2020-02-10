@@ -297,7 +297,20 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 
 		#region Plots
 
+		public void LinePlot(int[] xs, int[] ys) => linePlotter.Plot(this, xs, ys);
+
+		public void LinePlot(int[] xs, int[] ys, int x, int y, int width, int height)
+			=> linePlotter.Plot(this, xs, ys, x, y, width, height);
+
+		public void LinePlot(float[] xs, float[] ys) => linePlotter.Plot(this, xs, ys);
+
+		public void LinePlot(float[] xs, float[] ys, int x, int y, int width, int height)
+			=> linePlotter.Plot(this, xs, ys, x, y, width, height);
+
 		public void LinePlot(double[] xs, double[] ys) => linePlotter.Plot(this, xs, ys);
+
+		public void LinePlot(double[] xs, double[] ys, int x, int y, int width, int height)
+			=> linePlotter.Plot(this, xs, ys, x, y, width, height);
 
 		#endregion
 	}

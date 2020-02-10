@@ -49,7 +49,20 @@ namespace drawingBoard.Drawing.Plotting {
 		}
 
 		private void LabelAxes(DrawingBoard db) {
+			int fontSize = 14;
 
+			db.Font(new Font("consolas", fontSize));
+			db.Fill(0);
+
+			db.DrawString($"{minMaxX.min}", axesBounds.Left - fontSize, axesBounds.Bottom);
+			db.DrawString($"{minMaxX.max}", axesBounds.Right - fontSize, axesBounds.Bottom);
+
+			if (minMaxY.min == minMaxY.max) {
+
+			}
+			else {
+
+			}
 		}
 
 		public void Plot(DrawingBoard db, int[] xs, int[] ys)
