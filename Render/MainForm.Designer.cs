@@ -1,4 +1,4 @@
-﻿namespace DrawingBoard.Drawing.Constants.Render {
+﻿namespace drawingBoard.Drawing.Constants.Render {
 	partial class MainForm {
 		/// <summary>
 		/// Required designer variable.

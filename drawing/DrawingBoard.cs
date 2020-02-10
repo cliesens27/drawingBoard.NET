@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using DrawingBoard.Drawing.Constants.Render;
+using drawingBoard.Drawing.Constants.Render;
 
-namespace DrawingBoard.Drawing.Constants.Drawing {
+namespace drawingBoard.Drawing.Constants.Drawing {
 	public class DrawingBoard {
 
 		#region Fields & Properties
