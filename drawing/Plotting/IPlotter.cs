@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using drawingBoard.Drawing.Constants.Drawing;
+using drawingBoard.Utils;
 
 namespace drawingBoard.Drawing.Plotting {
 	internal abstract class IPlotter {
@@ -10,35 +11,27 @@ namespace drawingBoard.Drawing.Plotting {
 		protected float zeroX;
 		protected float zeroY;
 
-		protected void InitPlot(DrawingBoard db, int[] xs, int[] ys, int x, int y, int width, int height) {
-		}
+		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys);
 
-		protected void InitPlot(DrawingBoard db, float[] xs, float[] ys, int x, int y, int width, int height) {
-		}
+		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
 		}
 
-		protected void InitPlot(DrawingBoard db, float[] xs, float[] ys)
-			=> InitPlot(db, xs, ys, 0, 0, db.Width, db.Height);
-
-		protected void InitPlot(DrawingBoard db, int[] xs, int[] ys)
-			=> InitPlot(db, xs, ys, 0, 0, db.Width, db.Height);
-
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys)
 			=> InitPlot(db, xs, ys, 0, 0, db.Width, db.Height);
 
-		public abstract void Plot(DrawingBoard db, int[] xs, int[] ys);
+		public void Plot(DrawingBoard db, int[] xs, int[] ys)
+			=> Plot(db, ArrayUtils.IntToDouble(xs), ArrayUtils.IntToDouble(ys));
 
-		public abstract void Plot(DrawingBoard db, float[] xs, float[] ys);
+		public void Plot(DrawingBoard db, float[] xs, float[] ys)
+			=> Plot(db, ArrayUtils.FloatToDouble(xs), ArrayUtils.FloatToDouble(ys));
 
-		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys);
+		public void Plot(DrawingBoard db, int[] xs, int[] ys, int x, int y, int width, int height)
+			=> Plot(db, ArrayUtils.IntToDouble(xs), ArrayUtils.IntToDouble(ys), x, y, width, height);
 
-		public abstract void Plot(DrawingBoard db, int[] xs, int[] ys, int x, int y, int width, int height);
-
-		public abstract void Plot(DrawingBoard db, float[] xs, float[] ys, int x, int y, int width, int height);
-
-		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
+		public void Plot(DrawingBoard db, float[] xs, float[] ys, int x, int y, int width, int height)
+			=> Plot(db, ArrayUtils.FloatToDouble(xs), ArrayUtils.FloatToDouble(ys), x, y, width, height);
 
 		public void Plot(DrawingBoard db, List<int> xs, List<int> ys)
 			=> Plot(db, xs.ToArray(), ys.ToArray());
