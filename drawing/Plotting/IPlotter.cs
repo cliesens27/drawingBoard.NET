@@ -56,6 +56,6 @@ namespace drawingBoard.Drawing.Plotting {
 			=> Plot(db, xs.ToArray(), ys.ToArray(), x, y, width, height);
 
 		public void Plot(DrawingBoard db, List<double> xs, List<double> ys, int x, int y, int width, int height)
-		=> Plot(db, xs.ToArray(), ys.ToArray(), x, y, width, height);
+			=> Plot(db, xs.ToArray(), ys.ToArray(), x, y, width, height);
 	}
 }
