@@ -36,6 +36,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mathlib">
+      <HintPath>..\lib\mathlib\Mathlib.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +57,7 @@
     <Compile Include="Drawing\DrawingBoard.cs" />
     <Compile Include="Drawing\Constants\RectangleMode.cs" />
     <Compile Include="Drawing\Plotting\IPlotter.cs" />
+    <Compile Include="Drawing\Plotting\LinePlotter.cs" />
     <Compile Include="Render\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +66,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
+    <Compile Include="Utils\MinMax.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using drawingBoard.Drawing.Constants.Render;
+using drawingBoard.Drawing.Plotting;
 
 namespace drawingBoard.Drawing.Constants.Drawing {
 	public class DrawingBoard {
@@ -11,11 +12,12 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
-		private RectangleMode rectMode;
+		private IPlotter linePlotter;
 		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
 		private SolidBrush currentBrush;
+		private RectangleMode rectMode;
 		private bool fill;
 		private float currentRotation;
 		private float currentTranslationX;
@@ -105,10 +107,6 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 			SetDefaultSettings();
 		}
 
-		#endregion
-
-		#region Misc
-
 		private void SetDefaultSettings() {
 			DrawMethod = null;
 			KeyPressed = null;
@@ -120,16 +118,23 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 			TargetFrameRate = 30;
 			Title = "Application";
 
+			linePlotter = new LinePlotter();
+
 			currentFont = new Font("cambria", 12);
 			currentPen = new Pen(Color.Black, 1);
 			currentBrush = new SolidBrush(Color.Black);
 			fill = false;
+
 			RectMode(RectangleMode.CENTER);
 
 			currentRotation = 0;
 			currentTranslationX = 0;
 			currentTranslationY = 0;
 		}
+
+		#endregion
+
+		#region Misc
 
 		public void Draw() {
 			if (DrawMethod == null) {
@@ -287,6 +292,12 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
 			Graphics.DrawString(str, font, currentBrush, x, y);
 		}
+
+		#endregion
+
+		#region Plots
+
+		public void LinePlot(double[] xs, double[] ys) => linePlotter.Plot(this, xs, ys);
 
 		#endregion
 	}

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using drawingBoard.Drawing.Constants.Drawing;
 using drawingBoard.Utils;
 
 namespace drawingBoard.Drawing.Plotting {
 	internal abstract class IPlotter {
-		protected float xMin;
-		protected float xMax;
-		protected float yMin;
-		protected float yMax;
+		protected const int AXES_OFFSET = 25;
+		protected Rectangle plotBounds;
+		protected Rectangle axesBounds;
+		protected Rectangle bounds;
 		protected float zeroX;
 		protected float zeroY;
 
@@ -16,6 +17,27 @@ namespace drawingBoard.Drawing.Plotting {
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
+			plotBounds = new Rectangle(x, y, width, height);
+			axesBounds = new Rectangle(x + AXES_OFFSET, y + AXES_OFFSET, width - AXES_OFFSET, height - AXES_OFFSET);
+			bounds = new Rectangle(x, y, width, height);
+
+			MinMax minMaxX = ArrayUtils.FindMinMax(xs);
+			MinMax minMaxY = ArrayUtils.FindMinMax(ys);
+
+			zeroX = (float) Mathlib.Misc.Utils.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
+			zeroY = (float) Mathlib.Misc.Utils.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
+
+			db.NoStroke();
+			db.Fill(255);
+			db.Rectangle(plotBounds);
+
+			db.NoFill();
+			db.StrokeWidth(2);
+			db.Stroke(0);
+			db.Rectangle(axesBounds);
+
+			db.StrokeWidth(1);
+			db.Line(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom);
 		}
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys)

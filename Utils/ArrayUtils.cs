@@ -19,5 +19,19 @@
 
 			return res;
 		}
+
+		public static MinMax FindMinMax(double[] numbers) {
+			double min = double.MaxValue;
+			double max = double.MinValue;
+
+			for (int i = 0; i < numbers.Length; i++) {
+				double val = numbers[i];
+
+				min = val < min ? val : min;
+				max = val > min ? val : max;
+			}
+
+			return new MinMax(min, max);
+		}
 	}
 }
