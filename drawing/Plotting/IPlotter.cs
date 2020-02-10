@@ -8,6 +8,8 @@ namespace drawingBoard.Drawing.Plotting {
 		protected const int AXES_OFFSET = 35;
 		protected Rectangle plotBounds;
 		protected Rectangle axesBounds;
+		protected MinMax minMaxX;
+		protected MinMax minMaxY;
 		protected float zeroX;
 		protected float zeroY;
 
@@ -16,11 +18,11 @@ namespace drawingBoard.Drawing.Plotting {
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
+			minMaxX = ArrayUtils.FindMinMax(xs);
+			minMaxY = ArrayUtils.FindMinMax(ys);
+
 			plotBounds = new Rectangle(x, y, width, height);
 			axesBounds = new Rectangle(x + AXES_OFFSET, y + AXES_OFFSET, width - 2 * AXES_OFFSET, height - 2 * AXES_OFFSET);
-
-			MinMax minMaxX = ArrayUtils.FindMinMax(xs);
-			MinMax minMaxY = ArrayUtils.FindMinMax(ys);
 
 			zeroX = (float) Mathlib.Misc.Utils.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
 			zeroY = (float) Mathlib.Misc.Utils.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
