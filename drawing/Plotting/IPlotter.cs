@@ -17,7 +17,7 @@ namespace drawingBoard.Drawing.Plotting {
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
 			plotBounds = new Rectangle(x, y, width, height);
-			axesBounds = new Rectangle(x + AXES_OFFSET, y + AXES_OFFSET, width - 2 * AXES_OFFSET, height - 2 * AXES_OFFSET);			
+			axesBounds = new Rectangle(x + AXES_OFFSET, y + AXES_OFFSET, width - 2 * AXES_OFFSET, height - 2 * AXES_OFFSET);
 
 			MinMax minMaxX = ArrayUtils.FindMinMax(xs);
 			MinMax minMaxY = ArrayUtils.FindMinMax(ys);
@@ -33,9 +33,6 @@ namespace drawingBoard.Drawing.Plotting {
 			db.StrokeWidth(2);
 			db.Stroke(0);
 			db.Rectangle(axesBounds);
-
-			db.StrokeWidth(1);
-			db.Line(axesBounds.Left, axesBounds.Top, axesBounds.Right, axesBounds.Bottom);
 		}
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys)
