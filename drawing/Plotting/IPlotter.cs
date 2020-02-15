@@ -2,6 +2,7 @@
 using System.Drawing;
 using drawingBoard.Drawing.Constants.Drawing;
 using drawingBoard.Utils;
+using Mathlib.Functions;
 
 namespace drawingBoard.Drawing.Plotting {
 	internal abstract class IPlotter {
@@ -24,8 +25,8 @@ namespace drawingBoard.Drawing.Plotting {
 			plotBounds = new Rectangle(x, y, width, height);
 			axesBounds = new Rectangle(x + AXES_OFFSET, y + AXES_OFFSET, width - 2 * AXES_OFFSET, height - 2 * AXES_OFFSET);
 
-			zeroX = (float) Mathlib.Misc.Utils.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
-			zeroY = (float) Mathlib.Misc.Utils.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
+			zeroX = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
+			zeroY = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
 
 			DrawBackground(db);
 			DrawAxes(db);
@@ -65,6 +66,8 @@ namespace drawingBoard.Drawing.Plotting {
 			}
 		}
 
+		#region Plot from Array - Array
+
 		public void Plot(DrawingBoard db, int[] xs, int[] ys)
 			=> Plot(db, ArrayUtils.IntToDouble(xs), ArrayUtils.IntToDouble(ys));
 
@@ -76,6 +79,10 @@ namespace drawingBoard.Drawing.Plotting {
 
 		public void Plot(DrawingBoard db, float[] xs, float[] ys, int x, int y, int width, int height)
 			=> Plot(db, ArrayUtils.FloatToDouble(xs), ArrayUtils.FloatToDouble(ys), x, y, width, height);
+
+		#endregion
+
+		#region Plot from List - List
 
 		public void Plot(DrawingBoard db, List<int> xs, List<int> ys)
 			=> Plot(db, xs.ToArray(), ys.ToArray());
@@ -94,5 +101,171 @@ namespace drawingBoard.Drawing.Plotting {
 
 		public void Plot(DrawingBoard db, List<double> xs, List<double> ys, int x, int y, int width, int height)
 			=> Plot(db, xs.ToArray(), ys.ToArray(), x, y, width, height);
+
+		#endregion
+
+		#region Plot from Array - Function
+
+		public void Plot(DrawingBoard db, int[] xs, OneVarFunction f)
+			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
+
+		public void Plot(DrawingBoard db, float[] xs, OneVarFunction f)
+			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
+
+		public void Plot(DrawingBoard db, double[] xs, OneVarFunction f)
+			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
+
+		public void Plot(DrawingBoard db, int[] xs, OneVarFunction f, int x, int y, int width, int height) {
+			double[] ys = new double[xs.Length];
+
+			for (int i = 0; i < ys.Length; i++) {
+				ys[i] = f(xs[i]);
+			}
+
+			Plot(db, ArrayUtils.IntToDouble(xs), ys, x, y, width, height);
+		}
+
+		public void Plot(DrawingBoard db, float[] xs, OneVarFunction f, int x, int y, int width, int height) {
+			double[] ys = new double[xs.Length];
+
+			for (int i = 0; i < ys.Length; i++) {
+				ys[i] = f(xs[i]);
+			}
+
+			Plot(db, ArrayUtils.FloatToDouble(xs), ys, x, y, width, height);
+		}
+
+		public void Plot(DrawingBoard db, double[] xs, OneVarFunction f, int x, int y, int width, int height) {
+			double[] ys = new double[xs.Length];
+
+			for (int i = 0; i < ys.Length; i++) {
+				ys[i] = f(xs[i]);
+			}
+
+			Plot(db, xs, ys, x, y, width, height);
+		}
+
+		#endregion
+
+		#region Plot from List - Function
+
+		public void Plot(DrawingBoard db, List<int> xs, OneVarFunction f)
+			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
+
+		public void Plot(DrawingBoard db, List<float> xs, OneVarFunction f)
+			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
+
+		public void Plot(DrawingBoard db, List<double> xs, OneVarFunction f)
+			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
+
+		public void Plot(DrawingBoard db, List<int> xs, OneVarFunction f, int x, int y, int width, int height) {
+			double[] ys = new double[xs.Count];
+
+			for (int i = 0; i < ys.Length; i++) {
+				ys[i] = f(xs[i]);
+			}
+
+			Plot(db, ArrayUtils.IntToDouble(xs.ToArray()), ys, x, y, width, height);
+		}
+
+		public void Plot(DrawingBoard db, List<float> xs, OneVarFunction f, int x, int y, int width, int height) {
+			double[] ys = new double[xs.Count];
+
+			for (int i = 0; i < ys.Length; i++) {
+				ys[i] = f(xs[i]);
+			}
+
+			Plot(db, ArrayUtils.FloatToDouble(xs.ToArray()), ys, x, y, width, height);
+		}
+
+		public void Plot(DrawingBoard db, List<double> xs, OneVarFunction f, int x, int y, int width, int height) {
+			double[] ys = new double[xs.Count];
+
+			for (int i = 0; i < ys.Length; i++) {
+				ys[i] = f(xs[i]);
+			}
+
+			Plot(db, xs.ToArray(), ys, x, y, width, height);
+		}
+
+		#endregion
+
+		#region Plot from Function
+
+		public void Plot(DrawingBoard db, double a, double b, int n, OneVarFunction f) {
+			double step = (b - a) / (n - 1);
+
+			double[] xs = new double[n];
+			double[] ys = new double[n];
+
+			int i = 0;
+			for (double x_ = a; x_ < b; x_ += step) {
+				ys[i] = f(xs[i]);
+				i++;
+			}
+
+			xs[n - 1] = b;
+			ys[n - 1] = f(xs[n - 1]);
+
+			Plot(db, xs, ys, 0, 0, db.Width, db.Height);
+		}
+
+		public void Plot(DrawingBoard db, double a, double b, int n, OneVarFunction f,
+			int x, int y, int width, int height) {
+			double step = (b - a) / (n - 1);
+
+			double[] xs = new double[n];
+			double[] ys = new double[n];
+
+			int i = 0;
+			for (double x_ = a; x_ < b; x_ += step) {
+				ys[i] = f(xs[i]);
+				i++;
+			}
+
+			xs[n - 1] = b;
+			ys[n - 1] = f(xs[n - 1]);
+
+			Plot(db, xs, ys, x, y, width, height);
+		}
+
+		public void Plot(DrawingBoard db, double a, double b, double step, OneVarFunction f) {
+			int n = 1 + (int) ((b - a) / step);
+
+			double[] xs = new double[n];
+			double[] ys = new double[n];
+
+			int i = 0;
+			for (double x_ = a; x_ < b; x_ += step) {
+				ys[i] = f(xs[i]);
+				i++;
+			}
+
+			xs[n - 1] = b;
+			ys[n - 1] = f(xs[n - 1]);
+
+			Plot(db, xs, ys, 0, 0, db.Width, db.Height);
+		}
+
+		public void Plot(DrawingBoard db, double a, double b, double step, OneVarFunction f,
+			int x, int y, int width, int height) {
+			int n = 1 + (int) ((b - a) / step);
+
+			double[] xs = new double[n];
+			double[] ys = new double[n];
+
+			int i = 0;
+			for (double x_ = a; x_ < b; x_ += step) {
+				ys[i] = f(xs[i]);
+				i++;
+			}
+
+			xs[n - 1] = b;
+			ys[n - 1] = f(xs[n - 1]);
+
+			Plot(db, xs, ys, x, y, width, height);
+		}
+
+		#endregion
 	}
 }
