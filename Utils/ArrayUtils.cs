@@ -28,7 +28,7 @@
 				double val = numbers[i];
 
 				min = val < min ? val : min;
-				max = val > min ? val : max;
+				max = val > max ? val : max;
 			}
 
 			return new MinMax(min, max);
