@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using drawingBoard.Utils;
 using Mathlib.Functions;
@@ -18,6 +19,10 @@ namespace drawingBoard.Drawing.Plotting {
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
+			if (xs.Length != ys.Length) {
+				throw new ArgumentException($"X ({xs.Length}) and Y ({ys.Length}) dimensions do not match");
+			}
+
 			axesOffset = (int) (0.05 * 0.5 * (width + height));
 
 			minMaxX = ArrayUtils.FindMinMax(xs);
