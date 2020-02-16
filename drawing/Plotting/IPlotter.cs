@@ -56,7 +56,7 @@ namespace drawingBoard.Drawing.Plotting {
 		private void LabelAxes(DrawingBoard db) {
 			int fontSize = 12;
 
-			db.Font(new Font("consolas", fontSize));
+			db.Font(new Font("cambria", fontSize));
 			db.Fill(0);
 
 			db.DrawString($"{minMaxX.min.ToString("0.00")}".Replace(',', '.'),
