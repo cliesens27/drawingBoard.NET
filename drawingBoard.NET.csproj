@@ -57,6 +57,7 @@
     <Compile Include="Drawing\DrawingBoard.cs" />
     <Compile Include="Drawing\Constants\RectangleMode.cs" />
     <Compile Include="Drawing\Plotting\IPlotter.cs" />
+    <Compile Include="Drawing\Plotting\HistogramPlotter.cs" />
     <Compile Include="Drawing\Plotting\ScatterPlotter.cs" />
     <Compile Include="Drawing\Plotting\LinePlotter.cs" />
     <Compile Include="Render\MainForm.cs">
