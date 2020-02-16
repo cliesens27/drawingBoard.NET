@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using drawingBoard.Drawing.Constants.Drawing;
 using drawingBoard.Utils;
 using Mathlib.Functions;
 
 namespace drawingBoard.Drawing.Plotting {
-	internal abstract class IPlotter {
-		protected const int AXES_OFFSET = 35;
+	public abstract class IPlotter {
+		protected int axesOffset;
 		protected Rectangle plotBounds;
 		protected Rectangle axesBounds;
 		protected MinMax minMaxX;
@@ -19,11 +18,13 @@ namespace drawingBoard.Drawing.Plotting {
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
 		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
+			axesOffset = (int) (0.05 * 0.5 * (width + height));
+
 			minMaxX = ArrayUtils.FindMinMax(xs);
 			minMaxY = ArrayUtils.FindMinMax(ys);
 
 			plotBounds = new Rectangle(x, y, width, height);
-			axesBounds = new Rectangle(x + AXES_OFFSET, y + AXES_OFFSET, width - 2 * AXES_OFFSET, height - 2 * AXES_OFFSET);
+			axesBounds = new Rectangle(x + axesOffset, y + axesOffset, width - 2 * axesOffset, height - 2 * axesOffset);
 
 			zeroX = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
 			zeroY = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
@@ -38,8 +39,11 @@ namespace drawingBoard.Drawing.Plotting {
 
 		private void DrawBackground(DrawingBoard db) {
 			db.NoStroke();
-			db.Fill(255);
+			db.Fill(235);
 			db.Rectangle(plotBounds);
+
+			db.Fill(255);
+			db.Rectangle(axesBounds);
 		}
 
 		private void DrawAxes(DrawingBoard db) {
@@ -50,20 +54,20 @@ namespace drawingBoard.Drawing.Plotting {
 		}
 
 		private void LabelAxes(DrawingBoard db) {
-			int fontSize = 14;
+			int fontSize = 12;
 
 			db.Font(new Font("consolas", fontSize));
 			db.Fill(0);
 
-			db.DrawString($"{minMaxX.min}", axesBounds.Left - fontSize, axesBounds.Bottom);
-			db.DrawString($"{minMaxX.max}", axesBounds.Right - fontSize, axesBounds.Bottom);
+			db.DrawString($"{minMaxX.min.ToString("0.00")}".Replace(',', '.'),
+				axesBounds.Left - fontSize, axesBounds.Bottom);
+			db.DrawString($"{minMaxX.max.ToString("0.00")}".Replace(',', '.'),
+				axesBounds.Right - fontSize, axesBounds.Bottom);
 
-			if (minMaxY.min == minMaxY.max) {
-
-			}
-			else {
-
-			}
+			db.DrawString($"{minMaxY.min.ToString("0.00")}".Replace(',', '.'),
+				axesBounds.Left - 2 * fontSize, axesBounds.Bottom - 2 * fontSize);
+			db.DrawString($"{minMaxY.max.ToString("0.00")}".Replace(',', '.'),
+				axesBounds.Left - 2 * fontSize, axesBounds.Top);
 		}
 
 		#region Plot from Array - Array

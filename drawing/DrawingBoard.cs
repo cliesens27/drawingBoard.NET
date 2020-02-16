@@ -2,10 +2,11 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using drawingBoard.Drawing.Constants;
 using drawingBoard.Drawing.Constants.Render;
 using drawingBoard.Drawing.Plotting;
 
-namespace drawingBoard.Drawing.Constants.Drawing {
+namespace drawingBoard.Drawing {
 	public class DrawingBoard {
 
 		#region Fields & Properties
@@ -292,25 +293,6 @@ namespace drawingBoard.Drawing.Constants.Drawing {
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
 			Graphics.DrawString(str, font, currentBrush, x, y);
 		}
-
-		#endregion
-
-		#region Plots
-
-		public void LinePlot(int[] xs, int[] ys) => linePlotter.Plot(this, xs, ys);
-
-		public void LinePlot(int[] xs, int[] ys, int x, int y, int width, int height)
-			=> linePlotter.Plot(this, xs, ys, x, y, width, height);
-
-		public void LinePlot(float[] xs, float[] ys) => linePlotter.Plot(this, xs, ys);
-
-		public void LinePlot(float[] xs, float[] ys, int x, int y, int width, int height)
-			=> linePlotter.Plot(this, xs, ys, x, y, width, height);
-
-		public void LinePlot(double[] xs, double[] ys) => linePlotter.Plot(this, xs, ys);
-
-		public void LinePlot(double[] xs, double[] ys, int x, int y, int width, int height)
-			=> linePlotter.Plot(this, xs, ys, x, y, width, height);
 
 		#endregion
 	}
