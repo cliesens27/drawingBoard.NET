@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using drawingBoard.Drawing.Constants;
+using Mathlib;
 
 namespace drawingBoard.Drawing.Plotting {
 	public class HistogramPlotter : IPlotter {
@@ -28,10 +31,42 @@ namespace drawingBoard.Drawing.Plotting {
 			InitPlot(db, xs, ys, x, y, width, height);
 
 			db.Stroke(0);
-			db.Fill(255);
+			db.Fill(235);
 			db.StrokeWidth(1);
+			db.RectMode(RectangleMode.CORNER);
 
-			// TODO
+			int[] counts = ComputeCounts(ys, nbBins);
+			float colWidth = (axesBounds.Right - axesBounds.Left) / nbBins;
+			float maxCount = counts.Max() / (float) xs.Length;
+
+			for (int i = 0; i < nbBins; i++) {
+				float val = counts[i] / (float) xs.Length;
+				float screenX = SpecialFunctions.Lerp(i, 0, nbBins, axesBounds.Left, axesBounds.Right);
+				float screenY = SpecialFunctions.Lerp(val, 0, maxCount, axesBounds.Bottom, axesBounds.Top);
+
+				db.Rectangle(screenX, axesBounds.Y + axesBounds.Height - screenY, colWidth, screenY);
+			}
+		}
+
+		private int[] ComputeCounts(double[] ys, int nbBins) {
+			double incr = (minMaxY.max - minMaxY.min) / nbBins;
+			int[] counts = new int[nbBins];
+
+			for (int i = 0; i < ys.Length; i++) {
+				double val = ys[i];
+
+				for (int j = 0; j < nbBins; j++) {
+					double from = minMaxY.min + j * incr;
+					double to = minMaxY.min + (j + 1) * incr;
+
+					if (val >= from && val < to) {
+						counts[j]++;
+						break;
+					}
+				}
+			}
+
+			return counts;
 		}
 
 		private int ComputeNbBins(double[] xs) {
