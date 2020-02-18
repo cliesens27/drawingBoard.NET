@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
 using drawingBoard.Drawing.Constants;
+using drawingBoard.Utils;
 using Mathlib;
 
 namespace drawingBoard.Drawing.Plotting {
 	public class HistogramPlotter : IPlotter {
+		private const double X_SCALE = 1;
+		private const double Y_SCALE = 1.2;
 		private const int MIN_NB_BINS = 5;
 		private const int MAX_NB_BINS = 20;
 
@@ -31,25 +34,28 @@ namespace drawingBoard.Drawing.Plotting {
 			int width, int height, int nbBins) {
 			if (data.Length < 2 * MIN_NB_BINS) {
 				throw new ArgumentException($"X has too few entries ({data.Length}) to plot a histogram\n\t" +
-					$"X.Length should be at least {2 * MIN_NB_BINS}");
+					$"X should have at least {2 * MIN_NB_BINS} entries");
 			}
 
-			minMaxY = Utils.ArrayUtils.FindMinMax(data);
+			MinMax minMaxY = Utils.ArrayUtils.FindMinMax(data);
+
+			minY = (float) minMaxY.min;
+			maxY = (float) minMaxY.max;
 
 			int[] counts = ComputeCounts(data, nbBins);
-			double incr = (minMaxY.max - minMaxY.min) / nbBins;
+			double incr = (maxY - minY) / nbBins;
 
 			double[] xs = new double[nbBins + 1];
 			double[] ys = new double[nbBins + 1];
 
 			for (int i = 0; i < nbBins; i++) {
-				xs[i] = minMaxY.min + i * incr;
+				xs[i] = minY + i * incr;
 				ys[i] = counts[i] / (double) data.Length;
 			}
 
-			xs[nbBins] = minMaxY.max + incr;
+			xs[nbBins] = maxY + incr;
 
-			InitPlot(db, xs, ys, x, y, width, height);
+			InitPlot(db, X_SCALE, Y_SCALE, xs, ys, x, y, width, height);
 
 			PlotHistogram(db, data, counts, ys, nbBins);
 		}
@@ -61,26 +67,26 @@ namespace drawingBoard.Drawing.Plotting {
 			db.StrokeWidth(1);
 
 			float colWidth = (axesBounds.Right - axesBounds.Left) / nbBins;
-			float maxCount = counts.Max();
+			float maxY = (float) (Y_SCALE * counts.Max() / data.Length);
 
 			for (int i = 0; i < nbBins; i++) {
 				float screenX = SpecialFunctions.Lerp(i, 0, nbBins, axesBounds.Left, axesBounds.Right);
-				float screenY = (float) SpecialFunctions.Lerp(ys[i], 0, maxCount / data.Length, 0, axesBounds.Height);
+				float screenY = (float) SpecialFunctions.Lerp(ys[i], 0, maxY, 0, axesBounds.Height);
 
 				db.Rectangle(screenX, axesBounds.Bottom - screenY, colWidth, screenY);
 			}
 		}
 
 		private int[] ComputeCounts(double[] data, int nbBins) {
-			double incr = (minMaxY.max - minMaxY.min) / nbBins;
+			double incr = (maxY - minY) / nbBins;
 			int[] counts = new int[nbBins];
 
 			for (int i = 0; i < data.Length; i++) {
 				double val = data[i];
 
 				for (int j = 0; j < nbBins; j++) {
-					double from = minMaxY.min + j * incr;
-					double to = minMaxY.min + (j + 1) * incr;
+					double from = minY + j * incr;
+					double to = minY + (j + 1) * incr;
 
 					if (val >= from && val < to) {
 						counts[j]++;

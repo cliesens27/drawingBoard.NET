@@ -7,10 +7,12 @@ using Mathlib.Functions;
 namespace drawingBoard.Drawing.Plotting {
 	public abstract class IPlotter {
 		protected int axesOffset;
-		protected Rectangle plotBounds;
+		protected Rectangle canvasBounds;
 		protected Rectangle axesBounds;
-		protected MinMax minMaxX;
-		protected MinMax minMaxY;
+		protected float minX;
+		protected float maxX;
+		protected float minY;
+		protected float maxY;
 		protected float zeroX;
 		protected float zeroY;
 
@@ -18,17 +20,23 @@ namespace drawingBoard.Drawing.Plotting {
 
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
-		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height) {
+		protected void InitPlot(DrawingBoard db, double xScale, double yScale,
+			double[] xs, double[] ys, int x, int y, int width, int height) {
 			if (xs.Length != ys.Length) {
 				throw new ArgumentException($"X ({xs.Length}) and Y ({ys.Length}) dimensions do not match");
 			}
 
 			axesOffset = (int) (0.05 * 0.5 * (width + height));
 
-			minMaxX = ArrayUtils.FindMinMax(xs);
-			minMaxY = ArrayUtils.FindMinMax(ys);
+			MinMax minMaxX = ArrayUtils.FindMinMax(xs);
+			MinMax minMaxY = ArrayUtils.FindMinMax(ys);
 
-			plotBounds = new Rectangle(x, y, width, height);
+			minX = (float) (xScale * minMaxX.min);
+			maxX = (float) (xScale * minMaxX.max);
+			minY = (float) (yScale * minMaxY.min);
+			maxY = (float) (yScale * minMaxY.max);
+
+			canvasBounds = new Rectangle(x, y, width, height);
 			axesBounds = new Rectangle(x + axesOffset, y + axesOffset, width - 2 * axesOffset, height - 2 * axesOffset);
 
 			zeroX = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
@@ -39,13 +47,14 @@ namespace drawingBoard.Drawing.Plotting {
 			LabelAxes(db);
 		}
 
-		protected void InitPlot(DrawingBoard db, double[] xs, double[] ys)
-			=> InitPlot(db, xs, ys, 0, 0, db.Width, db.Height);
+		protected void InitPlot(DrawingBoard db, double xScale, double yScale,
+			double[] xs, double[] ys)
+			=> InitPlot(db, xScale, yScale, xs, ys, 0, 0, db.Width, db.Height);
 
 		private void DrawBackground(DrawingBoard db) {
 			db.NoStroke();
 			db.Fill(245);
-			db.Rectangle(plotBounds);
+			db.Rectangle(canvasBounds);
 
 			db.Fill(255);
 			db.Rectangle(axesBounds);
@@ -64,14 +73,14 @@ namespace drawingBoard.Drawing.Plotting {
 			db.Font(new Font("cambria", fontSize));
 			db.Fill(0);
 
-			db.DrawString($"{minMaxX.min.ToString("0.00")}".Replace(',', '.'),
+			db.DrawString($"{minX.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left - fontSize, axesBounds.Bottom);
-			db.DrawString($"{minMaxX.max.ToString("0.00")}".Replace(',', '.'),
+			db.DrawString($"{maxX.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Right - fontSize, axesBounds.Bottom);
 
-			db.DrawString($"{minMaxY.min.ToString("0.00")}".Replace(',', '.'),
+			db.DrawString($"{minY.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left - 2 * fontSize, axesBounds.Bottom - 2 * fontSize);
-			db.DrawString($"{minMaxY.max.ToString("0.00")}".Replace(',', '.'),
+			db.DrawString($"{maxY.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left - 2 * fontSize, axesBounds.Top);
 		}
 
