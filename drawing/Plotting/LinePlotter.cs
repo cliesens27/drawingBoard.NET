@@ -9,11 +9,11 @@ namespace drawingBoard.Drawing.Plotting {
 			int x, int y, int width, int height) {
 			InitPlot(db, xs, ys, x, y, width, height);
 
-			float oldX = (float) SpecialFunctions.Lerp(xs[0], minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
-			float oldY = (float) SpecialFunctions.Lerp(ys[0], minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
-
 			db.Stroke(0);
 			db.StrokeWidth(1.5f);
+
+			float oldX = (float) SpecialFunctions.Lerp(xs[0], minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
+			float oldY = (float) SpecialFunctions.Lerp(ys[0], minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
 
 			for (int i = 1; i < xs.Length; i++) {
 				float screenX = (float) SpecialFunctions.Lerp(xs[i], minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);

@@ -44,7 +44,7 @@ namespace drawingBoard.Drawing.Plotting {
 
 		private void DrawBackground(DrawingBoard db) {
 			db.NoStroke();
-			db.Fill(235);
+			db.Fill(245);
 			db.Rectangle(plotBounds);
 
 			db.Fill(255);

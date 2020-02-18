@@ -34,12 +34,13 @@ namespace drawingBoard.Drawing.Plotting {
 					$"X.Length should be at least {2 * MIN_NB_BINS}");
 			}
 
-			double[] xs = new double[nbBins + 1];
-			double[] ys = new double[nbBins + 1];
-
 			minMaxY = Utils.ArrayUtils.FindMinMax(data);
+
 			int[] counts = ComputeCounts(data, nbBins);
 			double incr = (minMaxY.max - minMaxY.min) / nbBins;
+
+			double[] xs = new double[nbBins + 1];
+			double[] ys = new double[nbBins + 1];
 
 			for (int i = 0; i < nbBins; i++) {
 				xs[i] = minMaxY.min + i * incr;
@@ -50,9 +51,13 @@ namespace drawingBoard.Drawing.Plotting {
 
 			InitPlot(db, xs, ys, x, y, width, height);
 
+			PlotHistogram(db, data, counts, ys, nbBins);
+		}
+
+		private void PlotHistogram(DrawingBoard db, double[] data, int[] counts, double[] ys, int nbBins) {
 			db.RectMode(RectangleMode.CORNER);
 			db.Stroke(0);
-			db.Fill(245);
+			db.Fill(230);
 			db.StrokeWidth(1);
 
 			float colWidth = (axesBounds.Right - axesBounds.Left) / nbBins;
