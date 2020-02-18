@@ -73,14 +73,14 @@ namespace drawingBoard.Drawing.Plotting {
 			db.Font(new Font("cambria", fontSize));
 			db.Fill(0);
 
-			db.DrawString($"{minX.ToString("0.00")}".Replace(',', '.'),
+			db.Text($"{minX.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left - fontSize, axesBounds.Bottom);
-			db.DrawString($"{maxX.ToString("0.00")}".Replace(',', '.'),
+			db.Text($"{maxX.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Right - fontSize, axesBounds.Bottom);
 
-			db.DrawString($"{minY.ToString("0.00")}".Replace(',', '.'),
+			db.Text($"{minY.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left - 2 * fontSize, axesBounds.Bottom - 2 * fontSize);
-			db.DrawString($"{maxY.ToString("0.00")}".Replace(',', '.'),
+			db.Text($"{maxY.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left - 2 * fontSize, axesBounds.Top);
 		}
 

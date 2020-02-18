@@ -285,7 +285,7 @@ namespace drawingBoard.Drawing {
 
 		public void Font(Font font) => currentFont = font;
 
-		public void DrawString(string str, float x, float y)
+		public void Text(string str, float x, float y)
 			=> Graphics.DrawString(str, currentFont, currentBrush, x, y);
 
 		public void DrawString(string str, float x, float y, bool bold, bool italic) {
