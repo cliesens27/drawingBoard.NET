@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using drawingBoard.Drawing.Constants;
 using drawingBoard.Utils;
 using Mathlib.Functions;
 
@@ -68,20 +69,23 @@ namespace drawingBoard.Drawing.Plotting {
 		}
 
 		private void LabelAxes(DrawingBoard db) {
-			int fontSize = 12;
+			float fontSize = 12;
 
 			db.Font(new Font("cambria", fontSize));
 			db.Fill(0);
+			db.TextAlign(TextAlignment.RIGHT);
 
 			db.Text($"{minX.ToString("0.00")}".Replace(',', '.'),
-				axesBounds.Left - fontSize, axesBounds.Bottom);
+				axesBounds.Left + 1.5f * fontSize, axesBounds.Bottom + 2.5f * fontSize);
+
 			db.Text($"{maxX.ToString("0.00")}".Replace(',', '.'),
-				axesBounds.Right - fontSize, axesBounds.Bottom);
+				axesBounds.Right + 1.5f * fontSize, axesBounds.Bottom + 2.5f * fontSize);
 
 			db.Text($"{minY.ToString("0.00")}".Replace(',', '.'),
-				axesBounds.Left - 2 * fontSize, axesBounds.Bottom - 2 * fontSize);
+				axesBounds.Left - 0.75f * fontSize, axesBounds.Bottom + 0.7f * fontSize);
+
 			db.Text($"{maxY.ToString("0.00")}".Replace(',', '.'),
-				axesBounds.Left - 2 * fontSize, axesBounds.Top);
+				axesBounds.Left - 0.75f * fontSize, axesBounds.Top + fontSize);
 		}
 
 		#region Plot from Array - Array

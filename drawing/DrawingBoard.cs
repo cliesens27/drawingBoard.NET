@@ -4,7 +4,6 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using drawingBoard.Drawing.Constants;
 using drawingBoard.Drawing.Constants.Render;
-using drawingBoard.Drawing.Plotting;
 
 namespace drawingBoard.Drawing {
 	public class DrawingBoard {
@@ -13,11 +12,11 @@ namespace drawingBoard.Drawing {
 
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
-		private IPlotter linePlotter;
 		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
 		private SolidBrush currentBrush;
+		private StringFormat currentFormat;
 		private RectangleMode rectMode;
 		private bool fill;
 		private float currentRotation;
@@ -119,14 +118,14 @@ namespace drawingBoard.Drawing {
 			TargetFrameRate = 30;
 			Title = "Application";
 
-			linePlotter = new LinePlotter();
-
 			currentFont = new Font("cambria", 12);
 			currentPen = new Pen(Color.Black, 1);
 			currentBrush = new SolidBrush(Color.Black);
+			currentFormat = new StringFormat();
 			fill = false;
 
 			RectMode(RectangleMode.CENTER);
+			TextAlign(TextAlignment.LEFT);
 
 			currentRotation = 0;
 			currentTranslationX = 0;
@@ -160,6 +159,23 @@ namespace drawingBoard.Drawing {
 		}
 
 		public void RectMode(RectangleMode mode) => rectMode = mode;
+
+		public void TextAlign(TextAlignment mode) {
+			switch (mode) {
+				case TextAlignment.LEFT:
+					currentFormat.Alignment = StringAlignment.Near;
+					currentFormat.LineAlignment = StringAlignment.Near;
+					break;
+				case TextAlignment.RIGHT:
+					currentFormat.Alignment = StringAlignment.Far;
+					currentFormat.LineAlignment = StringAlignment.Far;
+					break;
+				case TextAlignment.CENTER:
+					currentFormat.Alignment = StringAlignment.Center;
+					currentFormat.LineAlignment = StringAlignment.Center;
+					break;
+			}
+		}
 
 		#endregion
 
@@ -286,12 +302,13 @@ namespace drawingBoard.Drawing {
 		public void Font(Font font) => currentFont = font;
 
 		public void Text(string str, float x, float y)
-			=> Graphics.DrawString(str, currentFont, currentBrush, x, y);
+			=> Graphics.DrawString(str, currentFont, currentBrush, x, y, currentFormat);
 
 		public void DrawString(string str, float x, float y, bool bold, bool italic) {
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
-			Graphics.DrawString(str, font, currentBrush, x, y);
+
+			Graphics.DrawString(str, font, currentBrush, x, y, currentFormat);
 		}
 
 		#endregion

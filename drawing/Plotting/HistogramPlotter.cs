@@ -53,7 +53,7 @@ namespace drawingBoard.Drawing.Plotting {
 				ys[i] = counts[i] / (double) data.Length;
 			}
 
-			xs[nbBins] = maxY + incr;
+			xs[nbBins] = maxY;
 
 			InitPlot(db, X_SCALE, Y_SCALE, xs, ys, x, y, width, height);
 
