@@ -304,7 +304,7 @@ namespace drawingBoard.Drawing {
 		public void Text(string str, float x, float y)
 			=> Graphics.DrawString(str, currentFont, currentBrush, x, y, currentFormat);
 
-		public void DrawString(string str, float x, float y, bool bold, bool italic) {
+		public void Text(string str, float x, float y, bool bold, bool italic) {
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
 
