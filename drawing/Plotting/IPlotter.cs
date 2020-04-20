@@ -128,16 +128,16 @@ namespace drawingBoard.Drawing.Plotting {
 
 		#region Plot from Array - Function
 
-		public void Plot(DrawingBoard db, int[] xs, OneVarFunction f)
+		public void Plot(DrawingBoard db, int[] xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, float[] xs, OneVarFunction f)
+		public void Plot(DrawingBoard db, float[] xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, double[] xs, OneVarFunction f)
+		public void Plot(DrawingBoard db, double[] xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, int[] xs, OneVarFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, int[] xs, OneToOneFunction f, int x, int y, int width, int height) {
 			double[] ys = new double[xs.Length];
 
 			for (int i = 0; i < ys.Length; i++) {
@@ -147,7 +147,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, ArrayUtils.IntToDouble(xs), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, float[] xs, OneVarFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, float[] xs, OneToOneFunction f, int x, int y, int width, int height) {
 			double[] ys = new double[xs.Length];
 
 			for (int i = 0; i < ys.Length; i++) {
@@ -157,7 +157,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, ArrayUtils.FloatToDouble(xs), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, double[] xs, OneVarFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, double[] xs, OneToOneFunction f, int x, int y, int width, int height) {
 			double[] ys = new double[xs.Length];
 
 			for (int i = 0; i < ys.Length; i++) {
@@ -171,16 +171,16 @@ namespace drawingBoard.Drawing.Plotting {
 
 		#region Plot from List - Function
 
-		public void Plot(DrawingBoard db, List<int> xs, OneVarFunction f)
+		public void Plot(DrawingBoard db, List<int> xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, List<float> xs, OneVarFunction f)
+		public void Plot(DrawingBoard db, List<float> xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, List<double> xs, OneVarFunction f)
+		public void Plot(DrawingBoard db, List<double> xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, List<int> xs, OneVarFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, List<int> xs, OneToOneFunction f, int x, int y, int width, int height) {
 			double[] ys = new double[xs.Count];
 
 			for (int i = 0; i < ys.Length; i++) {
@@ -190,7 +190,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, ArrayUtils.IntToDouble(xs.ToArray()), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, List<float> xs, OneVarFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, List<float> xs, OneToOneFunction f, int x, int y, int width, int height) {
 			double[] ys = new double[xs.Count];
 
 			for (int i = 0; i < ys.Length; i++) {
@@ -200,7 +200,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, ArrayUtils.FloatToDouble(xs.ToArray()), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, List<double> xs, OneVarFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, List<double> xs, OneToOneFunction f, int x, int y, int width, int height) {
 			double[] ys = new double[xs.Count];
 
 			for (int i = 0; i < ys.Length; i++) {
@@ -214,7 +214,7 @@ namespace drawingBoard.Drawing.Plotting {
 
 		#region Plot from Function
 
-		public void Plot(DrawingBoard db, double a, double b, int n, OneVarFunction f) {
+		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f) {
 			double step = (b - a) / (n - 1);
 
 			double[] xs = new double[n];
@@ -232,7 +232,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, xs, ys, 0, 0, db.Width, db.Height);
 		}
 
-		public void Plot(DrawingBoard db, double a, double b, int n, OneVarFunction f,
+		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f,
 			int x, int y, int width, int height) {
 			double step = (b - a) / (n - 1);
 
@@ -251,7 +251,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, xs, ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, double a, double b, double step, OneVarFunction f) {
+		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f) {
 			int n = 1 + (int) ((b - a) / step);
 
 			double[] xs = new double[n];
@@ -269,7 +269,7 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, xs, ys, 0, 0, db.Width, db.Height);
 		}
 
-		public void Plot(DrawingBoard db, double a, double b, double step, OneVarFunction f,
+		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f,
 			int x, int y, int width, int height) {
 			int n = 1 + (int) ((b - a) / step);
 

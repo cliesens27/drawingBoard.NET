@@ -86,7 +86,6 @@ namespace drawingBoard.Drawing {
 
 		private DrawingBoard() {
 			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
 		}
 
 		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
