@@ -166,6 +166,10 @@ namespace drawingBoard.Drawing
 			thread.Start();
 		}
 
+		public void Pause() => mainForm.Pause();
+
+		public void Close() => mainForm.Close();
+
 		public void SaveToPNG(string path)
 		{
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);

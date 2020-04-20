@@ -5,8 +5,10 @@ using drawingBoard.Drawing.Constants;
 using drawingBoard.Utils;
 using Mathlib.Functions;
 
-namespace drawingBoard.Drawing.Plotting {
-	public abstract class IPlotter {
+namespace drawingBoard.Drawing.Plotting
+{
+	public abstract class IPlotter
+	{
 		protected int axesOffset;
 		protected Rectangle canvasBounds;
 		protected Rectangle axesBounds;
@@ -22,8 +24,10 @@ namespace drawingBoard.Drawing.Plotting {
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys, int x, int y, int width, int height);
 
 		protected void InitPlot(DrawingBoard db, double xScale, double yScale,
-			double[] xs, double[] ys, int x, int y, int width, int height) {
-			if (xs.Length != ys.Length) {
+			double[] xs, double[] ys, int x, int y, int width, int height)
+		{
+			if (xs.Length != ys.Length)
+			{
 				throw new ArgumentException($"X ({xs.Length}) and Y ({ys.Length}) dimensions do not match");
 			}
 
@@ -52,7 +56,8 @@ namespace drawingBoard.Drawing.Plotting {
 			double[] xs, double[] ys)
 			=> InitPlot(db, xScale, yScale, xs, ys, 0, 0, db.Width, db.Height);
 
-		private void DrawBackground(DrawingBoard db) {
+		private void DrawBackground(DrawingBoard db)
+		{
 			db.NoStroke();
 			db.Fill(245);
 			db.Rectangle(canvasBounds);
@@ -61,14 +66,16 @@ namespace drawingBoard.Drawing.Plotting {
 			db.Rectangle(axesBounds);
 		}
 
-		private void DrawAxes(DrawingBoard db) {
+		private void DrawAxes(DrawingBoard db)
+		{
 			db.NoFill();
 			db.StrokeWidth(2);
 			db.Stroke(0);
 			db.Rectangle(axesBounds);
 		}
 
-		private void LabelAxes(DrawingBoard db) {
+		private void LabelAxes(DrawingBoard db)
+		{
 			float fontSize = 12;
 
 			db.Font(new Font("cambria", fontSize));
@@ -137,30 +144,36 @@ namespace drawingBoard.Drawing.Plotting {
 		public void Plot(DrawingBoard db, double[] xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, int[] xs, OneToOneFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, int[] xs, OneToOneFunction f, int x, int y, int width, int height)
+		{
 			double[] ys = new double[xs.Length];
 
-			for (int i = 0; i < ys.Length; i++) {
+			for (int i = 0; i < ys.Length; i++)
+			{
 				ys[i] = f(xs[i]);
 			}
 
 			Plot(db, ArrayUtils.IntToDouble(xs), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, float[] xs, OneToOneFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, float[] xs, OneToOneFunction f, int x, int y, int width, int height)
+		{
 			double[] ys = new double[xs.Length];
 
-			for (int i = 0; i < ys.Length; i++) {
+			for (int i = 0; i < ys.Length; i++)
+			{
 				ys[i] = f(xs[i]);
 			}
 
 			Plot(db, ArrayUtils.FloatToDouble(xs), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, double[] xs, OneToOneFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, double[] xs, OneToOneFunction f, int x, int y, int width, int height)
+		{
 			double[] ys = new double[xs.Length];
 
-			for (int i = 0; i < ys.Length; i++) {
+			for (int i = 0; i < ys.Length; i++)
+			{
 				ys[i] = f(xs[i]);
 			}
 
@@ -180,30 +193,36 @@ namespace drawingBoard.Drawing.Plotting {
 		public void Plot(DrawingBoard db, List<double> xs, OneToOneFunction f)
 			=> Plot(db, xs, f, 0, 0, db.Width, db.Height);
 
-		public void Plot(DrawingBoard db, List<int> xs, OneToOneFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, List<int> xs, OneToOneFunction f, int x, int y, int width, int height)
+		{
 			double[] ys = new double[xs.Count];
 
-			for (int i = 0; i < ys.Length; i++) {
+			for (int i = 0; i < ys.Length; i++)
+			{
 				ys[i] = f(xs[i]);
 			}
 
 			Plot(db, ArrayUtils.IntToDouble(xs.ToArray()), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, List<float> xs, OneToOneFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, List<float> xs, OneToOneFunction f, int x, int y, int width, int height)
+		{
 			double[] ys = new double[xs.Count];
 
-			for (int i = 0; i < ys.Length; i++) {
+			for (int i = 0; i < ys.Length; i++)
+			{
 				ys[i] = f(xs[i]);
 			}
 
 			Plot(db, ArrayUtils.FloatToDouble(xs.ToArray()), ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, List<double> xs, OneToOneFunction f, int x, int y, int width, int height) {
+		public void Plot(DrawingBoard db, List<double> xs, OneToOneFunction f, int x, int y, int width, int height)
+		{
 			double[] ys = new double[xs.Count];
 
-			for (int i = 0; i < ys.Length; i++) {
+			for (int i = 0; i < ys.Length; i++)
+			{
 				ys[i] = f(xs[i]);
 			}
 
@@ -214,14 +233,16 @@ namespace drawingBoard.Drawing.Plotting {
 
 		#region Plot from Function
 
-		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f) {
+		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f)
+		{
 			double step = (b - a) / (n - 1);
 
 			double[] xs = new double[n];
 			double[] ys = new double[n];
 
 			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step) {
+			for (double x_ = a; x_ < b; x_ += step)
+			{
 				ys[i] = f(xs[i]);
 				i++;
 			}
@@ -233,14 +254,16 @@ namespace drawingBoard.Drawing.Plotting {
 		}
 
 		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f,
-			int x, int y, int width, int height) {
+			int x, int y, int width, int height)
+		{
 			double step = (b - a) / (n - 1);
 
 			double[] xs = new double[n];
 			double[] ys = new double[n];
 
 			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step) {
+			for (double x_ = a; x_ < b; x_ += step)
+			{
 				ys[i] = f(xs[i]);
 				i++;
 			}
@@ -251,14 +274,16 @@ namespace drawingBoard.Drawing.Plotting {
 			Plot(db, xs, ys, x, y, width, height);
 		}
 
-		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f) {
+		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f)
+		{
 			int n = 1 + (int) ((b - a) / step);
 
 			double[] xs = new double[n];
 			double[] ys = new double[n];
 
 			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step) {
+			for (double x_ = a; x_ < b; x_ += step)
+			{
 				ys[i] = f(xs[i]);
 				i++;
 			}
@@ -270,14 +295,16 @@ namespace drawingBoard.Drawing.Plotting {
 		}
 
 		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f,
-			int x, int y, int width, int height) {
+			int x, int y, int width, int height)
+		{
 			int n = 1 + (int) ((b - a) / step);
 
 			double[] xs = new double[n];
 			double[] ys = new double[n];
 
 			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step) {
+			for (double x_ = a; x_ < b; x_ += step)
+			{
 				ys[i] = f(xs[i]);
 				i++;
 			}
