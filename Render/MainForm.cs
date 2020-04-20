@@ -60,7 +60,7 @@ namespace drawingBoard.Drawing.Constants.Render
 			lastRedrawTime = 0;
 			TotalFrameCount = 0;
 
-			IsPaused = true;
+			IsPaused = false;
 		}
 
 		public MainForm(int width, int height) : this()
