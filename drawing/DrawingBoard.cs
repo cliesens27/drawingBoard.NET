@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading;
 using System.Windows.Forms;
 using drawingBoard.Drawing.Constants;
 using drawingBoard.Drawing.Constants.Render;
 
-namespace drawingBoard.Drawing {
-	public class DrawingBoard {
+namespace drawingBoard.Drawing
+{
+	public class DrawingBoard
+	{
 
 		#region Fields & Properties
 
@@ -28,42 +31,50 @@ namespace drawingBoard.Drawing {
 
 		private Graphics Graphics => mainForm.Graphics;
 
-		public DrawMethod DrawMethod {
+		public DrawMethod DrawMethod
+		{
 			get => mainForm.Draw;
 			set => mainForm.Draw = value;
 		}
 
-		public KeyPressedMethod KeyPressed {
+		public KeyPressedMethod KeyPressed
+		{
 			get => mainForm.KeyPressed;
 			set => mainForm.KeyPressed = value;
 		}
 
-		public KeyReleasedMethod KeyReleased {
+		public KeyReleasedMethod KeyReleased
+		{
 			get => mainForm.KeyReleased;
 			set => mainForm.KeyReleased = value;
 		}
 
-		public MousePressedMethod MousePressed {
+		public MousePressedMethod MousePressed
+		{
 			get => mainForm.MousePressed;
 			set => mainForm.MousePressed = value;
 		}
 
-		public MouseReleasedMethod MouseReleased {
+		public MouseReleasedMethod MouseReleased
+		{
 			get => mainForm.MouseReleased;
 			set => mainForm.MouseReleased = value;
 		}
 
-		public MouseDraggedMethod MouseDragged {
+		public MouseDraggedMethod MouseDragged
+		{
 			get => mainForm.MouseDragged;
 			set => mainForm.MouseDragged = value;
 		}
 
-		public double TargetFrameRate {
+		public double TargetFrameRate
+		{
 			get => mainForm.TargetFrameRate;
 			set => mainForm.TargetFrameRate = value;
 		}
 
-		public string Title {
+		public string Title
+		{
 			get => mainForm.Text;
 			set => mainForm.Text = value;
 		}
@@ -84,17 +95,21 @@ namespace drawingBoard.Drawing {
 
 		#region Constructors
 
-		private DrawingBoard() {
+		private DrawingBoard()
+		{
 			Application.EnableVisualStyles();
 		}
 
 		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
 
-		public DrawingBoard(int width, int height, int x, int y) : this() {
-			if (screenX != -1 && screenY != -1) {
+		public DrawingBoard(int width, int height, int x, int y) : this()
+		{
+			if (screenX != -1 && screenY != -1)
+			{
 				mainForm = new MainForm(width, height, x, y);
 			}
-			else {
+			else
+			{
 				mainForm = new MainForm(width, height);
 			}
 
@@ -106,7 +121,8 @@ namespace drawingBoard.Drawing {
 			SetDefaultSettings();
 		}
 
-		private void SetDefaultSettings() {
+		private void SetDefaultSettings()
+		{
 			DrawMethod = null;
 			KeyPressed = null;
 			KeyReleased = null;
@@ -135,15 +151,23 @@ namespace drawingBoard.Drawing {
 
 		#region Misc
 
-		public void Draw() {
-			if (DrawMethod == null) {
+		public void Draw()
+		{
+			if (DrawMethod == null)
+			{
 				throw new Exception("Error, you must set the DrawMethod property before calling Draw()");
 			}
 
-			Application.Run(mainForm);
+			Thread thread = new Thread((ThreadStart) delegate
+			{
+				Application.Run(mainForm);
+			});
+
+			thread.Start();
 		}
 
-		public void SaveToPNG(string path) {
+		public void SaveToPNG(string path)
+		{
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
 			mainForm.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, mainForm.Size));
 
@@ -159,8 +183,10 @@ namespace drawingBoard.Drawing {
 
 		public void RectMode(RectangleMode mode) => rectMode = mode;
 
-		public void TextAlign(TextAlignment mode) {
-			switch (mode) {
+		public void TextAlign(TextAlignment mode)
+		{
+			switch (mode)
+			{
 				case TextAlignment.LEFT:
 					currentFormat.Alignment = StringAlignment.Near;
 					currentFormat.LineAlignment = StringAlignment.Near;
@@ -198,7 +224,8 @@ namespace drawingBoard.Drawing {
 
 		#region Fill
 
-		public void Fill(Color color) {
+		public void Fill(Color color)
+		{
 			fill = true;
 			currentBrush.Color = color;
 		}
@@ -222,32 +249,39 @@ namespace drawingBoard.Drawing {
 		public void Line(float x1, float y1, float x2, float y2) =>
 			Graphics.DrawLine(currentPen, x1, y1, x2, y2);
 
-		public void Rectangle(Rectangle rect) {
-			if (fill) {
+		public void Rectangle(Rectangle rect)
+		{
+			if (fill)
+			{
 				Graphics.FillRectangle(currentBrush, rect);
 			}
 
 			Graphics.DrawRectangle(currentPen, rect);
 		}
 
-		public void Rectangle(float x, float y, float w, float h) {
-			switch (rectMode) {
+		public void Rectangle(float x, float y, float w, float h)
+		{
+			switch (rectMode)
+			{
 				case RectangleMode.CORNER:
-					if (fill) {
+					if (fill)
+					{
 						Graphics.FillRectangle(currentBrush, x, y, w, h);
 					}
 
 					Graphics.DrawRectangle(currentPen, x, y, w, h);
 					break;
 				case RectangleMode.CORNERS:
-					if (fill) {
+					if (fill)
+					{
 						Graphics.FillRectangle(currentBrush, x, y, w - x, h - y);
 					}
 
 					Graphics.DrawRectangle(currentPen, x, y, w - x, h - y);
 					break;
 				case RectangleMode.CENTER:
-					if (fill) {
+					if (fill)
+					{
 						Graphics.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
 					}
 
@@ -258,8 +292,10 @@ namespace drawingBoard.Drawing {
 
 		public void Square(float x, float y, float r) => Rectangle(x, y, r, r);
 
-		public void Ellipse(float x, float y, float rx, float ry) {
-			if (fill) {
+		public void Ellipse(float x, float y, float rx, float ry)
+		{
+			if (fill)
+			{
 				Graphics.FillEllipse(currentBrush, x - rx, y - ry, 2 * rx, 2 * ry);
 			}
 
@@ -272,23 +308,27 @@ namespace drawingBoard.Drawing {
 
 		#region Transformations
 
-		public void Rotate(float degrees) {
+		public void Rotate(float degrees)
+		{
 			currentRotation += degrees;
 			Graphics.RotateTransform(degrees);
 		}
 
-		public void Translate(float dx, float dy) {
+		public void Translate(float dx, float dy)
+		{
 			currentTranslationX += dx;
 			currentTranslationY += dy;
 			Graphics.TranslateTransform(dx, dy);
 		}
 
-		public void UndoRotation() {
+		public void UndoRotation()
+		{
 			Graphics.RotateTransform(-currentRotation);
 			currentRotation = 0;
 		}
 
-		public void UndoTranslation() {
+		public void UndoTranslation()
+		{
 			Graphics.TranslateTransform(-currentTranslationX, -currentTranslationY);
 			currentTranslationX = 0;
 			currentTranslationY = 0;
@@ -303,7 +343,8 @@ namespace drawingBoard.Drawing {
 		public void Text(string str, float x, float y)
 			=> Graphics.DrawString(str, currentFont, currentBrush, x, y, currentFormat);
 
-		public void Text(string str, float x, float y, bool bold, bool italic) {
+		public void Text(string str, float x, float y, bool bold, bool italic)
+		{
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
 
