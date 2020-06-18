@@ -1,4 +1,4 @@
-﻿namespace drawingBoard.Drawing.Constants.Render
+﻿namespace drawingBoard.Drawing.Constants.Window
 {
 	partial class MainForm
 	{

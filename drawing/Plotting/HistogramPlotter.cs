@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using drawingBoard.Drawing.Constants;
-using drawingBoard.Utils;
+using drawingBoard.Plotting.Utils;
 using Mathlib;
 
 namespace drawingBoard.Drawing.Plotting
@@ -24,17 +24,12 @@ namespace drawingBoard.Drawing.Plotting
 			=> Plot(db, xs, 0, 0, db.Width, db.Height);
 
 		public void Plot(DrawingBoard db, double[] data, int x, int y, int width, int height)
-		{
-			int nbBins = ComputeNbBins(data);
-
-			Plot(db, data, x, y, width, height, nbBins);
-		}
+			=> Plot(db, data, x, y, width, height, ComputeNbBins(data));
 
 		public void Plot(DrawingBoard db, double[] data, int nbBins)
 			=> Plot(db, data, 0, 0, db.Width, db.Height, nbBins);
 
-		public void Plot(DrawingBoard db, double[] data, int x, int y,
-			int width, int height, int nbBins)
+		public void Plot(DrawingBoard db, double[] data, int x, int y, int width, int height, int nbBins)
 		{
 			if (data.Length < 2 * MIN_NB_BINS)
 			{
@@ -42,10 +37,10 @@ namespace drawingBoard.Drawing.Plotting
 					$"X should have at least {2 * MIN_NB_BINS} entries");
 			}
 
-			MinMax minMaxY = Utils.ArrayUtils.FindMinMax(data);
+			MinMax minMaxY = drawingBoard.Plotting.Utils.ArrayUtils.FindMinMax(data);
 
-			minY = (float) minMaxY.min;
-			maxY = (float) minMaxY.max;
+			minY = (float) minMaxY.Min;
+			maxY = (float) minMaxY.Max;
 
 			int[] counts = ComputeCounts(data, nbBins);
 			double incr = (maxY - minY) / nbBins;
@@ -60,9 +55,7 @@ namespace drawingBoard.Drawing.Plotting
 			}
 
 			xs[nbBins] = maxY;
-
 			InitPlot(db, X_SCALE, Y_SCALE, xs, ys, x, y, width, height);
-
 			PlotHistogram(db, data, counts, ys, nbBins);
 		}
 
@@ -112,8 +105,8 @@ namespace drawingBoard.Drawing.Plotting
 
 		private int ComputeNbBins(double[] data)
 		{
-			//int n = (int) Math.Sqrt(xs.Length);
-			//int n = 1 + (int) Math.Log(xs.Length, 2);
+			// int n = (int) Math.Sqrt(xs.Length);
+			// int n = 1 + (int) Math.Log(xs.Length, 2);
 			int n = (int) (2 * Math.Pow(data.Length, 1.0 / 3.0));
 
 			n = n > MAX_NB_BINS ? MAX_NB_BINS : n;

@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace drawingBoard.Drawing.Constants.Render
+namespace drawingBoard.Drawing.Constants.Window
 {
 	public delegate void DrawMethod();
 	public delegate void KeyPressedMethod(char key);
@@ -16,30 +16,29 @@ namespace drawingBoard.Drawing.Constants.Render
 
 	public partial class MainForm : Form
 	{
-
 		#region Fields & Properties
 
+		internal DrawMethod Draw { get; set; }
+		internal KeyPressedMethod KeyPressed { get; set; }
+		internal KeyReleasedMethod KeyReleased { get; set; }
+		internal MousePressedMethod MousePressed { get; set; }
+		internal MouseReleasedMethod MouseReleased { get; set; }
+		internal MouseDraggedMethod MouseDragged { get; set; }
+		internal double TargetFrameRate { get; set; }
+
+		internal Graphics Graphics { get; private set; }
+		internal double FrameRate { get; private set; }
+		internal double TotalElapsedTime { get; private set; }
+		internal int TotalFrameCount { get; private set; }
+
 		private readonly Stopwatch stopwatch;
+		private List<char> pressedKeys;
+		private List<char> releasedKeys;
+		private bool isPaused;
+		private bool isMousePressed;
+		private double currentElapsedTime;
 		private double lastRedrawTime;
-
-		public DrawMethod Draw { get; set; }
-		public KeyPressedMethod KeyPressed { get; set; }
-		public KeyReleasedMethod KeyReleased { get; set; }
-		public MousePressedMethod MousePressed { get; set; }
-		public MouseReleasedMethod MouseReleased { get; set; }
-		public MouseDraggedMethod MouseDragged { get; set; }
-		public Graphics Graphics { get; private set; }
-		public double FrameRate { get; set; }
-		public double TargetFrameRate { get; set; }
-		public double TotalElapsedTime { get; private set; }
-		public int TotalFrameCount { get; private set; }
-
-		private List<char> PressedKeys { get; set; }
-		private List<char> ReleasedKeys { get; set; }
-		private bool IsPaused { get; set; }
-		private bool IsMousePressed { get; set; }
-		private double CurrentElapsedTime { get; set; }
-		private int CurrentFrameCount { get; set; }
+		private int currentFrameCount;
 
 		#endregion
 
@@ -51,8 +50,8 @@ namespace drawingBoard.Drawing.Constants.Render
 			StartPosition = FormStartPosition.CenterScreen;
 			Application.Idle += Run;
 
-			PressedKeys = new List<char>();
-			ReleasedKeys = new List<char>();
+			pressedKeys = new List<char>();
+			releasedKeys = new List<char>();
 
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
@@ -60,7 +59,7 @@ namespace drawingBoard.Drawing.Constants.Render
 			lastRedrawTime = 0;
 			TotalFrameCount = 0;
 
-			IsPaused = false;
+			isPaused = false;
 		}
 
 		public MainForm(int width, int height) : this()
@@ -73,10 +72,9 @@ namespace drawingBoard.Drawing.Constants.Render
 
 		#endregion
 
-		public void Pause()
-		{
-			IsPaused = true;
-		}
+		public void Pause() => isPaused = true;
+
+		public void Resume() => isPaused = false;
 
 		private void Run(object sender, EventArgs e)
 		{
@@ -104,7 +102,7 @@ namespace drawingBoard.Drawing.Constants.Render
 			{
 				if (KeyPressed != null)
 				{
-					foreach (char key in PressedKeys)
+					foreach (char key in pressedKeys)
 					{
 						KeyPressed(key);
 					}
@@ -112,26 +110,26 @@ namespace drawingBoard.Drawing.Constants.Render
 
 				if (KeyReleased != null)
 				{
-					foreach (char key in ReleasedKeys)
+					foreach (char key in releasedKeys)
 					{
 						KeyReleased(key);
 					}
 				}
 
-				ReleasedKeys.Clear();
+				releasedKeys.Clear();
 
-				foreach (char key in PressedKeys)
+				foreach (char key in pressedKeys)
 				{
-					ReleasedKeys.Add(key);
+					releasedKeys.Add(key);
 				}
 
-				PressedKeys.Clear();
+				pressedKeys.Clear();
 			}
 		}
 
 		private void CheckMouseInput()
 		{
-			if (MouseDragged != null && IsMousePressed)
+			if (MouseDragged != null && isMousePressed)
 			{
 				MouseDragged();
 			}
@@ -139,18 +137,18 @@ namespace drawingBoard.Drawing.Constants.Render
 
 		private void ComputeFrameRate()
 		{
-			const double INTERVAL = 0.25;
+			const double MIN_INTERVAL = 0.25;
 			const int MIN_NB_FRAMES = 10;
 
 			if (TotalElapsedTime > 0)
 			{
-				CurrentFrameCount++;
+				currentFrameCount++;
 
-				if (TotalElapsedTime - CurrentElapsedTime > INTERVAL && CurrentFrameCount > MIN_NB_FRAMES)
+				if (TotalElapsedTime - currentElapsedTime > MIN_INTERVAL && currentFrameCount > MIN_NB_FRAMES)
 				{
-					FrameRate = CurrentFrameCount / (TotalElapsedTime - CurrentElapsedTime);
-					CurrentElapsedTime = TotalElapsedTime;
-					CurrentFrameCount = 0;
+					FrameRate = currentFrameCount / (TotalElapsedTime - currentElapsedTime);
+					currentElapsedTime = TotalElapsedTime;
+					currentFrameCount = 0;
 				}
 			}
 			else
@@ -163,31 +161,25 @@ namespace drawingBoard.Drawing.Constants.Render
 		{
 			Graphics = e.Graphics;
 
-			if (!IsPaused)
+			if (!isPaused)
+			{
 				Draw();
+			}
 		}
 
 		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e)
 		{
-			IsMousePressed = true;
-
-			if (MousePressed != null)
-			{
-				MousePressed();
-			}
+			isMousePressed = true;
+			MousePressed?.Invoke();
 		}
 
 		private void mainPictureBox_MouseUp(object sender, MouseEventArgs e)
 		{
-			IsMousePressed = false;
-
-			if (MouseReleased != null)
-			{
-				MouseReleased();
-			}
+			isMousePressed = false;
+			MouseReleased?.Invoke();
 		}
 
-		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => PressedKeys.Add(e.KeyChar);
+		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => pressedKeys.Add(e.KeyChar);
 
 		private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 

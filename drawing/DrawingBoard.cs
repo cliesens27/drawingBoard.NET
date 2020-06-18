@@ -4,32 +4,13 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 using drawingBoard.Drawing.Constants;
-using drawingBoard.Drawing.Constants.Render;
+using drawingBoard.Drawing.Constants.Window;
 
 namespace drawingBoard.Drawing
 {
 	public class DrawingBoard
 	{
-
-		#region Fields & Properties
-
-		private readonly int screenX = -1;
-		private readonly int screenY = -1;
-		private Font currentFont;
-		private MainForm mainForm;
-		private Pen currentPen;
-		private SolidBrush currentBrush;
-		private StringFormat currentFormat;
-		private RectangleMode rectMode;
-		private bool fill;
-		private float currentRotation;
-		private float currentTranslationX;
-		private float currentTranslationY;
-
-		public int Width { get; private set; } = -1;
-		public int Height { get; private set; } = -1;
-
-		private Graphics Graphics => mainForm.Graphics;
+		#region Fields & Properties	
 
 		public DrawMethod DrawMethod
 		{
@@ -91,6 +72,25 @@ namespace drawingBoard.Drawing
 		public int Xmax => Width;
 		public int Ymax => Height;
 
+		public int Width { get; private set; } = -1;
+		public int Height { get; private set; } = -1;
+
+		private Graphics Graphics => mainForm.Graphics;
+
+		private readonly bool IsConsoleApplication;
+		private readonly int screenX = -1;
+		private readonly int screenY = -1;
+		private Font currentFont;
+		private MainForm mainForm;
+		private Pen currentPen;
+		private SolidBrush currentBrush;
+		private StringFormat currentFormat;
+		private RectangleMode rectMode;
+		private bool fill;
+		private float currentRotation;
+		private float currentTranslationX;
+		private float currentTranslationY;
+
 		#endregion
 
 		#region Constructors
@@ -100,10 +100,13 @@ namespace drawingBoard.Drawing
 			Application.EnableVisualStyles();
 		}
 
-		public DrawingBoard(int width, int height) : this(width, height, -1, -1) { }
+		public DrawingBoard(bool isConsoleApplication, int width, int height)
+			: this(isConsoleApplication, width, height, -1, -1) { }
 
-		public DrawingBoard(int width, int height, int x, int y) : this()
+		public DrawingBoard(bool isConsoleApplication, int width, int height, int x, int y) : this()
 		{
+			IsConsoleApplication = isConsoleApplication;
+
 			if (screenX != -1 && screenY != -1)
 			{
 				mainForm = new MainForm(width, height, x, y);
@@ -158,30 +161,47 @@ namespace drawingBoard.Drawing
 				throw new Exception("Error, you must set the DrawMethod property before calling Draw()");
 			}
 
-			Thread thread = new Thread((ThreadStart) delegate
+			if (IsConsoleApplication)
 			{
 				Application.Run(mainForm);
-			});
+			}
+			else
+			{
+				Thread t = new Thread((ThreadStart) delegate
+				{
+					Application.Run(mainForm);
+				});
 
-			thread.Start();
+				t.Start();
+			}
 		}
 
 		public void Pause() => mainForm.Pause();
 
+		public void Resume() => mainForm.Resume();
+
 		public void Close() => mainForm.Close();
 
-		public void SaveToPNG(string path)
+		public void SaveAsPng(string path) => SaveAs(path, ImageFormat.Png);
+
+		public void SaveAsJpeg(string path) => SaveAs(path, ImageFormat.Jpeg);
+
+		public void SaveAsGif(string path) => SaveAs(path, ImageFormat.Gif);
+
+		public void SaveAs(string path, ImageFormat format)
 		{
 			Bitmap fullBitmap = new Bitmap(mainForm.Width, mainForm.Height);
 			mainForm.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, mainForm.Size));
 
 			Point clientOrigin = mainForm.PointToScreen(System.Drawing.Point.Empty);
-			Rectangle clientRect = new Rectangle(new Point(clientOrigin.X - mainForm.Bounds.X, clientOrigin.Y - mainForm.Bounds.Y), mainForm.ClientSize);
+
+			Rectangle clientRect = new Rectangle(
+				new Point(clientOrigin.X - mainForm.Bounds.X, clientOrigin.Y - mainForm.Bounds.Y),
+				mainForm.ClientSize);
 
 			Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb);
+			clientAreaBitmap.Save(path, format);
 			fullBitmap.Dispose();
-
-			clientAreaBitmap.Save(path, ImageFormat.Png);
 			clientAreaBitmap.Dispose();
 		}
 
@@ -212,13 +232,13 @@ namespace drawingBoard.Drawing
 
 		public void Stroke(Color color) => currentPen.Color = color;
 
-		public void Stroke(byte grey) => Stroke(grey, grey, grey);
+		public void Stroke(int grey) => Stroke(grey, grey, grey);
 
-		public void Stroke(byte grey, byte a) => Stroke(grey, grey, grey, a);
+		public void Stroke(int grey, int a) => Stroke(grey, grey, grey, a);
 
-		public void Stroke(byte r, byte g, byte b) => Stroke(Color.FromArgb(r, g, b));
+		public void Stroke(int r, int g, int b) => Stroke(Color.FromArgb(r, g, b));
 
-		public void Stroke(byte r, byte g, byte b, byte a) => Stroke(Color.FromArgb(a, r, g, b));
+		public void Stroke(int r, int g, int b, int a) => Stroke(Color.FromArgb(a, r, g, b));
 
 		public void StrokeWidth(float w) => currentPen.Width = w;
 
@@ -234,13 +254,13 @@ namespace drawingBoard.Drawing
 			currentBrush.Color = color;
 		}
 
-		public void Fill(byte grey) => Fill(grey, grey, grey);
+		public void Fill(int grey) => Fill(grey, grey, grey);
 
-		public void Fill(byte grey, byte a) => Fill(grey, grey, grey, a);
+		public void Fill(int grey, int a) => Fill(grey, grey, grey, a);
 
-		public void Fill(byte r, byte g, byte b) => Fill(Color.FromArgb(r, g, b));
+		public void Fill(int r, int g, int b) => Fill(Color.FromArgb(r, g, b));
 
-		public void Fill(byte r, byte g, byte b, byte a) => Fill(Color.FromArgb(a, r, g, b));
+		public void Fill(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
 
 		public void NoFill() => fill = false;
 
@@ -250,8 +270,7 @@ namespace drawingBoard.Drawing
 
 		public void Point(float x, float y) => Circle(x, y, 1);
 
-		public void Line(float x1, float y1, float x2, float y2) =>
-			Graphics.DrawLine(currentPen, x1, y1, x2, y2);
+		public void Line(float x1, float y1, float x2, float y2) => Graphics.DrawLine(currentPen, x1, y1, x2, y2);
 
 		public void Rectangle(Rectangle rect)
 		{

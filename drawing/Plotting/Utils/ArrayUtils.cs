@@ -1,8 +1,8 @@
-﻿namespace drawingBoard.Utils
+﻿namespace drawingBoard.Plotting.Utils
 {
-	public static class ArrayUtils
+	internal static class ArrayUtils
 	{
-		public static double[] IntToDouble(int[] numbers)
+		internal static double[] IntToDouble(int[] numbers)
 		{
 			double[] res = new double[numbers.Length];
 
@@ -14,7 +14,7 @@
 			return res;
 		}
 
-		public static double[] FloatToDouble(float[] numbers)
+		internal static double[] FloatToDouble(float[] numbers)
 		{
 			double[] res = new double[numbers.Length];
 
@@ -26,7 +26,7 @@
 			return res;
 		}
 
-		public static MinMax FindMinMax(double[] numbers)
+		internal static MinMax FindMinMax(double[] numbers)
 		{
 			double min = double.MaxValue;
 			double max = double.MinValue;

@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Drawing;
 using drawingBoard.Drawing.Constants;
-using drawingBoard.Utils;
+using drawingBoard.Plotting.Utils;
 using Mathlib.Functions;
 
 namespace drawingBoard.Drawing.Plotting
 {
 	public abstract class IPlotter
 	{
-		protected int axesOffset;
-		protected Rectangle canvasBounds;
 		protected Rectangle axesBounds;
+		protected Rectangle canvasBounds;
 		protected float minX;
 		protected float maxX;
 		protected float minY;
 		protected float maxY;
 		protected float zeroX;
 		protected float zeroY;
+		protected int axesOffset;
 
 		public abstract void Plot(DrawingBoard db, double[] xs, double[] ys);
 
@@ -36,16 +36,16 @@ namespace drawingBoard.Drawing.Plotting
 			MinMax minMaxX = ArrayUtils.FindMinMax(xs);
 			MinMax minMaxY = ArrayUtils.FindMinMax(ys);
 
-			minX = (float) (xScale * minMaxX.min);
-			maxX = (float) (xScale * minMaxX.max);
-			minY = (float) (yScale * minMaxY.min);
-			maxY = (float) (yScale * minMaxY.max);
+			minX = (float) (xScale * minMaxX.Min);
+			maxX = (float) (xScale * minMaxX.Max);
+			minY = (float) (yScale * minMaxY.Min);
+			maxY = (float) (yScale * minMaxY.Max);
 
 			canvasBounds = new Rectangle(x, y, width, height);
 			axesBounds = new Rectangle(x + axesOffset, y + axesOffset, width - 2 * axesOffset, height - 2 * axesOffset);
 
-			zeroX = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxX.min, minMaxX.max, axesBounds.Left, axesBounds.Right);
-			zeroY = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxY.min, minMaxY.max, axesBounds.Bottom, axesBounds.Top);
+			zeroX = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxX.Min, minMaxX.Max, axesBounds.Left, axesBounds.Right);
+			zeroY = (float) Mathlib.SpecialFunctions.Lerp(0, minMaxY.Min, minMaxY.Max, axesBounds.Bottom, axesBounds.Top);
 
 			DrawBackground(db);
 			DrawAxes(db);
@@ -234,65 +234,14 @@ namespace drawingBoard.Drawing.Plotting
 		#region Plot from Function
 
 		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f)
-		{
-			double step = (b - a) / (n - 1);
-
-			double[] xs = new double[n];
-			double[] ys = new double[n];
-
-			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step)
-			{
-				ys[i] = f(xs[i]);
-				i++;
-			}
-
-			xs[n - 1] = b;
-			ys[n - 1] = f(xs[n - 1]);
-
-			Plot(db, xs, ys, 0, 0, db.Width, db.Height);
-		}
+			=> Plot(db, a, b, n, f, 0, 0, db.Width, db.Height);
 
 		public void Plot(DrawingBoard db, double a, double b, int n, OneToOneFunction f,
 			int x, int y, int width, int height)
-		{
-			double step = (b - a) / (n - 1);
-
-			double[] xs = new double[n];
-			double[] ys = new double[n];
-
-			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step)
-			{
-				ys[i] = f(xs[i]);
-				i++;
-			}
-
-			xs[n - 1] = b;
-			ys[n - 1] = f(xs[n - 1]);
-
-			Plot(db, xs, ys, x, y, width, height);
-		}
+			=> Plot(db, a, b, (b - a) / (n - 1), f, x, y, width, height);
 
 		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f)
-		{
-			int n = 1 + (int) ((b - a) / step);
-
-			double[] xs = new double[n];
-			double[] ys = new double[n];
-
-			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step)
-			{
-				ys[i] = f(xs[i]);
-				i++;
-			}
-
-			xs[n - 1] = b;
-			ys[n - 1] = f(xs[n - 1]);
-
-			Plot(db, xs, ys, 0, 0, db.Width, db.Height);
-		}
+			=> Plot(db, a, b, step, f, 0, 0, db.Width, db.Height);
 
 		public void Plot(DrawingBoard db, double a, double b, double step, OneToOneFunction f,
 			int x, int y, int width, int height)
@@ -303,14 +252,15 @@ namespace drawingBoard.Drawing.Plotting
 			double[] ys = new double[n];
 
 			int i = 0;
-			for (double x_ = a; x_ < b; x_ += step)
+			for (double _x = a; _x < b; _x += step)
 			{
+				xs[i] = _x;
 				ys[i] = f(xs[i]);
 				i++;
 			}
 
 			xs[n - 1] = b;
-			ys[n - 1] = f(xs[n - 1]);
+			ys[n - 1] = f(b);
 
 			Plot(db, xs, ys, x, y, width, height);
 		}
