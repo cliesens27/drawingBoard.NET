@@ -86,6 +86,7 @@ namespace drawingBoard.Drawing
 		private SolidBrush currentBrush;
 		private StringFormat currentFormat;
 		private RectangleMode rectMode;
+		private ImageMode imageMode;
 		private bool fill;
 		private float currentRotation;
 		private float currentTranslationX;
@@ -142,6 +143,7 @@ namespace drawingBoard.Drawing
 			currentFormat = new StringFormat();
 			fill = false;
 
+			ImgMode(ImageMode.CENTER);
 			RectMode(RectangleMode.CENTER);
 			TextAlign(TextAlignment.LEFT);
 
@@ -207,6 +209,8 @@ namespace drawingBoard.Drawing
 
 		public void RectMode(RectangleMode mode) => rectMode = mode;
 
+		public void ImgMode(ImageMode mode) => imageMode = mode;
+
 		public void TextAlign(TextAlignment mode)
 		{
 			switch (mode)
@@ -222,6 +226,25 @@ namespace drawingBoard.Drawing
 				case TextAlignment.CENTER:
 					currentFormat.Alignment = StringAlignment.Center;
 					currentFormat.LineAlignment = StringAlignment.Center;
+					break;
+			}
+		}
+
+		public void DrawImage(Image image) => DrawImage(image, 0, 0);
+
+		public void DrawImage(Image image, float x, float y) => DrawImage(image, x, y, image.Width, image.Height);
+
+		public void DrawImage(Image image, float x, float y, float w, float h)
+		{
+			switch (imageMode)
+			{
+				case ImageMode.CORNER:
+					Console.WriteLine("CORNER");
+					Graphics.DrawImage(image, x, y, w, h);
+					break;
+				case ImageMode.CENTER:
+					Console.WriteLine("CENTER");
+					Graphics.DrawImage(image, x - 0.5f * w, y - 0.5f * h, w, h);
 					break;
 			}
 		}
