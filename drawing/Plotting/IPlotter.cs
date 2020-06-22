@@ -80,7 +80,7 @@ namespace drawingBoard.Drawing.Plotting
 
 			db.Font(new Font("cambria", fontSize));
 			db.Fill(0);
-			db.TextAlign(TextAlignment.RIGHT);
+			db.HorizontalTextAlign(HorizontalTextAlignment.RIGHT);
 
 			db.Text($"{minX.ToString("0.00")}".Replace(',', '.'),
 				axesBounds.Left + 1.5f * fontSize, axesBounds.Bottom + 2.5f * fontSize);

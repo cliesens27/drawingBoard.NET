@@ -145,7 +145,8 @@ namespace drawingBoard.Drawing
 
 			ImgMode(ImageMode.CENTER);
 			RectMode(RectangleMode.CENTER);
-			TextAlign(TextAlignment.LEFT);
+			HorizontalTextAlign(HorizontalTextAlignment.LEFT);
+			VerticalTextAlign(VerticalTextAlignment.TOP);
 
 			currentRotation = 0;
 			currentTranslationX = 0;
@@ -211,20 +212,33 @@ namespace drawingBoard.Drawing
 
 		public void ImgMode(ImageMode mode) => imageMode = mode;
 
-		public void TextAlign(TextAlignment mode)
+		public void HorizontalTextAlign(HorizontalTextAlignment mode)
 		{
 			switch (mode)
 			{
-				case TextAlignment.LEFT:
+				case HorizontalTextAlignment.LEFT:
 					currentFormat.Alignment = StringAlignment.Near;
+					break;
+				case HorizontalTextAlignment.RIGHT:
+					currentFormat.Alignment = StringAlignment.Far;
+					break;
+				case HorizontalTextAlignment.CENTER:
+					currentFormat.Alignment = StringAlignment.Center;
+					break;
+			}
+		}
+
+		public void VerticalTextAlign(VerticalTextAlignment mode)
+		{
+			switch (mode)
+			{
+				case VerticalTextAlignment.TOP:
 					currentFormat.LineAlignment = StringAlignment.Near;
 					break;
-				case TextAlignment.RIGHT:
-					currentFormat.Alignment = StringAlignment.Far;
+				case VerticalTextAlignment.BOTTOM:
 					currentFormat.LineAlignment = StringAlignment.Far;
 					break;
-				case TextAlignment.CENTER:
-					currentFormat.Alignment = StringAlignment.Center;
+				case VerticalTextAlignment.CENTER:
 					currentFormat.LineAlignment = StringAlignment.Center;
 					break;
 			}

@@ -1,9 +1,9 @@
 ﻿namespace drawingBoard.Drawing.Constants
 {
-	public enum HorizontalTextAlignment
+	public enum VerticalTextAlignment
 	{
-		RIGHT,
-		LEFT,
+		TOP,
+		BOTTOM,
 		CENTER
 	}
 }

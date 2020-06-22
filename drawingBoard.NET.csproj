@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drawing\Constants\ImageMode.cs" />
+    <Compile Include="Drawing\Constants\VerticalTextAlignment.cs" />
     <Compile Include="Drawing\Constants\TextAlignment.cs" />
     <Compile Include="Drawing\DrawingBoard.cs" />
     <Compile Include="Drawing\Constants\RectangleMode.cs" />

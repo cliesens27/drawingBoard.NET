@@ -20,8 +20,8 @@ namespace drawingBoard.Drawing.Plotting
 			int x, int y, int width, int height)
 			=> throw new NotImplementedException();
 
-		public void Plot(DrawingBoard db, double[] xs)
-			=> Plot(db, xs, 0, 0, db.Width, db.Height);
+		public void Plot(DrawingBoard db, double[] data)
+			=> Plot(db, data, 0, 0, db.Width, db.Height);
 
 		public void Plot(DrawingBoard db, double[] data, int x, int y, int width, int height)
 			=> Plot(db, data, x, y, width, height, ComputeNbBins(data));
