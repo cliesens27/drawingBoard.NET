@@ -246,6 +246,8 @@ namespace DrawingBoardNET.Drawing
 			}
 		}
 
+		public Image LoadImage(string path) => Image.FromFile(path);
+
 		public void DrawImage(Image image) => DrawImage(image, 0, 0);
 
 		public void DrawImage(Image image, float x, float y) => DrawImage(image, x, y, image.Width, image.Height);
