@@ -54,15 +54,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drawing\Constants\ImageMode.cs" />
-    <Compile Include="Drawing\Constants\VerticalTextAlignment.cs" />
-    <Compile Include="Drawing\Constants\TextAlignment.cs" />
-    <Compile Include="Drawing\DrawingBoard.cs" />
-    <Compile Include="Drawing\Constants\RectangleMode.cs" />
-    <Compile Include="Window\MainForm.cs">
+    <Compile Include="DrawingBoardNET\Drawing\Constants\ImageMode.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\Constants\VerticalTextAlignment.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\Constants\TextAlignment.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\DrawingBoard.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\Constants\RectangleMode.cs" />
+    <Compile Include="DrawingBoardNET\Window\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Window\MainForm.Designer.cs">
+    <Compile Include="DrawingBoardNET\Window\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,7 +75,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Window\MainForm.resx">
+    <EmbeddedResource Include="DrawingBoardNET\Window\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">

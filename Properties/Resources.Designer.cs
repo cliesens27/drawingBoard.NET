@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace drawingBoard.NET.Properties {
+namespace DrawingBoardNET.NET.Properties {
 
 
 	/// <summary>

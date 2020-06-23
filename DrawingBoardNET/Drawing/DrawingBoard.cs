@@ -3,10 +3,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
-using drawingBoard.Drawing.Constants;
-using drawingBoard.Drawing.Constants.Window;
+using DrawingBoardNET.Drawing.Constants;
+using DrawingBoardNET.Drawing.Constants.Window;
 
-namespace drawingBoard.Drawing
+namespace DrawingBoardNET.Drawing
 {
 	public class DrawingBoard
 	{
