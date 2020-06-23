@@ -59,10 +59,6 @@
     <Compile Include="Drawing\Constants\TextAlignment.cs" />
     <Compile Include="Drawing\DrawingBoard.cs" />
     <Compile Include="Drawing\Constants\RectangleMode.cs" />
-    <Compile Include="Drawing\Plotting\IPlotter.cs" />
-    <Compile Include="Drawing\Plotting\HistogramPlotter.cs" />
-    <Compile Include="Drawing\Plotting\ScatterPlotter.cs" />
-    <Compile Include="Drawing\Plotting\LinePlotter.cs" />
     <Compile Include="Window\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,8 +66,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Drawing\Plotting\Utils\ArrayUtils.cs" />
-    <Compile Include="Drawing\Plotting\Utils\MinMax.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
