@@ -406,17 +406,17 @@ namespace drawingBoard.Drawing
 
 		public void Font(string name) => currentFont = new Font(name, currentFont.Size);
 
-		public void TextSize(float size) => currentFont = new Font(currentFont.FontFamily, size);
+		public void FontSize(float size) => currentFont = new Font(currentFont.FontFamily, size);
 
-		public void TextColor(Color color) => currentTextBrush.Color = color;
+		public void FontColor(Color color) => currentTextBrush.Color = color;
 
-		public void TextColor(int grey) => Fill(grey, grey, grey);
+		public void FontColor(int grey) => FontColor(grey, grey, grey);
 
-		public void TextColor(int grey, int a) => Fill(grey, grey, grey, a);
+		public void FontColor(int grey, int a) => FontColor(grey, grey, grey, a);
 
-		public void TextColor(int r, int g, int b) => Fill(Color.FromArgb(r, g, b));
+		public void FontColor(int r, int g, int b) => FontColor(Color.FromArgb(r, g, b));
 
-		public void TextColor(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
+		public void FontColor(int r, int g, int b, int a) => FontColor(Color.FromArgb(a, r, g, b));
 
 		public void Text(string str, float x, float y)
 			=> Graphics.DrawString(str, currentFont, currentTextBrush, x, y, currentFormat);
