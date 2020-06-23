@@ -84,6 +84,7 @@ namespace drawingBoard.Drawing
 		private MainForm mainForm;
 		private Pen currentPen;
 		private SolidBrush currentBrush;
+		private SolidBrush currentTextBrush;
 		private StringFormat currentFormat;
 		private RectangleMode rectMode;
 		private ImageMode imageMode;
@@ -140,6 +141,7 @@ namespace drawingBoard.Drawing
 			currentFont = new Font("cambria", 12);
 			currentPen = new Pen(Color.Black, 1);
 			currentBrush = new SolidBrush(Color.Black);
+			currentTextBrush = new SolidBrush(Color.Black);
 			currentFormat = new StringFormat();
 			fill = false;
 
@@ -400,15 +402,31 @@ namespace drawingBoard.Drawing
 
 		public void Font(Font font) => currentFont = font;
 
+		public void Font(string name, float size) => currentFont = new Font(name, size);
+
+		public void Font(string name) => currentFont = new Font(name, currentFont.Size);
+
+		public void TextSize(float size) => currentFont = new Font(currentFont.FontFamily, size);
+
+		public void TextColor(Color color) => currentTextBrush.Color = color;
+
+		public void TextColor(int grey) => Fill(grey, grey, grey);
+
+		public void TextColor(int grey, int a) => Fill(grey, grey, grey, a);
+
+		public void TextColor(int r, int g, int b) => Fill(Color.FromArgb(r, g, b));
+
+		public void TextColor(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
+
 		public void Text(string str, float x, float y)
-			=> Graphics.DrawString(str, currentFont, currentBrush, x, y, currentFormat);
+			=> Graphics.DrawString(str, currentFont, currentTextBrush, x, y, currentFormat);
 
 		public void Text(string str, float x, float y, bool bold, bool italic)
 		{
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
 
-			Graphics.DrawString(str, font, currentBrush, x, y, currentFormat);
+			Graphics.DrawString(str, font, currentTextBrush, x, y, currentFormat);
 		}
 
 		#endregion
