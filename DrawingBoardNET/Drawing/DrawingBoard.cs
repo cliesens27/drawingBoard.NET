@@ -12,6 +12,12 @@ namespace DrawingBoardNET.Drawing
 	{
 		#region Fields & Properties	
 
+		public InitMethod InitMethod
+		{
+			get => mainForm.Init;
+			set => mainForm.Init = value;
+		}
+
 		public DrawMethod DrawMethod
 		{
 			get => mainForm.Draw;
@@ -128,6 +134,7 @@ namespace DrawingBoardNET.Drawing
 
 		private void SetDefaultSettings()
 		{
+			InitMethod = null;
 			DrawMethod = null;
 			KeyPressed = null;
 			KeyReleased = null;

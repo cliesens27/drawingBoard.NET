@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace DrawingBoardNET.Drawing.Constants.Window
 {
+	public delegate void InitMethod();
 	public delegate void DrawMethod();
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);
@@ -18,6 +19,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 	{
 		#region Fields & Properties
 
+		internal InitMethod Init { get; set; }
 		internal DrawMethod Draw { get; set; }
 		internal KeyPressedMethod KeyPressed { get; set; }
 		internal KeyReleasedMethod KeyReleased { get; set; }
@@ -34,8 +36,9 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		private readonly Stopwatch stopwatch;
 		private List<char> pressedKeys;
 		private List<char> releasedKeys;
-		private bool isPaused;
+		private bool isFirstFrame;
 		private bool isMousePressed;
+		private bool isPaused;
 		private double currentElapsedTime;
 		private double lastRedrawTime;
 		private int currentFrameCount;
@@ -59,6 +62,8 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			lastRedrawTime = 0;
 			TotalFrameCount = 0;
 
+			isFirstFrame = true;
+			isMousePressed = false;
 			isPaused = false;
 		}
 
@@ -157,6 +162,12 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		private void mainPictureBox_Paint(object sender, PaintEventArgs e)
 		{
 			Graphics = e.Graphics;
+
+			if (isFirstFrame)
+			{
+				Init?.Invoke();
+				isFirstFrame = false;
+			}
 
 			if (!isPaused)
 			{
