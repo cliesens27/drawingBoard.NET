@@ -372,26 +372,28 @@ namespace DrawingBoardNET.Drawing
 
 		#region Transformations
 
-		public void Rotate(float degrees)
+		public void RotateDegrees(float angle)
 		{
-			currentRotation += degrees;
-			Graphics.RotateTransform(degrees);
+			currentRotation += angle;
+			Graphics.RotateTransform(angle);
 		}
 
-		public void Translate(float dx, float dy)
+		public void RotateRadians(float angle) => RotateDegrees((float) (180.0 * angle / Math.PI));
+
+		public void Translate(float x, float y)
 		{
-			currentTranslationX += dx;
-			currentTranslationY += dy;
-			Graphics.TranslateTransform(dx, dy);
+			currentTranslationX += x;
+			currentTranslationY += y;
+			Graphics.TranslateTransform(x, y);
 		}
 
-		public void UndoRotation()
+		public void UndoRotations()
 		{
 			Graphics.RotateTransform(-currentRotation);
 			currentRotation = 0;
 		}
 
-		public void UndoTranslation()
+		public void UndoTranslations()
 		{
 			Graphics.TranslateTransform(-currentTranslationX, -currentTranslationY);
 			currentTranslationX = 0;
