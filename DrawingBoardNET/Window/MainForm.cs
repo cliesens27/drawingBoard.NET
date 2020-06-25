@@ -84,9 +84,6 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 
 				if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate)
 				{
-					CheckKeyboardInput();
-					CheckMouseInput();
-
 					lastRedrawTime = TotalElapsedTime;
 					mainPictureBox.Invalidate();
 					TotalFrameCount++;
@@ -164,6 +161,8 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			if (!isPaused)
 			{
 				Draw();
+				CheckKeyboardInput();
+				CheckMouseInput();
 			}
 		}
 
