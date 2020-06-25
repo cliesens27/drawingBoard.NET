@@ -34,10 +34,14 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		internal int TotalFrameCount { get; private set; }
 
 		private readonly Stopwatch stopwatch;
+		private readonly bool shouldRedraw;
 		private List<char> pressedKeys;
 		private List<char> releasedKeys;
+		private Bitmap previousFrameBuffer;
 		private bool isFirstFrame;
+		private bool isMouseDragged;
 		private bool isMousePressed;
+		private bool isMouseReleased;
 		private bool isPaused;
 		private double currentElapsedTime;
 		private double lastRedrawTime;
@@ -53,6 +57,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			StartPosition = FormStartPosition.CenterScreen;
 			Application.Idle += Run;
 
+			previousFrameBuffer = null;
 			pressedKeys = new List<char>();
 			releasedKeys = new List<char>();
 
@@ -63,17 +68,21 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			TotalFrameCount = 0;
 
 			isFirstFrame = true;
+			isMouseDragged = false;
 			isMousePressed = false;
+			isMouseReleased = false;
 			isPaused = false;
 		}
 
-		public MainForm(int width, int height) : this()
+		public MainForm(int width, int height, bool shouldRedraw) : this()
 		{
+			this.shouldRedraw = shouldRedraw;
 			ClientSize = new Size(width, height);
 			mainPictureBox.Size = new Size(width, height);
 		}
 
-		public MainForm(int width, int height, int x, int y) : this(width, height) => Location = new Point(x, y);
+		public MainForm(int width, int height, int x, int y, bool shouldRedraw) : this(width, height, shouldRedraw)
+			=> Location = new Point(x, y);
 
 		#endregion
 
@@ -89,8 +98,18 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 
 				if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate)
 				{
-					lastRedrawTime = TotalElapsedTime;
+					if (previousFrameBuffer == null)
+					{
+						previousFrameBuffer = new Bitmap(Width, Height);
+					}
+
+					if (shouldRedraw)
+					{
+						DrawToBitmap(previousFrameBuffer, new Rectangle(Point.Empty, Size));
+					}
+
 					mainPictureBox.Invalidate();
+					lastRedrawTime = TotalElapsedTime;
 					TotalFrameCount++;
 
 					ComputeFrameRate();
@@ -131,9 +150,21 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 
 		private void CheckMouseInput()
 		{
-			if (MouseDragged != null && isMousePressed)
+			if (MouseDragged != null && isMouseDragged)
 			{
 				MouseDragged();
+			}
+
+			if (MousePressed != null && isMousePressed)
+			{
+				MousePressed();
+				isMousePressed = false;
+			}
+
+			if (MouseReleased != null && isMouseReleased)
+			{
+				MouseReleased();
+				isMouseReleased = false;
 			}
 		}
 
@@ -171,6 +202,12 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 
 			if (!isPaused)
 			{
+				if (previousFrameBuffer != null && shouldRedraw)
+				{
+					Graphics.DrawImage(previousFrameBuffer, PointToScreen(Point.Empty));
+					Graphics.DrawImage(previousFrameBuffer, -8, -31);
+				}
+
 				Draw();
 				CheckKeyboardInput();
 				CheckMouseInput();
@@ -180,13 +217,13 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		private void mainPictureBox_MouseDown(object sender, MouseEventArgs e)
 		{
 			isMousePressed = true;
-			MousePressed?.Invoke();
+			isMouseDragged = true;
 		}
 
 		private void mainPictureBox_MouseUp(object sender, MouseEventArgs e)
 		{
-			isMousePressed = false;
-			MouseReleased?.Invoke();
+			isMouseReleased = true;
+			isMouseDragged = false;
 		}
 
 		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => pressedKeys.Add(e.KeyChar);

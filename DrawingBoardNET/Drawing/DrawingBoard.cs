@@ -69,8 +69,8 @@ namespace DrawingBoardNET.Drawing
 		public double FrameRate => mainForm.FrameRate;
 		public double TotalElapsedTime => mainForm.TotalElapsedTime;
 		public int FrameCount => mainForm.TotalFrameCount;
-		public int MouseX => Control.MousePosition.X - (mainForm.Location.X + 5);
-		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 25);
+		public int MouseX => Control.MousePosition.X - (mainForm.Location.X + 8);
+		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 31);
 		public int Xmin => 0;
 		public int Ymin => 0;
 		public int Xcenter => Width / 2;
@@ -103,25 +103,23 @@ namespace DrawingBoardNET.Drawing
 
 		#region Constructors
 
-		private DrawingBoard()
+		public DrawingBoard(int width, int height, bool isConsoleApplication = true, bool shouldRedraw = true)
+			: this(width, height, -1, -1, isConsoleApplication, shouldRedraw) { }
+
+		public DrawingBoard(int width, int height, int x, int y,
+			bool isConsoleApplication = true, bool shouldRedraw = true)
 		{
 			Application.EnableVisualStyles();
-		}
 
-		public DrawingBoard(bool isConsoleApplication, int width, int height)
-			: this(isConsoleApplication, width, height, -1, -1) { }
-
-		public DrawingBoard(bool isConsoleApplication, int width, int height, int x, int y) : this()
-		{
 			IsConsoleApplication = isConsoleApplication;
 
 			if (screenX != -1 && screenY != -1)
 			{
-				mainForm = new MainForm(width, height, x, y);
+				mainForm = new MainForm(width, height, x, y, shouldRedraw);
 			}
 			else
 			{
-				mainForm = new MainForm(width, height);
+				mainForm = new MainForm(width, height, shouldRedraw);
 			}
 
 			Width = width;
@@ -213,6 +211,7 @@ namespace DrawingBoardNET.Drawing
 
 			Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb);
 			clientAreaBitmap.Save(path, format);
+
 			fullBitmap.Dispose();
 			clientAreaBitmap.Dispose();
 		}
