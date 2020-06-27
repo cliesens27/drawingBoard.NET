@@ -4,7 +4,7 @@ A simple 2D graphical C# library inspired by Processing (https://www.processing.
 
 ## Code Sample
 
-```
+```C#
 using DrawingBoardNET.Drawing;
 
 namespace DrawingBoardTest
