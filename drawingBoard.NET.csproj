@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{80663461-BEE2-441E-838F-2E1E26F088D9}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>drawingBoard</RootNamespace>
-    <AssemblyName>drawingBoard.NET</AssemblyName>
+    <RootNamespace>DrawingBoardNET</RootNamespace>
+    <AssemblyName>DrawingBoard.NET</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -56,6 +56,7 @@
     <Compile Include="DrawingBoardNET\Drawing\Constants\TextAlignment.cs" />
     <Compile Include="DrawingBoardNET\Drawing\DrawingBoard.cs" />
     <Compile Include="DrawingBoardNET\Drawing\Constants\RectangleMode.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\Utils.cs" />
     <Compile Include="DrawingBoardNET\Window\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +72,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="DrawingBoardNET\Window\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
