@@ -104,8 +104,8 @@ namespace DrawingBoardNET.Drawing
 
 		#region Constructors
 
-		public DrawingBoard(int width, int height, bool isConsoleApplication = true, bool shouldRedraw = true)
-			: this(width, height, -1, -1, isConsoleApplication, shouldRedraw) { }
+		public DrawingBoard(int width, int height, bool isConsoleApplication = true, bool redrawEveryFrame = true)
+			: this(width, height, -1, -1, isConsoleApplication, redrawEveryFrame) { }
 
 		public DrawingBoard(int width, int height, int x, int y,
 			bool isConsoleApplication = true, bool shouldRedraw = true)

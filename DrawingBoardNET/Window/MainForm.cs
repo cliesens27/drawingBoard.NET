@@ -34,7 +34,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		internal int TotalFrameCount { get; private set; }
 
 		private readonly Stopwatch stopwatch;
-		private readonly bool shouldRedraw;
+		private readonly bool redrawEveryFrame;
 		private List<char> pressedKeys;
 		private List<char> releasedKeys;
 		private Bitmap previousFrameBuffer;
@@ -74,15 +74,15 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			isPaused = false;
 		}
 
-		public MainForm(int width, int height, bool shouldRedraw) : this()
+		public MainForm(int width, int height, bool redrawEveryFrame) : this()
 		{
-			this.shouldRedraw = shouldRedraw;
+			this.redrawEveryFrame = redrawEveryFrame;
 			ClientSize = new Size(width, height);
 			mainPictureBox.Size = new Size(width, height);
 		}
 
-		public MainForm(int width, int height, int x, int y, bool shouldRedraw) : this(width, height, shouldRedraw)
-			=> Location = new Point(x, y);
+		public MainForm(int width, int height, int x, int y, bool redrawEveryFrame)
+			: this(width, height, redrawEveryFrame) => Location = new Point(x, y);
 
 		#endregion
 
@@ -103,7 +103,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 						previousFrameBuffer = new Bitmap(Width, Height);
 					}
 
-					if (shouldRedraw)
+					if (redrawEveryFrame)
 					{
 						DrawToBitmap(previousFrameBuffer, new Rectangle(Point.Empty, Size));
 					}
@@ -202,7 +202,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 
 			if (!isPaused)
 			{
-				if (previousFrameBuffer != null && shouldRedraw)
+				if (previousFrameBuffer != null && redrawEveryFrame)
 				{
 					Graphics.DrawImage(previousFrameBuffer, PointToScreen(Point.Empty));
 					Graphics.DrawImage(previousFrameBuffer, -8, -31);
