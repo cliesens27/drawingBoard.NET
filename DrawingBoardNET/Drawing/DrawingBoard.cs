@@ -61,6 +61,16 @@ namespace DrawingBoardNET.Drawing
 			set => mainForm.TargetFrameRate = value;
 		}
 
+		public int Seed
+		{
+			get => seed;
+			set
+			{
+				seed = value;
+				rng = new Random(seed);
+			}
+		}
+
 		public string Title
 		{
 			get => mainForm.Text;
@@ -90,6 +100,7 @@ namespace DrawingBoardNET.Drawing
 		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
+		private Random rng;
 		private SolidBrush currentBrush;
 		private SolidBrush currentTextBrush;
 		private StringFormat currentFormat;
@@ -99,6 +110,7 @@ namespace DrawingBoardNET.Drawing
 		private float currentRotation;
 		private float currentTranslationX;
 		private float currentTranslationY;
+		private int seed;
 
 		#endregion
 
@@ -111,8 +123,6 @@ namespace DrawingBoardNET.Drawing
 		public DrawingBoard(int width, int height, int x, int y,
 			bool isConsoleApplication = true, bool redrawEveryFrame = false)
 		{
-			Application.EnableVisualStyles();
-
 			IsConsoleApplication = isConsoleApplication;
 
 			if (screenX != -1 && screenY != -1)
@@ -134,6 +144,8 @@ namespace DrawingBoardNET.Drawing
 
 		private void SetDefaultSettings()
 		{
+			Application.EnableVisualStyles();
+
 			InitMethod = null;
 			DrawMethod = null;
 			KeyPressed = null;
@@ -160,6 +172,9 @@ namespace DrawingBoardNET.Drawing
 			currentRotation = 0;
 			currentTranslationX = 0;
 			currentTranslationY = 0;
+
+			Seed = (int) DateTime.Now.Ticks;
+			rng = new Random(seed);
 		}
 
 		#endregion
@@ -462,6 +477,8 @@ namespace DrawingBoardNET.Drawing
 			}
 		}
 
+		public Font CreateFont(string name, float size) => new Font(name, size);
+
 		public void Font(Font font) => currentFont = font;
 
 		public void Font(string name, float size) => currentFont = new Font(name, size);
@@ -489,6 +506,81 @@ namespace DrawingBoardNET.Drawing
 			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
 
 			Graphics.DrawString(str, font, currentTextBrush, x, y, currentFormat);
+		}
+
+		#endregion
+
+		#region Utils Functions
+
+		public double Rand() => rng.NextDouble();
+
+		public int Rand(int max) => (int) (rng.NextDouble() * max);
+
+		public float Rand(float max) => (float) (rng.NextDouble() * max);
+
+		public double Rand(double max) => rng.NextDouble() * max;
+
+		public int Rand(int min, int max)
+		{
+			if (min >= max)
+			{
+				throw new ArgumentException($"Max should be smaller than min" +
+					$"\n\tmin = {min}\n\tmax = {max}");
+			}
+
+			return (int) (rng.NextDouble() * (max - min) + min);
+		}
+
+		public float Rand(float min, float max)
+		{
+			if (min >= max)
+			{
+				throw new ArgumentException($"Max should be smaller than min" +
+					$"\n\tmin = {min}\n\tmax = {max}");
+			}
+
+			return (float) (rng.NextDouble() * (max - min) + min);
+		}
+
+		public double Rand(double min, double max)
+		{
+			if (min >= max)
+			{
+				throw new ArgumentException($"Max should be smaller than min" +
+					$"\n\tmin = {min}\n\tmax = {max}");
+			}
+
+			return rng.NextDouble() * (max - min) + min;
+		}
+
+		public float Lerp(float val, float x1, float x2, float y1, float y2)
+		{
+			if (val == x1)
+			{
+				return y1;
+			}
+
+			if (val == x2)
+			{
+				return y2;
+			}
+
+			return (y2 - y1) / (x2 - x1) * (val - x1) + y1;
+		}
+
+		public double Lerp(double val, double x1, double x2, double y1, double y2)
+		{
+			if (val == x1)
+			{
+				return y1;
+			}
+
+			if (val == x2)
+			{
+				return y2;
+			}
+
+			return (y2 - y1) / (x2 - x1) * (val - x1) + y1;
 		}
 
 		#endregion
