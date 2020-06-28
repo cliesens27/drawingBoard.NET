@@ -204,7 +204,6 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			{
 				if (previousFrameBuffer != null && redrawEveryFrame)
 				{
-					Graphics.DrawImage(previousFrameBuffer, PointToScreen(Point.Empty));
 					Graphics.DrawImage(previousFrameBuffer, -8, -31);
 				}
 
