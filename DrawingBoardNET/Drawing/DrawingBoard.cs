@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
@@ -61,7 +62,7 @@ namespace DrawingBoardNET.Drawing
 			set => mainForm.TargetFrameRate = value;
 		}
 
-		public int Seed
+		public int RandomSeed
 		{
 			get => seed;
 			set
@@ -106,6 +107,7 @@ namespace DrawingBoardNET.Drawing
 		private StringFormat currentFormat;
 		private RectangleMode rectMode;
 		private ImageMode imageMode;
+		private LineCap strokeMode;
 		private bool fill;
 		private float currentRotation;
 		private float currentTranslationX;
@@ -166,6 +168,7 @@ namespace DrawingBoardNET.Drawing
 
 			ImgMode(ImageMode.CENTER);
 			RectMode(RectangleMode.CENTER);
+			StrokeMode(LineCap.Flat);
 			HorizontalTextAlign(HorizontalTextAlignment.LEFT);
 			VerticalTextAlign(VerticalTextAlignment.TOP);
 
@@ -173,7 +176,7 @@ namespace DrawingBoardNET.Drawing
 			currentTranslationX = 0;
 			currentTranslationY = 0;
 
-			Seed = (int) DateTime.Now.Ticks;
+			RandomSeed = (int) DateTime.Now.Ticks;
 			rng = new Random(seed);
 		}
 
@@ -260,6 +263,12 @@ namespace DrawingBoardNET.Drawing
 
 		#region Stroke
 
+		public void StrokeMode(LineCap mode)
+		{
+			strokeMode = mode;
+			currentPen.StartCap = currentPen.EndCap = strokeMode;
+		}
+
 		public void Stroke(Color color) => currentPen.Color = color;
 
 		public void Stroke(int grey) => Stroke(grey, grey, grey);
@@ -338,7 +347,7 @@ namespace DrawingBoardNET.Drawing
 			{
 				NoFill();
 			}
-			
+
 			Stroke(oldStroke);
 		}
 
