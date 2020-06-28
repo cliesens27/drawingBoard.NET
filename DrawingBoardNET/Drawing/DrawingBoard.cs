@@ -164,8 +164,6 @@ namespace DrawingBoardNET.Drawing
 
 		#endregion
 
-		#region Misc
-
 		public void Draw()
 		{
 			if (DrawMethod == null)
@@ -193,8 +191,6 @@ namespace DrawingBoardNET.Drawing
 		public void Resume() => mainForm.Resume();
 
 		public void Close() => mainForm.Close();
-
-		#endregion
 
 		#region Image
 
@@ -282,6 +278,27 @@ namespace DrawingBoardNET.Drawing
 		public void Fill(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
 
 		public void NoFill() => fill = false;
+
+		#endregion
+
+		#region Background
+
+		public void Background(Color color)
+		{
+			NoStroke();
+			Fill(color);
+			Rectangle(Xmin, Ymin, Width, Height);
+
+			NoFill();
+		}
+
+		public void Background(int grey) => Background(grey, grey, grey);
+
+		public void Background(int grey, int a) => Background(grey, grey, grey, a);
+
+		public void Background(int r, int g, int b) => Background(Color.FromArgb(r, g, b));
+
+		public void Background(int r, int g, int b, int a) => Background(Color.FromArgb(a, r, g, b));
 
 		#endregion
 
