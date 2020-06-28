@@ -321,7 +321,26 @@ namespace DrawingBoardNET.Drawing
 
 		public void RectMode(RectangleMode mode) => rectMode = mode;
 
-		public void Point(float x, float y) => Circle(x, y, 1);
+		public void Point(float x, float y)
+		{
+			Color oldStroke = currentPen.Color;
+			Color oldFill = currentBrush.Color;
+
+			NoStroke();
+			Fill(oldStroke);
+			Circle(x, y, currentPen.Width);
+
+			if (fill)
+			{
+				Fill(oldFill);
+			}
+			else
+			{
+				NoFill();
+			}
+			
+			Stroke(oldStroke);
+		}
 
 		public void Line(float x1, float y1, float x2, float y2) => Graphics.DrawLine(currentPen, x1, y1, x2, y2);
 
