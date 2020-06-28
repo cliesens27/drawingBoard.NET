@@ -104,11 +104,12 @@ namespace DrawingBoardNET.Drawing
 
 		#region Constructors
 
-		public DrawingBoard(int width, int height, bool isConsoleApplication = true, bool redrawEveryFrame = true)
+		public DrawingBoard(int width, int height,
+			bool isConsoleApplication = true, bool redrawEveryFrame = false)
 			: this(width, height, -1, -1, isConsoleApplication, redrawEveryFrame) { }
 
 		public DrawingBoard(int width, int height, int x, int y,
-			bool isConsoleApplication = true, bool shouldRedraw = true)
+			bool isConsoleApplication = true, bool redrawEveryFrame = false)
 		{
 			Application.EnableVisualStyles();
 
@@ -116,11 +117,11 @@ namespace DrawingBoardNET.Drawing
 
 			if (screenX != -1 && screenY != -1)
 			{
-				mainForm = new MainForm(width, height, x, y, shouldRedraw);
+				mainForm = new MainForm(width, height, x, y, redrawEveryFrame);
 			}
 			else
 			{
-				mainForm = new MainForm(width, height, shouldRedraw);
+				mainForm = new MainForm(width, height, redrawEveryFrame);
 			}
 
 			Width = width;
