@@ -1,6 +1,6 @@
 # drawingBoard.NET
 
-A simple 2D graphical C# library inspired by Processing (https://www.processing.org/).
+A simple C# 2D graphical library inspired by Processing (https://www.processing.org/).
 
 ## Code Sample
 
