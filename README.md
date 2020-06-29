@@ -13,7 +13,7 @@ namespace DrawingBoardTest
 	{
 		public static void Main(string[] args)
 		{
-			DB db = new DB(600, 400);
+			DB db = new DB(600, 400, true, false);
 			db.Title = "DrawingBoardTest";
 			db.TargetFrameRate = 30;
 
