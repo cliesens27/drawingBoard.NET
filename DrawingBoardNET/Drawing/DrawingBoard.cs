@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using DrawingBoardNET.Drawing.Constants;
 using DrawingBoardNET.Drawing.Window;
+using DrawingBoardNET.DrawingBoardNET.Drawing;
 
 namespace DrawingBoardNET.Drawing
 {
@@ -24,6 +25,12 @@ namespace DrawingBoardNET.Drawing
 		{
 			get => mainForm.Draw;
 			set => mainForm.Draw = value;
+		}
+
+		public DrawSliderMethod DrawSlider
+		{
+			get => mainForm.DrawSlider;
+			set => mainForm.DrawSlider = value;
 		}
 
 		public KeyPressedMethod KeyPressed
@@ -151,6 +158,7 @@ namespace DrawingBoardNET.Drawing
 
 			Init = null;
 			Draw = null;
+			DrawSlider = null;
 			KeyPressed = null;
 			KeyReleased = null;
 			MousePressed = null;
@@ -233,6 +241,8 @@ namespace DrawingBoardNET.Drawing
 			fill = oldStyle.Fill;
 		}
 
+		public void AddSlider(Slider slider) => mainForm.AddSlider(slider);
+
 		#region Image
 
 		public void SaveAsPng(string path) => SaveAs(path, ImageFormat.Png);
@@ -272,11 +282,9 @@ namespace DrawingBoardNET.Drawing
 			switch (imageMode)
 			{
 				case ImageMode.CORNER:
-					Console.WriteLine("CORNER");
 					Graphics.DrawImage(image, x, y, w, h);
 					break;
 				case ImageMode.CENTER:
-					Console.WriteLine("CENTER");
 					Graphics.DrawImage(image, x - 0.5f * w, y - 0.5f * h, w, h);
 					break;
 			}
@@ -332,11 +340,13 @@ namespace DrawingBoardNET.Drawing
 
 		public void Background(Color color)
 		{
+			SaveStyle();
+
 			NoStroke();
 			Fill(color);
 			Rectangle(Xmin, Ymin, Width, Height);
 
-			NoFill();
+			RestoreStyle();
 		}
 
 		public void Background(int grey) => Background(grey, grey, grey);
@@ -355,23 +365,13 @@ namespace DrawingBoardNET.Drawing
 
 		public void Point(float x, float y)
 		{
-			Color oldStroke = currentPen.Color;
-			Color oldFill = currentBrush.Color;
+			SaveStyle();
 
 			NoStroke();
-			Fill(oldStroke);
+			Fill(currentPen.Color);
 			Circle(x, y, currentPen.Width);
 
-			if (fill)
-			{
-				Fill(oldFill);
-			}
-			else
-			{
-				NoFill();
-			}
-
-			Stroke(oldStroke);
+			RestoreStyle();
 		}
 
 		public void Line(float x1, float y1, float x2, float y2) => Graphics.DrawLine(currentPen, x1, y1, x2, y2);

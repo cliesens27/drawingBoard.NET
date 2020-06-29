@@ -10,6 +10,7 @@ namespace DrawingBoardNET.Drawing.Window
 {
 	public delegate void InitMethod();
 	public delegate void DrawMethod();
+	public delegate void DrawSliderMethod(Slider slider);
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);
 	public delegate void MousePressedMethod();
@@ -22,6 +23,7 @@ namespace DrawingBoardNET.Drawing.Window
 
 		internal InitMethod Init { get; set; }
 		internal DrawMethod Draw { get; set; }
+		internal DrawSliderMethod DrawSlider { get; set; }
 		internal KeyPressedMethod KeyPressed { get; set; }
 		internal KeyReleasedMethod KeyReleased { get; set; }
 		internal MousePressedMethod MousePressed { get; set; }
@@ -34,6 +36,7 @@ namespace DrawingBoardNET.Drawing.Window
 		internal double TotalElapsedTime { get; private set; }
 		internal int TotalFrameCount { get; private set; }
 
+		private readonly List<Slider> sliders;
 		private readonly Stopwatch stopwatch;
 		private readonly bool redrawEveryFrame;
 		private List<char> pressedKeys;
@@ -59,6 +62,7 @@ namespace DrawingBoardNET.Drawing.Window
 			Application.Idle += Run;
 
 			previousFrameBuffer = null;
+			sliders = new List<Slider>();
 			pressedKeys = new List<char>();
 			releasedKeys = new List<char>();
 
@@ -90,6 +94,8 @@ namespace DrawingBoardNET.Drawing.Window
 		internal void Pause() => isPaused = true;
 
 		internal void Resume() => isPaused = false;
+
+		internal void AddSlider(Slider slider) => sliders.Add(slider);
 
 		private void Run(object sender, EventArgs e)
 		{
@@ -151,21 +157,57 @@ namespace DrawingBoardNET.Drawing.Window
 
 		private void CheckMouseInput()
 		{
-			if (MouseDragged != null && isMouseDragged)
+			if (isMouseDragged)
 			{
-				MouseDragged();
+				MouseDragged?.Invoke();
+
+				UpdateSliders(PointToClient(MousePosition).X);
 			}
 
-			if (MousePressed != null && isMousePressed)
+			if (isMousePressed)
 			{
-				MousePressed();
+				MousePressed?.Invoke();
 				isMousePressed = false;
+
+				LockSliders(PointToClient(MousePosition).X, PointToClient(MousePosition).Y);
 			}
 
-			if (MouseReleased != null && isMouseReleased)
+			if (isMouseReleased)
 			{
-				MouseReleased();
+				MouseReleased?.Invoke();
 				isMouseReleased = false;
+
+				UnlockSliders(PointToClient(MousePosition).X, PointToClient(MousePosition).Y);
+			}
+		}
+
+		private void UpdateSliders(int mx)
+		{
+			foreach (Slider s in sliders)
+			{
+				s.Update(mx);
+			}
+		}
+
+		private void LockSliders(int mx, int my)
+		{
+			foreach (Slider s in sliders)
+			{
+				if (s.IsSelected(mx, my))
+				{
+					s.Lock();
+				}
+			}
+		}
+
+		private void UnlockSliders(int mx, int my)
+		{
+			foreach (Slider s in sliders)
+			{
+				if (s.IsSelected(mx, my))
+				{
+					s.Unlock();
+				}
 			}
 		}
 
@@ -211,6 +253,11 @@ namespace DrawingBoardNET.Drawing.Window
 				Draw();
 				CheckKeyboardInput();
 				CheckMouseInput();
+
+				foreach (Slider s in sliders)
+				{
+					DrawSlider?.Invoke(s);
+				}
 			}
 		}
 

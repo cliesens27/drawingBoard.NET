@@ -56,6 +56,7 @@
     <Compile Include="DrawingBoardNET\Drawing\Constants\TextAlignment.cs" />
     <Compile Include="DrawingBoardNET\Drawing\DrawingBoard.cs" />
     <Compile Include="DrawingBoardNET\Drawing\Constants\RectangleMode.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\Slider.cs" />
     <Compile Include="DrawingBoardNET\Window\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
