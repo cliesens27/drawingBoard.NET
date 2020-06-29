@@ -14,13 +14,13 @@ namespace DrawingBoardNET.Drawing
 	{
 		#region Fields & Properties	
 
-		public InitMethod InitMethod
+		public InitMethod Init
 		{
 			get => mainForm.Init;
 			set => mainForm.Init = value;
 		}
 
-		public DrawMethod DrawMethod
+		public DrawMethod Draw
 		{
 			get => mainForm.Draw;
 			set => mainForm.Draw = value;
@@ -95,7 +95,6 @@ namespace DrawingBoardNET.Drawing
 
 		private Graphics Graphics => mainForm.Graphics;
 
-
 		private readonly bool IsConsoleApplication;
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
@@ -150,8 +149,8 @@ namespace DrawingBoardNET.Drawing
 		{
 			Application.EnableVisualStyles();
 
-			InitMethod = null;
-			DrawMethod = null;
+			Init = null;
+			Draw = null;
 			KeyPressed = null;
 			KeyReleased = null;
 			MousePressed = null;
@@ -184,9 +183,9 @@ namespace DrawingBoardNET.Drawing
 
 		#endregion
 
-		public void Draw()
+		public void Start()
 		{
-			if (DrawMethod == null)
+			if (Draw == null)
 			{
 				throw new Exception("Error, you must set the DrawMethod property before calling Draw()");
 			}
