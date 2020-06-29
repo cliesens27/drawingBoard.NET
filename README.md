@@ -49,4 +49,6 @@ namespace DrawingBoardTest
 }
 ```
 
-![](https://i.imgur.com/Zbc3F3Y.gif)
+<p align="center">
+  <img src="https://i.imgur.com/Zbc3F3Y.gif"/>
+</p>
