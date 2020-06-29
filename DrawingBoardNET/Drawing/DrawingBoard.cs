@@ -56,13 +56,7 @@ namespace DrawingBoardNET.Drawing
 			set => mainForm.MouseDragged = value;
 		}
 
-		public double TargetFrameRate
-		{
-			get => mainForm.TargetFrameRate;
-			set => mainForm.TargetFrameRate = value;
-		}
-
-		public int RandomSeed
+		public static int RandomSeed
 		{
 			get => seed;
 			set
@@ -70,6 +64,12 @@ namespace DrawingBoardNET.Drawing
 				seed = value;
 				rng = new Random(seed);
 			}
+		}
+
+		public double TargetFrameRate
+		{
+			get => mainForm.TargetFrameRate;
+			set => mainForm.TargetFrameRate = value;
 		}
 
 		public string Title
@@ -98,10 +98,11 @@ namespace DrawingBoardNET.Drawing
 		private readonly bool IsConsoleApplication;
 		private readonly int screenX = -1;
 		private readonly int screenY = -1;
+		private static Random rng;
+		private static int seed;
 		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
-		private Random rng;
 		private SolidBrush currentBrush;
 		private SolidBrush currentTextBrush;
 		private StringFormat currentFormat;
@@ -112,7 +113,7 @@ namespace DrawingBoardNET.Drawing
 		private float currentRotation;
 		private float currentTranslationX;
 		private float currentTranslationY;
-		private int seed;
+
 
 		#endregion
 
@@ -538,17 +539,17 @@ namespace DrawingBoardNET.Drawing
 
 		#endregion
 
-		#region Utils Functions
+		#region Static Utility Methods
 
-		public double Rand() => rng.NextDouble();
+		public static double Rand() => rng.NextDouble();
 
-		public int Rand(int max) => (int) (rng.NextDouble() * max);
+		public static int Rand(int max) => (int) (rng.NextDouble() * max);
 
-		public float Rand(float max) => (float) (rng.NextDouble() * max);
+		public static float Rand(float max) => (float) (rng.NextDouble() * max);
 
-		public double Rand(double max) => rng.NextDouble() * max;
+		public static double Rand(double max) => rng.NextDouble() * max;
 
-		public int Rand(int min, int max)
+		public static int Rand(int min, int max)
 		{
 			if (min >= max)
 			{
@@ -559,7 +560,7 @@ namespace DrawingBoardNET.Drawing
 			return (int) (rng.NextDouble() * (max - min) + min);
 		}
 
-		public float Rand(float min, float max)
+		public static float Rand(float min, float max)
 		{
 			if (min >= max)
 			{
@@ -570,7 +571,7 @@ namespace DrawingBoardNET.Drawing
 			return (float) (rng.NextDouble() * (max - min) + min);
 		}
 
-		public double Rand(double min, double max)
+		public static double Rand(double min, double max)
 		{
 			if (min >= max)
 			{
@@ -581,7 +582,7 @@ namespace DrawingBoardNET.Drawing
 			return rng.NextDouble() * (max - min) + min;
 		}
 
-		public float Lerp(float val, float x1, float x2, float y1, float y2)
+		public static float Lerp(float val, float x1, float x2, float y1, float y2)
 		{
 			if (val == x1)
 			{
@@ -596,7 +597,7 @@ namespace DrawingBoardNET.Drawing
 			return (y2 - y1) / (x2 - x1) * (val - x1) + y1;
 		}
 
-		public double Lerp(double val, double x1, double x2, double y1, double y2)
+		public static double Lerp(double val, double x1, double x2, double y1, double y2)
 		{
 			if (val == x1)
 			{
