@@ -205,7 +205,7 @@ namespace DrawingBoardNET.Drawing.Window
 			{
 				if (previousFrameBuffer != null && redrawEveryFrame)
 				{
-					Graphics.DrawImage(previousFrameBuffer, -8, -31);
+					Graphics.DrawImage(previousFrameBuffer, PointToClient(Point.Empty));
 				}
 
 				Draw();

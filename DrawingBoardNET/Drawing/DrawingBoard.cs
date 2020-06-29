@@ -81,8 +81,8 @@ namespace DrawingBoardNET.Drawing
 		public double FrameRate => mainForm.FrameRate;
 		public double TotalElapsedTime => mainForm.TotalElapsedTime;
 		public int FrameCount => mainForm.TotalFrameCount;
-		public int MouseX => Control.MousePosition.X - (mainForm.Location.X + 8);
-		public int MouseY => Control.MousePosition.Y - (mainForm.Location.Y + 31);
+		public int MouseX => mainForm.PointToClient(Control.MousePosition).X;
+		public int MouseY => mainForm.PointToClient(Control.MousePosition).Y;
 		public int Xmin => 0;
 		public int Ymin => 0;
 		public int Xcenter => Width / 2;
