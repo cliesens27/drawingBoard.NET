@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using DrawingBoardNET.DrawingBoardNET.Drawing;
 
-namespace DrawingBoardNET.Drawing.Constants.Window
+namespace DrawingBoardNET.Drawing.Window
 {
 	public delegate void InitMethod();
 	public delegate void DrawMethod();

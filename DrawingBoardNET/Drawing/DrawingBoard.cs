@@ -6,8 +6,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 using DrawingBoardNET.Drawing.Constants;
-using DrawingBoardNET.Drawing.Constants.Window;
-using DrawingBoardNET.DrawingBoardNET.Drawing;
+using DrawingBoardNET.Drawing.Window;
 
 namespace DrawingBoardNET.Drawing
 {
@@ -95,6 +94,7 @@ namespace DrawingBoardNET.Drawing
 		public int Height { get; private set; } = -1;
 
 		private Graphics Graphics => mainForm.Graphics;
+
 
 		private readonly bool IsConsoleApplication;
 		private readonly int screenX = -1;
