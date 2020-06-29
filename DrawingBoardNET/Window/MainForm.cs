@@ -15,7 +15,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 	public delegate void MouseReleasedMethod();
 	public delegate void MouseDraggedMethod();
 
-	public partial class MainForm : Form
+	internal partial class MainForm : Form
 	{
 		#region Fields & Properties
 
@@ -74,21 +74,21 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 			isPaused = false;
 		}
 
-		public MainForm(int width, int height, bool redrawEveryFrame) : this()
+		internal MainForm(int width, int height, bool redrawEveryFrame) : this()
 		{
 			this.redrawEveryFrame = redrawEveryFrame;
 			ClientSize = new Size(width, height);
 			mainPictureBox.Size = new Size(width, height);
 		}
 
-		public MainForm(int width, int height, int x, int y, bool redrawEveryFrame)
+		internal MainForm(int width, int height, int x, int y, bool redrawEveryFrame)
 			: this(width, height, redrawEveryFrame) => Location = new Point(x, y);
 
 		#endregion
 
-		public void Pause() => isPaused = true;
+		internal void Pause() => isPaused = true;
 
-		public void Resume() => isPaused = false;
+		internal void Resume() => isPaused = false;
 
 		private void Run(object sender, EventArgs e)
 		{
@@ -230,7 +230,7 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Message
+		internal struct Message
 		{
 			public IntPtr handle;
 			public int message;
@@ -241,6 +241,6 @@ namespace DrawingBoardNET.Drawing.Constants.Window
 		}
 
 		[DllImport("user32.dll")]
-		public static extern int PeekMessage(out Message msg, IntPtr window, int filterMin, int filterMax, int removeMsg);
+		internal static extern int PeekMessage(out Message msg, IntPtr window, int filterMin, int filterMax, int removeMsg);
 	}
 }
