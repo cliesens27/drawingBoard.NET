@@ -5,7 +5,7 @@ A simple 2D graphical C# library inspired by Processing (https://www.processing.
 ## Code Sample
 
 ```C#
-using DrawingBoardNET.Drawing;
+using DB = DrawingBoardNET.Drawing.DrawingBoard;
 
 namespace DrawingBoardTest
 {
@@ -13,7 +13,7 @@ namespace DrawingBoardTest
 	{
 		public static void Main(string[] args)
 		{
-			DrawingBoard db = new DrawingBoard(600, 400);
+			DB db = new DB(600, 400);
 			db.Title = "DrawingBoardTest";
 			db.TargetFrameRate = 30;
 
@@ -27,8 +27,8 @@ namespace DrawingBoardTest
 			// This is executed at most 30 times per second
 			db.DrawMethod = () =>
 			{
-				db.Fill(Utils.Rand(0, 255), Utils.Rand(0, 255), Utils.Rand(0, 255));
-				db.Square(Utils.Rand(db.Xmin, db.Xmax), Utils.Rand(db.Ymin, db.Ymax), 30);
+				db.Fill(DB.Rand(0, 255), DB.Rand(0, 255), DB.Rand(0, 255));
+				db.Square(DB.Rand(db.Xmin, db.Xmax), DB.Rand(db.Ymin, db.Ymax), 30);
 			};
 
 			// Draw a white circle when the mouse is clicked
