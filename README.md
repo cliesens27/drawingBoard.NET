@@ -26,10 +26,9 @@ namespace DrawingBoardTest
 			{
 				db.Stroke(255);
 				db.StrokeWidth(3);
-				db.Fill(DB.Rand(0, 255), DB.Rand(0, 255), DB.Rand(0, 255));
 			};
 
-			// This is executed at most 30 times per second, i.e. every frame
+			// This is executed at most 30 times per second, or once per frame
 			db.Draw = () =>
 			{
 				db.Background(0, (int) slider.Value, 0);
