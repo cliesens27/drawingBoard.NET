@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using DrawingBoardNET.Drawing.Constants;
 using DrawingBoardNET.Drawing.Constants.Window;
+using DrawingBoardNET.DrawingBoardNET.Drawing;
 
 namespace DrawingBoardNET.Drawing
 {
@@ -100,6 +101,7 @@ namespace DrawingBoardNET.Drawing
 		private readonly int screenY = -1;
 		private static Random rng;
 		private static int seed;
+		private Style oldStyle;
 		private Font currentFont;
 		private MainForm mainForm;
 		private Pen currentPen;
@@ -113,7 +115,6 @@ namespace DrawingBoardNET.Drawing
 		private float currentRotation;
 		private float currentTranslationX;
 		private float currentTranslationY;
-
 
 		#endregion
 
@@ -210,6 +211,28 @@ namespace DrawingBoardNET.Drawing
 		public void Resume() => mainForm.Resume();
 
 		public void Close() => mainForm.Close();
+
+		public void SaveStyle()
+		{
+			oldStyle = new Style(currentFont, currentPen, currentBrush, currentTextBrush,
+				currentFormat, rectMode, imageMode, strokeMode, fill);
+		}
+
+		public void RestoreStyle()
+		{
+			Font(oldStyle.Font);
+
+			currentPen = oldStyle.Pen;
+			currentBrush = oldStyle.Brush;
+			currentTextBrush = oldStyle.TextBrush;
+			currentFormat = oldStyle.Format;
+
+			RectMode(oldStyle.RectMode);
+			ImgMode(oldStyle.ImageMode);
+			StrokeMode(oldStyle.StrokeMode);
+
+			fill = oldStyle.Fill;
+		}
 
 		#region Image
 
@@ -613,5 +636,36 @@ namespace DrawingBoardNET.Drawing
 		}
 
 		#endregion
+
+		private class Style
+		{
+			internal Font Font { get; private set; }
+			internal Pen Pen { get; private set; }
+			internal SolidBrush Brush { get; private set; }
+			internal SolidBrush TextBrush { get; private set; }
+			internal StringFormat Format { get; private set; }
+			internal RectangleMode RectMode { get; private set; }
+			internal ImageMode ImageMode { get; private set; }
+			internal LineCap StrokeMode { get; private set; }
+			internal bool Fill { get; private set; }
+
+			internal Style(Font font, Pen pen, SolidBrush brush, SolidBrush textBrush, StringFormat format,
+				RectangleMode rectMode, ImageMode imageMode, LineCap strokeMode, bool fill)
+			{
+				Font = new Font(font.FontFamily, font.Size);
+				Pen = new Pen(pen.Color, pen.Width);
+				Brush = new SolidBrush(brush.Color);
+				TextBrush = new SolidBrush(textBrush.Color);
+
+				Format = new StringFormat();
+				Format.LineAlignment = format.LineAlignment;
+				Format.Alignment = format.Alignment;
+
+				RectMode = rectMode;
+				ImageMode = imageMode;
+				StrokeMode = strokeMode;
+				Fill = fill;
+			}
+		}
 	}
 }
