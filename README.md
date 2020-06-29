@@ -5,6 +5,7 @@ A simple 2D graphical C# library inspired by Processing (https://www.processing.
 ## Code Sample
 
 ```C#
+using DrawingBoardNET.DrawingBoardNET.Drawing;
 using DB = DrawingBoardNET.Drawing.DrawingBoard;
 
 namespace DrawingBoardTest
@@ -17,32 +18,36 @@ namespace DrawingBoardTest
 			db.Title = "DrawingBoardTest";
 			db.TargetFrameRate = 30;
 
+			Slider slider = new Slider(150, 450, 0, 255, db.Ycenter, 25);
+			db.AddSlider(slider);
+
 			// This is executed once before the first call to Draw()
-			db.InitMethod = () =>
+			db.Init = () =>
 			{
-				db.Stroke(0, 0, 0);
-				db.StrokeWidth(2.5f);
-			};
-
-			// This is executed at most 30 times per second
-			db.DrawMethod = () =>
-			{
+				db.Stroke(255);
+				db.StrokeWidth(3);
 				db.Fill(DB.Rand(0, 255), DB.Rand(0, 255), DB.Rand(0, 255));
-				db.Square(DB.Rand(db.Xmin, db.Xmax), DB.Rand(db.Ymin, db.Ymax), 30);
 			};
 
-			// Draw a white circle when the mouse is clicked
-			db.MousePressed = () =>
+			// This is executed at most 30 times per second, i.e. every frame
+			db.Draw = () =>
 			{
-				db.Fill(255);
-				db.Circle(db.MouseX, db.MouseY, 100);
+				db.Background(0, (int) slider.Value, 0);
 			};
 
-			// Run the sketch!
-			db.Draw();
+			// This is executed once per slider per frame
+			db.DrawSlider = (s) =>
+			{
+				db.Fill(0, 255 - (int) slider.Value, 0);
+				db.Line(s.MinX, s.Y, s.MaxX, s.Y);
+				db.Circle(s.X, s.Y, s.Radius);
+			};
+
+			// Run the sketch
+			db.Start();
 		}
 	}
 }
 ```
 
-![](https://i.imgur.com/Bu79XLU.png)
+![](https://i.imgur.com/Zbc3F3Y.gif)
