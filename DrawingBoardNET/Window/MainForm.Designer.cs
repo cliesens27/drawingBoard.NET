@@ -1,4 +1,4 @@
-﻿namespace DrawingBoardNET.Drawing.Window
+﻿namespace DrawingBoardNET.Window
 {
 	partial class MainForm
 	{

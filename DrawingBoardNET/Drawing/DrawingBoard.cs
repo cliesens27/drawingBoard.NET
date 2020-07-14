@@ -6,8 +6,9 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 using DrawingBoardNET.Drawing.Constants;
-using DrawingBoardNET.Drawing.Window;
-using DrawingBoardNET.DrawingBoardNET.Drawing;
+using DrawingBoardNET.Window;
+using DrawingBoardNET.Window.UI;
+using Button = DrawingBoardNET.Window.UI.Button;
 
 namespace DrawingBoardNET.Drawing
 {
@@ -25,6 +26,12 @@ namespace DrawingBoardNET.Drawing
 		{
 			get => mainForm.Draw;
 			set => mainForm.Draw = value;
+		}
+
+		public DrawButtonMethod DrawButton
+		{
+			get => mainForm.DrawButton;
+			set => mainForm.DrawButton = value;
 		}
 
 		public DrawSliderMethod DrawSlider
@@ -100,6 +107,24 @@ namespace DrawingBoardNET.Drawing
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
 
+		private RectangleMode rectMode
+		{
+			get => mainForm.rectMode;
+			set => mainForm.rectMode = value;
+		}
+
+		private ImageMode imageMode
+		{
+			get => mainForm.imageMode;
+			set => mainForm.imageMode = value;
+		}
+
+		private LineCap strokeMode
+		{
+			get => mainForm.strokeMode;
+			set => mainForm.strokeMode = value;
+		}
+
 		private Graphics Graphics => mainForm.Graphics;
 
 		private readonly bool IsConsoleApplication;
@@ -114,9 +139,6 @@ namespace DrawingBoardNET.Drawing
 		private SolidBrush currentBrush;
 		private SolidBrush currentTextBrush;
 		private StringFormat currentFormat;
-		private RectangleMode rectMode;
-		private ImageMode imageMode;
-		private LineCap strokeMode;
 		private bool fill;
 		private float currentRotation;
 		private float currentTranslationX;
@@ -158,6 +180,7 @@ namespace DrawingBoardNET.Drawing
 
 			Init = null;
 			Draw = null;
+			DrawButton = null;
 			DrawSlider = null;
 			KeyPressed = null;
 			KeyReleased = null;
@@ -240,6 +263,8 @@ namespace DrawingBoardNET.Drawing
 
 			fill = oldStyle.Fill;
 		}
+
+		public void AddButton(Button button) => mainForm.AddButton(button);
 
 		public void AddSlider(Slider slider) => mainForm.AddSlider(slider);
 

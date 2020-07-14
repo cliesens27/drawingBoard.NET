@@ -1,11 +1,9 @@
 ﻿using DrawingBoardNET.Drawing;
 
-namespace DrawingBoardNET.DrawingBoardNET.Drawing
+namespace DrawingBoardNET.Window.UI
 {
-	public class Slider
+	public class Slider : UIElement
 	{
-		public int X { get; private set; }
-		public int Y { get; private set; }
 		public int Radius { get; private set; }
 		public int MinX { get; private set; }
 		public int MaxX { get; private set; }
@@ -18,10 +16,8 @@ namespace DrawingBoardNET.DrawingBoardNET.Drawing
 		public Slider(int minX, int maxX, float minVal, float maxVal, int y, int r)
 			: this(minX, maxX, minVal, maxVal, y, r, (minX + maxX) / 2) { }
 
-		public Slider(int minX, int maxX, float minVal, float maxVal, int y, int r, int x)
+		public Slider(int minX, int maxX, float minVal, float maxVal, int y, int r, int x) : base(x, y)
 		{
-			X = x;
-			Y = y;
 			Radius = r;
 			MinX = minX;
 			MaxX = maxX;

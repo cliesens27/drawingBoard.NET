@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using DrawingBoardNET.DrawingBoardNET.Drawing;
+using DrawingBoardNET.Drawing.Constants;
+using DrawingBoardNET.Window.UI;
+using Button = DrawingBoardNET.Window.UI.Button;
 
-namespace DrawingBoardNET.Drawing.Window
+namespace DrawingBoardNET.Window
 {
 	public delegate void InitMethod();
 	public delegate void DrawMethod();
+	public delegate void DrawButtonMethod(Button button);
 	public delegate void DrawSliderMethod(Slider slider);
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);
@@ -23,6 +27,7 @@ namespace DrawingBoardNET.Drawing.Window
 
 		internal InitMethod Init { get; set; }
 		internal DrawMethod Draw { get; set; }
+		internal DrawButtonMethod DrawButton { get; set; }
 		internal DrawSliderMethod DrawSlider { get; set; }
 		internal KeyPressedMethod KeyPressed { get; set; }
 		internal KeyReleasedMethod KeyReleased { get; set; }
@@ -36,6 +41,11 @@ namespace DrawingBoardNET.Drawing.Window
 		internal double TotalElapsedTime { get; private set; }
 		internal int TotalFrameCount { get; private set; }
 
+		internal RectangleMode rectMode;
+		internal ImageMode imageMode;
+		internal LineCap strokeMode;
+
+		private readonly List<Button> buttons;
 		private readonly List<Slider> sliders;
 		private readonly Stopwatch stopwatch;
 		private readonly bool redrawEveryFrame;
@@ -62,6 +72,7 @@ namespace DrawingBoardNET.Drawing.Window
 			Application.Idle += Run;
 
 			previousFrameBuffer = null;
+			buttons = new List<Button>();
 			sliders = new List<Slider>();
 			pressedKeys = new List<char>();
 			releasedKeys = new List<char>();
@@ -94,6 +105,8 @@ namespace DrawingBoardNET.Drawing.Window
 		internal void Pause() => isPaused = true;
 
 		internal void Resume() => isPaused = false;
+
+		internal void AddButton(Button button) => buttons.Add(button);
 
 		internal void AddSlider(Slider slider) => sliders.Add(slider);
 
@@ -157,11 +170,16 @@ namespace DrawingBoardNET.Drawing.Window
 
 		private void CheckMouseInput()
 		{
+			int mx = PointToClient(MousePosition).X;
+			int my = PointToClient(MousePosition).Y;
+
+			HoverButtons(mx, my);
+
 			if (isMouseDragged)
 			{
 				MouseDragged?.Invoke();
 
-				UpdateSliders(PointToClient(MousePosition).X);
+				UpdateSliders(mx);
 			}
 
 			if (isMousePressed)
@@ -169,7 +187,8 @@ namespace DrawingBoardNET.Drawing.Window
 				MousePressed?.Invoke();
 				isMousePressed = false;
 
-				LockSliders(PointToClient(MousePosition).X, PointToClient(MousePosition).Y);
+				LockSliders(mx, my);
+				PressButtons(mx, my);
 			}
 
 			if (isMouseReleased)
@@ -177,7 +196,39 @@ namespace DrawingBoardNET.Drawing.Window
 				MouseReleased?.Invoke();
 				isMouseReleased = false;
 
-				UnlockSliders(PointToClient(MousePosition).X, PointToClient(MousePosition).Y);
+				UnlockSliders(mx, my);
+				TriggerButtons(mx, my);
+			}
+		}
+
+		private void HoverButtons(int mx, int my)
+		{
+			foreach (Button b in buttons)
+			{
+				b.IsHovered = b.IsSelected(rectMode, mx, my);
+			}
+		}
+
+		private void PressButtons(int mx, int my)
+		{
+			foreach (Button b in buttons)
+			{
+				if (!b.IsPressed)
+				{
+					b.IsPressed = b.IsSelected(rectMode, mx, my);
+				}
+			}
+		}
+
+		private void TriggerButtons(int mx, int my)
+		{
+			foreach (Button b in buttons)
+			{
+				if (b.IsPressed && b.IsSelected(rectMode, mx, my))
+				{
+					b.Trigger();
+					b.IsPressed = false;
+				}
 			}
 		}
 
@@ -257,6 +308,11 @@ namespace DrawingBoardNET.Drawing.Window
 				foreach (Slider s in sliders)
 				{
 					DrawSlider?.Invoke(s);
+				}
+
+				foreach (Button b in buttons)
+				{
+					DrawButton?.Invoke(b);
 				}
 			}
 		}

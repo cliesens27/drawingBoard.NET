@@ -8,17 +8,18 @@
     <OutputType>Library</OutputType>
     <RootNamespace>DrawingBoardNET</RootNamespace>
     <AssemblyName>DrawingBoardNET</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\lib\drawingBoard\</OutputPath>
+    <OutputPath>..\__lib\drawingBoard\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -56,13 +57,15 @@
     <Compile Include="DrawingBoardNET\Drawing\Constants\TextAlignment.cs" />
     <Compile Include="DrawingBoardNET\Drawing\DrawingBoard.cs" />
     <Compile Include="DrawingBoardNET\Drawing\Constants\RectangleMode.cs" />
-    <Compile Include="DrawingBoardNET\Drawing\Slider.cs" />
+    <Compile Include="DrawingBoardNET\Window\UI\Button.cs" />
+    <Compile Include="DrawingBoardNET\Window\UI\Slider.cs" />
     <Compile Include="DrawingBoardNET\Window\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DrawingBoardNET\Window\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DrawingBoardNET\Window\UI\UIElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
