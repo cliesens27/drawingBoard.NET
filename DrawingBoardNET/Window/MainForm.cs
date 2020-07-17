@@ -20,6 +20,8 @@ namespace DrawingBoardNET.Window
 	public delegate void MousePressedMethod();
 	public delegate void MouseReleasedMethod();
 	public delegate void MouseDraggedMethod();
+	public delegate void MouseWheelUpMethod();
+	public delegate void MouseWheelDownMethod();
 
 	internal partial class MainForm : Form
 	{
@@ -34,6 +36,8 @@ namespace DrawingBoardNET.Window
 		internal MousePressedMethod MousePressed { get; set; }
 		internal MouseReleasedMethod MouseReleased { get; set; }
 		internal MouseDraggedMethod MouseDragged { get; set; }
+		internal MouseWheelUpMethod MouseWheelUp { get; set; }
+		internal MouseWheelDownMethod MouseWheelDown { get; set; }
 		internal double TargetFrameRate { get; set; }
 
 		internal Graphics Graphics { get; private set; }
@@ -327,6 +331,20 @@ namespace DrawingBoardNET.Window
 		{
 			isMouseReleased = true;
 			isMouseDragged = false;
+		}
+
+		private void mainPictureBox_MouseWheel(object sender, MouseEventArgs e)
+		{
+			int delta = e.Delta;
+
+			if (delta > 0)
+			{
+				MouseWheelUp?.Invoke();
+			}
+			else if (delta < 0)
+			{
+				MouseWheelDown?.Invoke();
+			}
 		}
 
 		private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => pressedKeys.Add(e.KeyChar);
