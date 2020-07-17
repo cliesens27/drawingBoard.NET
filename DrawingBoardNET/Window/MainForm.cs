@@ -48,6 +48,7 @@ namespace DrawingBoardNET.Window
 		internal RectangleMode rectMode;
 		internal ImageMode imageMode;
 		internal LineCap strokeMode;
+		internal DBColorMode colorMode;
 
 		private readonly List<Button> buttons;
 		private readonly List<Slider> sliders;
