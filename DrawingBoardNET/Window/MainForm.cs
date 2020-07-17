@@ -54,8 +54,9 @@ namespace DrawingBoardNET.Window
 		private readonly List<Slider> sliders;
 		private readonly Stopwatch stopwatch;
 		private readonly bool redrawEveryFrame;
-		private List<char> pressedKeys;
-		private List<char> releasedKeys;
+		private readonly List<char> pressedKeys;
+		private readonly List<char> releasedKeys;
+		private readonly Queue<double> frameRateSamples;
 		private Bitmap previousFrameBuffer;
 		private bool isFirstFrame;
 		private bool isMouseDragged;
@@ -64,6 +65,7 @@ namespace DrawingBoardNET.Window
 		private bool isPaused;
 		private double currentElapsedTime;
 		private double lastRedrawTime;
+		private double sampleAccumulator;
 		private int currentFrameCount;
 
 		#endregion
@@ -81,6 +83,7 @@ namespace DrawingBoardNET.Window
 			sliders = new List<Slider>();
 			pressedKeys = new List<char>();
 			releasedKeys = new List<char>();
+			frameRateSamples = new Queue<double>();
 
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
@@ -269,23 +272,36 @@ namespace DrawingBoardNET.Window
 
 		private void ComputeFrameRate()
 		{
-			const double MIN_INTERVAL = 0.25;
-			const int MIN_NB_FRAMES = 10;
+			const double SMOOTHING = 0.9;
+			const int MIN_NB_FRAMES = 5;
+			const int WINDOW_SIZE = 5;
 
 			if (TotalElapsedTime > 0)
 			{
+				double timeSinceLast = TotalElapsedTime - currentElapsedTime;
 				currentFrameCount++;
 
-				if (TotalElapsedTime - currentElapsedTime > MIN_INTERVAL && currentFrameCount > MIN_NB_FRAMES)
+				if (currentFrameCount >= MIN_NB_FRAMES)
 				{
-					FrameRate = currentFrameCount / (TotalElapsedTime - currentElapsedTime);
+					double newSample = currentFrameCount / timeSinceLast;
 					currentElapsedTime = TotalElapsedTime;
 					currentFrameCount = 0;
+
+					sampleAccumulator += newSample;
+					frameRateSamples.Enqueue(newSample);
+
+					if (frameRateSamples.Count > WINDOW_SIZE)
+					{
+						sampleAccumulator -= frameRateSamples.Dequeue();
+					}
+
+					double newFrameRate = sampleAccumulator / frameRateSamples.Count;
+					FrameRate = (newFrameRate * SMOOTHING) + (FrameRate * (1 - SMOOTHING));
 				}
 			}
 			else
 			{
-				FrameRate = 0;
+				FrameRate = TargetFrameRate;
 			}
 		}
 
