@@ -743,11 +743,11 @@ namespace DrawingBoardNET.Drawing
 		{
 			if (CurrentColorMode == DBColorMode.RGB)
 			{
-				Background(grey, grey, grey);
+				TextColor(grey, grey, grey);
 			}
 			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
 			{
-				Background(0, 0, grey);
+				TextColor(0, 0, grey);
 			}
 		}
 
@@ -755,11 +755,11 @@ namespace DrawingBoardNET.Drawing
 		{
 			if (CurrentColorMode == DBColorMode.RGB)
 			{
-				Background(grey, grey, grey, a);
+				TextColor(grey, grey, grey, a);
 			}
 			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
 			{
-				Background(0, 0, grey, a);
+				TextColor(0, 0, grey, a);
 			}
 		}
 
