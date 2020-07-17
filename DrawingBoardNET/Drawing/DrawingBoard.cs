@@ -70,6 +70,18 @@ namespace DrawingBoardNET.Drawing
 			set => mainForm.MouseDragged = value;
 		}
 
+		public MouseWheelUpMethod MouseWheelUp
+		{
+			get => mainForm.MouseWheelUp;
+			set => mainForm.MouseWheelUp = value;
+		}
+
+		public MouseWheelDownMethod MouseWheelDown
+		{
+			get => mainForm.MouseWheelDown;
+			set => mainForm.MouseWheelDown = value;
+		}
+
 		public static int RandomSeed
 		{
 			get => seed;
@@ -187,6 +199,9 @@ namespace DrawingBoardNET.Drawing
 			MousePressed = null;
 			MouseReleased = null;
 			MouseDragged = null;
+			MouseWheelUp = null;
+			MouseWheelDown = null;
+
 
 			TargetFrameRate = 30;
 			Title = "Application";
