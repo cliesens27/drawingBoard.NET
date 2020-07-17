@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 using DrawingBoardNET.Drawing.Constants;
+using DrawingBoardNET.DrawingBoardNET.Exceptions;
 using DrawingBoardNET.Window;
 using DrawingBoardNET.Window.UI;
 using Button = DrawingBoardNET.Window.UI.Button;
@@ -104,6 +105,35 @@ namespace DrawingBoardNET.Drawing
 			set => mainForm.Text = value;
 		}
 
+		public RectangleMode CurrentRectMode
+		{
+			get => mainForm.rectMode;
+			private set => mainForm.rectMode = value;
+		}
+
+		public ImageMode CurrentImageMode
+		{
+			get => mainForm.imageMode;
+			private set => mainForm.imageMode = value;
+		}
+
+		public LineCap CurrentStrokeMode
+		{
+			get => mainForm.strokeMode;
+			private set => mainForm.strokeMode = value;
+		}
+
+		public DBColorMode CurrentColorMode
+		{
+			get => mainForm.colorMode;
+			private set => mainForm.colorMode = value;
+		}
+
+		public int Width { get; private set; } = -1;
+		public int Height { get; private set; } = -1;
+
+		private Graphics Graphics => mainForm.Graphics;
+
 		public double FrameRate => mainForm.FrameRate;
 		public double TotalElapsedTime => mainForm.TotalElapsedTime;
 		public int FrameCount => mainForm.TotalFrameCount;
@@ -115,29 +145,6 @@ namespace DrawingBoardNET.Drawing
 		public int Ycenter => Height / 2;
 		public int Xmax => Width;
 		public int Ymax => Height;
-
-		public int Width { get; private set; } = -1;
-		public int Height { get; private set; } = -1;
-
-		private RectangleMode rectMode
-		{
-			get => mainForm.rectMode;
-			set => mainForm.rectMode = value;
-		}
-
-		private ImageMode imageMode
-		{
-			get => mainForm.imageMode;
-			set => mainForm.imageMode = value;
-		}
-
-		private LineCap strokeMode
-		{
-			get => mainForm.strokeMode;
-			set => mainForm.strokeMode = value;
-		}
-
-		private Graphics Graphics => mainForm.Graphics;
 
 		private readonly bool IsConsoleApplication;
 		private readonly int screenX = -1;
@@ -202,7 +209,6 @@ namespace DrawingBoardNET.Drawing
 			MouseWheelUp = null;
 			MouseWheelDown = null;
 
-
 			TargetFrameRate = 30;
 			Title = "Application";
 
@@ -216,6 +222,8 @@ namespace DrawingBoardNET.Drawing
 			ImgMode(ImageMode.CENTER);
 			RectMode(RectangleMode.CENTER);
 			StrokeMode(LineCap.Flat);
+			ColorMode(DBColorMode.RGB);
+
 			HorizontalTextAlign(HorizontalTextAlignment.LEFT);
 			VerticalTextAlign(VerticalTextAlignment.TOP);
 
@@ -260,7 +268,7 @@ namespace DrawingBoardNET.Drawing
 		public void SaveStyle()
 		{
 			oldStyle = new Style(currentFont, currentPen, currentBrush, currentTextBrush,
-				currentFormat, rectMode, imageMode, strokeMode, fill);
+				currentFormat, CurrentRectMode, CurrentImageMode, CurrentStrokeMode, CurrentColorMode, fill);
 		}
 
 		public void RestoreStyle()
@@ -275,6 +283,7 @@ namespace DrawingBoardNET.Drawing
 			RectMode(oldStyle.RectMode);
 			ImgMode(oldStyle.ImageMode);
 			StrokeMode(oldStyle.StrokeMode);
+			ColorMode(oldStyle.ColorMode);
 
 			fill = oldStyle.Fill;
 		}
@@ -309,7 +318,7 @@ namespace DrawingBoardNET.Drawing
 			clientAreaBitmap.Dispose();
 		}
 
-		public void ImgMode(ImageMode mode) => imageMode = mode;
+		public void ImgMode(ImageMode mode) => CurrentImageMode = mode;
 
 		public Image LoadImage(string path) => Image.FromFile(path);
 
@@ -319,7 +328,7 @@ namespace DrawingBoardNET.Drawing
 
 		public void DrawImage(Image image, float x, float y, float w, float h)
 		{
-			switch (imageMode)
+			switch (CurrentImageMode)
 			{
 				case ImageMode.CORNER:
 					Graphics.DrawImage(image, x, y, w, h);
@@ -332,23 +341,103 @@ namespace DrawingBoardNET.Drawing
 
 		#endregion
 
+		public void ColorMode(DBColorMode mode) => CurrentColorMode = mode;
+
+		private void CheckColorArguments(int r, int g, int b)
+		{
+			const int max = 255;
+
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				if (r < 0 || r > max)
+				{
+					throw new ColorModeValueRangeException("R", r, max, CurrentColorMode);
+				}
+
+				if (g < 0 || g > max)
+				{
+					throw new ColorModeValueRangeException("G", g, max, CurrentColorMode);
+				}
+
+				if (r < 0 || r > max)
+				{
+					throw new ColorModeValueRangeException("B", b, max, CurrentColorMode);
+				}
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				if (r < 0 || r > max)
+				{
+					throw new ColorModeValueRangeException("R (hue, remapped to [0, 360])", r, max, CurrentColorMode);
+				}
+
+				if (g < 0 || g > max)
+				{
+					throw new ColorModeValueRangeException("G (saturation, remapped to [0, 1])", g, max, CurrentColorMode);
+				}
+
+				if (r < 0 || r > max)
+				{
+					throw new ColorModeValueRangeException("B (brightness/lightness, remapped to [0, 1])", b, max, CurrentColorMode);
+				}
+			}
+		}
+
 		#region Stroke
 
 		public void StrokeMode(LineCap mode)
 		{
-			strokeMode = mode;
-			currentPen.StartCap = currentPen.EndCap = strokeMode;
+			CurrentStrokeMode = mode;
+			currentPen.StartCap = currentPen.EndCap = CurrentStrokeMode;
 		}
 
 		public void Stroke(Color color) => currentPen.Color = color;
 
-		public void Stroke(int grey) => Stroke(grey, grey, grey);
+		public void Stroke(int grey)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Stroke(grey, grey, grey);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Stroke(0, 0, grey);
+			}
+		}
 
-		public void Stroke(int grey, int a) => Stroke(grey, grey, grey, a);
+		public void Stroke(int grey, int a)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Stroke(grey, grey, grey, a);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Stroke(0, 0, grey, a);
+			}
+		}
 
-		public void Stroke(int r, int g, int b) => Stroke(Color.FromArgb(r, g, b));
+		public void Stroke(int r, int g, int b) => Stroke(r, g, b, 255);
 
-		public void Stroke(int r, int g, int b, int a) => Stroke(Color.FromArgb(a, r, g, b));
+		public void Stroke(int r, int g, int b, int a)
+		{
+			CheckColorArguments(r, g, b);
+
+			switch (CurrentColorMode)
+			{
+				case DBColorMode.RGB:
+					currentPen.Color = Color.FromArgb(a, r, g, b);
+					break;
+				case DBColorMode.HSB:
+					Color fromHSB = HSBtoRGB(r, g, b);
+					currentPen.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
+					break;
+				case DBColorMode.HSL:
+					Color fromHSL = HSLtoRGB(r, g, b);
+					currentPen.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
+					break;
+			}
+		}
 
 		public void StrokeWidth(float w) => currentPen.Width = w;
 
@@ -364,13 +453,52 @@ namespace DrawingBoardNET.Drawing
 			currentBrush.Color = color;
 		}
 
-		public void Fill(int grey) => Fill(grey, grey, grey);
+		public void Fill(int grey)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Fill(grey, grey, grey);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Fill(0, 0, grey);
+			}
+		}
 
-		public void Fill(int grey, int a) => Fill(grey, grey, grey, a);
+		public void Fill(int grey, int a)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Fill(grey, grey, grey, a);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Fill(0, 0, grey, a);
+			}
+		}
 
-		public void Fill(int r, int g, int b) => Fill(Color.FromArgb(r, g, b));
+		public void Fill(int r, int g, int b) => Fill(r, g, b, 255);
 
-		public void Fill(int r, int g, int b, int a) => Fill(Color.FromArgb(a, r, g, b));
+		public void Fill(int r, int g, int b, int a)
+		{
+			CheckColorArguments(r, g, b);
+			fill = true;
+
+			switch (CurrentColorMode)
+			{
+				case DBColorMode.RGB:
+					currentBrush.Color = Color.FromArgb(a, r, g, b);
+					break;
+				case DBColorMode.HSB:
+					Color fromHSB = HSBtoRGB(r, g, b);
+					currentBrush.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
+					break;
+				case DBColorMode.HSL:
+					Color fromHSL = HSLtoRGB(r, g, b);
+					currentBrush.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
+					break;
+			}
+		}
 
 		public void NoFill() => fill = false;
 
@@ -389,19 +517,50 @@ namespace DrawingBoardNET.Drawing
 			RestoreStyle();
 		}
 
-		public void Background(int grey) => Background(grey, grey, grey);
+		public void Background(int grey)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Background(grey, grey, grey);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Background(0, 0, grey);
+			}
+		}
 
-		public void Background(int grey, int a) => Background(grey, grey, grey, a);
+		public void Background(int grey, int a)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Background(grey, grey, grey, a);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Background(0, 0, grey, a);
+			}
+		}
 
-		public void Background(int r, int g, int b) => Background(Color.FromArgb(r, g, b));
+		public void Background(int r, int g, int b) => Background(r, g, b, 255);
 
-		public void Background(int r, int g, int b, int a) => Background(Color.FromArgb(a, r, g, b));
+		public void Background(int r, int g, int b, int a)
+		{
+			CheckColorArguments(r, g, b);
+
+			SaveStyle();
+
+			NoStroke();
+			Fill(r, g, b, a);
+			Rectangle(Xmin, Ymin, Width, Height);
+
+			RestoreStyle();
+		}
 
 		#endregion
 
 		#region Shapes
 
-		public void RectMode(RectangleMode mode) => rectMode = mode;
+		public void RectMode(RectangleMode mode) => CurrentRectMode = mode;
 
 		public void Point(float x, float y)
 		{
@@ -434,7 +593,7 @@ namespace DrawingBoardNET.Drawing
 
 		public void Rectangle(float x, float y, float w, float h)
 		{
-			switch (rectMode)
+			switch (CurrentRectMode)
 			{
 				case RectangleMode.CORNER:
 					if (fill)
@@ -578,15 +737,53 @@ namespace DrawingBoardNET.Drawing
 
 		public void FontSize(float size) => currentFont = new Font(currentFont.FontFamily, size);
 
-		public void FontColor(Color color) => currentTextBrush.Color = color;
+		public void TextColor(Color color) => currentTextBrush.Color = color;
 
-		public void FontColor(int grey) => FontColor(grey, grey, grey);
+		public void TextColor(int grey)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Background(grey, grey, grey);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Background(0, 0, grey);
+			}
+		}
 
-		public void FontColor(int grey, int a) => FontColor(grey, grey, grey, a);
+		public void TextColor(int grey, int a)
+		{
+			if (CurrentColorMode == DBColorMode.RGB)
+			{
+				Background(grey, grey, grey, a);
+			}
+			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			{
+				Background(0, 0, grey, a);
+			}
+		}
 
-		public void FontColor(int r, int g, int b) => FontColor(Color.FromArgb(r, g, b));
+		public void TextColor(int r, int g, int b) => TextColor(r, g, b, 255);
 
-		public void FontColor(int r, int g, int b, int a) => FontColor(Color.FromArgb(a, r, g, b));
+		public void TextColor(int r, int g, int b, int a)
+		{
+			CheckColorArguments(r, g, b);
+
+			switch (CurrentColorMode)
+			{
+				case DBColorMode.RGB:
+					currentTextBrush.Color = Color.FromArgb(a, r, g, b);
+					break;
+				case DBColorMode.HSB:
+					Color fromHSB = HSBtoRGB(r, g, b);
+					currentTextBrush.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
+					break;
+				case DBColorMode.HSL:
+					Color fromHSL = HSLtoRGB(r, g, b);
+					currentTextBrush.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
+					break;
+			}
+		}
 
 		public void Text(string str, float x, float y)
 			=> Graphics.DrawString(str, currentFont, currentTextBrush, x, y, currentFormat);
@@ -676,6 +873,109 @@ namespace DrawingBoardNET.Drawing
 
 		#endregion
 
+		private static Color HSBtoRGB(int hue, int saturation, int brightness)
+		{
+			double h = 360 * (hue / 255.0);
+			double s = saturation / 255.0;
+			double b = brightness;
+
+			double f = h / 60 - Math.Floor(h / 60);
+
+			int w = brightness;
+			int x = (int) (b * (1 - s));
+			int y = (int) (b * (1 - f * s));
+			int z = (int) (b * (1 - (1 - f) * s));
+
+			int i = ((int) Math.Floor(h / 60)) % 6;
+
+			switch (i)
+			{
+				case 0:
+					return Color.FromArgb(255, w, z, x);
+				case 1:
+					return Color.FromArgb(255, y, w, x);
+				case 2:
+					return Color.FromArgb(255, x, w, z);
+				case 3:
+					return Color.FromArgb(255, x, y, w);
+				case 4:
+					return Color.FromArgb(255, z, x, w);
+				default:
+					return Color.FromArgb(255, w, x, y);
+			}
+		}
+
+		private static Color HSLtoRGB(int hue, int saturation, int lightness)
+		{
+			double h = 360 * (hue / 255.0);
+			double s = saturation / 255.0;
+			double l = lightness / 255.0;
+
+			int r, g, b;
+
+			if (saturation == 0)
+			{
+				r = g = b = lightness;
+			}
+			else
+			{
+				double q1, q2;
+				double qHue = h / 6;
+
+				if (l < 0.5)
+				{
+					q2 = l * (1 + s);
+				}
+				else
+				{
+					q2 = (l + s) - (l * s);
+				}
+
+				q1 = 2d * s - q2;
+
+				double tr, tg, tb;
+				tr = qHue + (1.0 / 3.0);
+				tg = qHue;
+				tb = qHue - (1.0 / 3.0);
+
+				tr = HSLColorComponent(tr, q1, q2);
+				tg = HSLColorComponent(tg, q1, q2);
+				tb = HSLColorComponent(tb, q1, q2);
+
+				r = (int) Math.Round(tr * 255);
+				g = (int) Math.Round(tg * 255);
+				b = (int) Math.Round(tb * 255);
+			}
+
+			return Color.FromArgb(r, g, b);
+		}
+
+		private static double HSLColorComponent(double q1, double q2, double q3)
+		{
+			if (q1 < 0)
+			{
+				q1 += 1;
+			}
+			if (q1 > 1)
+			{
+				q1 -= 1;
+			}
+			if (q1 < 1.0 / 6.0)
+			{
+				return q2 + (q3 - q2) * 6 * q1;
+			}
+			if (q1 < 0.5)
+			{
+				return q3;
+			}
+			if (q1 < 2.0 / 3.0)
+			{
+				return q2 + (q3 - q2) * (2.0 / 3.0 - q1) * 6;
+			}
+
+			return q2;
+		}
+
 		private class Style
 		{
 			internal Font Font { get; private set; }
@@ -686,10 +986,11 @@ namespace DrawingBoardNET.Drawing
 			internal RectangleMode RectMode { get; private set; }
 			internal ImageMode ImageMode { get; private set; }
 			internal LineCap StrokeMode { get; private set; }
+			internal DBColorMode ColorMode { get; private set; }
 			internal bool Fill { get; private set; }
 
 			internal Style(Font font, Pen pen, SolidBrush brush, SolidBrush textBrush, StringFormat format,
-				RectangleMode rectMode, ImageMode imageMode, LineCap strokeMode, bool fill)
+				RectangleMode rectMode, ImageMode imageMode, LineCap strokeMode, DBColorMode colorMode, bool fill)
 			{
 				Font = new Font(font.FontFamily, font.Size);
 				Pen = new Pen(pen.Color, pen.Width);
@@ -703,6 +1004,7 @@ namespace DrawingBoardNET.Drawing
 				RectMode = rectMode;
 				ImageMode = imageMode;
 				StrokeMode = strokeMode;
+				ColorMode = colorMode;
 				Fill = fill;
 			}
 		}
