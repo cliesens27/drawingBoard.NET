@@ -2,8 +2,8 @@
 {
 	public enum HorizontalTextAlignment
 	{
-		RIGHT,
-		LEFT,
-		CENTER
+		Right,
+		Left,
+		Center
 	}
 }

@@ -5,10 +5,6 @@
 		public int X { get; protected set; }
 		public int Y { get; protected set; }
 
-		public UIElement(int x, int y)
-		{
-			X = x;
-			Y = y;
-		}
+		public UIElement(int x, int y) => (X, Y) = (x, y);
 	}
 }
