@@ -234,7 +234,7 @@ namespace DrawingBoardNET.Window
 			{
 				if (b.IsPressed && b.IsSelected(rectMode, mx, my))
 				{
-					b.Trigger();
+					b.Action();
 					b.IsPressed = false;
 				}
 			}
