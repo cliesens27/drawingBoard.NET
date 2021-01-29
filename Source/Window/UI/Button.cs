@@ -34,15 +34,15 @@ namespace DrawingBoardNET.Window.UI
 
 			switch (rectMode)
 			{
-				case RectangleMode.CENTER:
+				case RectangleMode.Center:
 					xSelected = (mouseX >= X - halfW && mouseX <= X + halfW);
 					ySelected = (mouseY >= Y - halfH && mouseY <= Y + halfH);
 					return xSelected && ySelected;
-				case RectangleMode.CORNER:
+				case RectangleMode.Corner:
 					xSelected = (mouseX >= X && mouseX <= X + Width);
 					ySelected = (mouseY >= Y && mouseY <= Y + Height);
 					return xSelected && ySelected;
-				case RectangleMode.CORNERS:
+				case RectangleMode.Corners:
 					xSelected = (mouseX >= X && mouseX <= X + Width);
 					ySelected = (mouseY >= Y && mouseY <= Y + Height);
 					return xSelected && ySelected;

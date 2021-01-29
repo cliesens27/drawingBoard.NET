@@ -2,8 +2,8 @@
 {
 	public enum DBColorMode
 	{
-		RGB,
-		HSB,
-		HSL
+		Rgb,
+		Hsb,
+		Hsl
 	}
 }

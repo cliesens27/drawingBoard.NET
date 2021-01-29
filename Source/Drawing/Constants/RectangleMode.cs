@@ -2,8 +2,8 @@
 {
 	public enum RectangleMode
 	{
-		CORNER,
-		CORNERS,
-		CENTER
+		Corner,
+		Corners,
+		Center
 	}
 }

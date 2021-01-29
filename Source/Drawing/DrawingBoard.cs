@@ -219,13 +219,13 @@ namespace DrawingBoardNET.Drawing
 			currentFormat = new StringFormat();
 			fill = false;
 
-			ImgMode(ImageMode.CENTER);
-			RectMode(RectangleMode.CENTER);
+			ImgMode(ImageMode.Center);
+			RectMode(RectangleMode.Center);
 			StrokeMode(LineCap.Flat);
-			ColorMode(DBColorMode.RGB);
+			ColorMode(DBColorMode.Rgb);
 
-			HorizontalTextAlign(HorizontalTextAlignment.LEFT);
-			VerticalTextAlign(VerticalTextAlignment.TOP);
+			HorizontalTextAlign(HorizontalTextAlignment.Left);
+			VerticalTextAlign(VerticalTextAlignment.Top);
 
 			currentRotation = 0;
 			currentTranslationX = 0;
@@ -330,10 +330,10 @@ namespace DrawingBoardNET.Drawing
 		{
 			switch (CurrentImageMode)
 			{
-				case ImageMode.CORNER:
+				case ImageMode.Corner:
 					Graphics.DrawImage(image, x, y, w, h);
 					break;
-				case ImageMode.CENTER:
+				case ImageMode.Center:
 					Graphics.DrawImage(image, x - 0.5f * w, y - 0.5f * h, w, h);
 					break;
 			}
@@ -347,7 +347,7 @@ namespace DrawingBoardNET.Drawing
 		{
 			const int max = 255;
 
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				if (r < 0 || r > max)
 				{
@@ -364,7 +364,7 @@ namespace DrawingBoardNET.Drawing
 					throw new ColorModeValueRangeException("B", b, max, CurrentColorMode);
 				}
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				if (r < 0 || r > max)
 				{
@@ -395,11 +395,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Stroke(int grey)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				Stroke(grey, grey, grey);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				Stroke(0, 0, grey);
 			}
@@ -407,11 +407,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Stroke(int grey, int a)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				Stroke(grey, grey, grey, a);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				Stroke(0, 0, grey, a);
 			}
@@ -425,14 +425,14 @@ namespace DrawingBoardNET.Drawing
 
 			switch (CurrentColorMode)
 			{
-				case DBColorMode.RGB:
+				case DBColorMode.Rgb:
 					currentPen.Color = Color.FromArgb(a, r, g, b);
 					break;
-				case DBColorMode.HSB:
+				case DBColorMode.Hsb:
 					Color fromHSB = HSBtoRGB(r, g, b);
 					currentPen.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
 					break;
-				case DBColorMode.HSL:
+				case DBColorMode.Hsl:
 					Color fromHSL = HSLtoRGB(r, g, b);
 					currentPen.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
 					break;
@@ -455,11 +455,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Fill(int grey)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				Fill(grey, grey, grey);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				Fill(0, 0, grey);
 			}
@@ -467,11 +467,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Fill(int grey, int a)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				Fill(grey, grey, grey, a);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				Fill(0, 0, grey, a);
 			}
@@ -486,14 +486,14 @@ namespace DrawingBoardNET.Drawing
 
 			switch (CurrentColorMode)
 			{
-				case DBColorMode.RGB:
+				case DBColorMode.Rgb:
 					currentBrush.Color = Color.FromArgb(a, r, g, b);
 					break;
-				case DBColorMode.HSB:
+				case DBColorMode.Hsb:
 					Color fromHSB = HSBtoRGB(r, g, b);
 					currentBrush.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
 					break;
-				case DBColorMode.HSL:
+				case DBColorMode.Hsl:
 					Color fromHSL = HSLtoRGB(r, g, b);
 					currentBrush.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
 					break;
@@ -519,11 +519,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Background(int grey)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				Background(grey, grey, grey);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				Background(0, 0, grey);
 			}
@@ -531,11 +531,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Background(int grey, int a)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				Background(grey, grey, grey, a);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				Background(0, 0, grey, a);
 			}
@@ -595,7 +595,7 @@ namespace DrawingBoardNET.Drawing
 		{
 			switch (CurrentRectMode)
 			{
-				case RectangleMode.CORNER:
+				case RectangleMode.Corner:
 					if (fill)
 					{
 						Graphics.FillRectangle(currentBrush, x, y, w, h);
@@ -603,7 +603,7 @@ namespace DrawingBoardNET.Drawing
 
 					Graphics.DrawRectangle(currentPen, x, y, w, h);
 					break;
-				case RectangleMode.CORNERS:
+				case RectangleMode.Corners:
 					if (fill)
 					{
 						Graphics.FillRectangle(currentBrush, x, y, w - x, h - y);
@@ -611,7 +611,7 @@ namespace DrawingBoardNET.Drawing
 
 					Graphics.DrawRectangle(currentPen, x, y, w - x, h - y);
 					break;
-				case RectangleMode.CENTER:
+				case RectangleMode.Center:
 					if (fill)
 					{
 						Graphics.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
@@ -699,13 +699,13 @@ namespace DrawingBoardNET.Drawing
 		{
 			switch (mode)
 			{
-				case HorizontalTextAlignment.LEFT:
+				case HorizontalTextAlignment.Left:
 					currentFormat.Alignment = StringAlignment.Near;
 					break;
-				case HorizontalTextAlignment.RIGHT:
+				case HorizontalTextAlignment.Right:
 					currentFormat.Alignment = StringAlignment.Far;
 					break;
-				case HorizontalTextAlignment.CENTER:
+				case HorizontalTextAlignment.Center:
 					currentFormat.Alignment = StringAlignment.Center;
 					break;
 			}
@@ -715,13 +715,13 @@ namespace DrawingBoardNET.Drawing
 		{
 			switch (mode)
 			{
-				case VerticalTextAlignment.TOP:
+				case VerticalTextAlignment.Top:
 					currentFormat.LineAlignment = StringAlignment.Near;
 					break;
-				case VerticalTextAlignment.BOTTOM:
+				case VerticalTextAlignment.Bottom:
 					currentFormat.LineAlignment = StringAlignment.Far;
 					break;
-				case VerticalTextAlignment.CENTER:
+				case VerticalTextAlignment.Center:
 					currentFormat.LineAlignment = StringAlignment.Center;
 					break;
 			}
@@ -741,11 +741,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void TextColor(int grey)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				TextColor(grey, grey, grey);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				TextColor(0, 0, grey);
 			}
@@ -753,11 +753,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void TextColor(int grey, int a)
 		{
-			if (CurrentColorMode == DBColorMode.RGB)
+			if (CurrentColorMode == DBColorMode.Rgb)
 			{
 				TextColor(grey, grey, grey, a);
 			}
-			else if (CurrentColorMode == DBColorMode.HSB || CurrentColorMode == DBColorMode.HSL)
+			else if (CurrentColorMode == DBColorMode.Hsb || CurrentColorMode == DBColorMode.Hsl)
 			{
 				TextColor(0, 0, grey, a);
 			}
@@ -771,14 +771,14 @@ namespace DrawingBoardNET.Drawing
 
 			switch (CurrentColorMode)
 			{
-				case DBColorMode.RGB:
+				case DBColorMode.Rgb:
 					currentTextBrush.Color = Color.FromArgb(a, r, g, b);
 					break;
-				case DBColorMode.HSB:
+				case DBColorMode.Hsb:
 					Color fromHSB = HSBtoRGB(r, g, b);
 					currentTextBrush.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
 					break;
-				case DBColorMode.HSL:
+				case DBColorMode.Hsl:
 					Color fromHSL = HSLtoRGB(r, g, b);
 					currentTextBrush.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
 					break;
