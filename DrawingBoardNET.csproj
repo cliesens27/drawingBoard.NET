@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawingBoardNET\Drawing\Constants\DBColorMode.cs" />
+    <Compile Include="DrawingBoardNET\Drawing\Constants\DrawingBoard.cs" />
     <Compile Include="DrawingBoardNET\Drawing\Constants\ImageMode.cs" />
     <Compile Include="DrawingBoardNET\Drawing\Constants\VerticalTextAlignment.cs" />
     <Compile Include="DrawingBoardNET\Drawing\Constants\TextAlignment.cs" />

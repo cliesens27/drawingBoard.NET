@@ -1,20 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.539
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawingBoardNET", "DrawingBoardNET.csproj", "{80663461-BEE2-441E-838F-2E1E26F088D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrawingBoardNET.Source", "Source\DrawingBoardNET.Source.csproj", "{44FA462C-0A48-43D9-B58A-FB60EA23F825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{80663461-BEE2-441E-838F-2E1E26F088D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80663461-BEE2-441E-838F-2E1E26F088D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80663461-BEE2-441E-838F-2E1E26F088D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80663461-BEE2-441E-838F-2E1E26F088D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Debug|x64.ActiveCfg = Debug|x64
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Debug|x64.Build.0 = Debug|x64
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Release|x64.ActiveCfg = Release|x64
+		{44FA462C-0A48-43D9-B58A-FB60EA23F825}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
