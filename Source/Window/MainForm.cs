@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DrawingBoardNET.Drawing.Constants;
@@ -46,18 +45,13 @@ namespace DrawingBoardNET.Window
 		internal int TotalFrameCount { get; private set; }
 
 		internal RectangleMode rectMode;
-		internal ImageMode imageMode;
-		internal LineCap strokeMode;
-		internal DBColorMode colorMode;
 
 		private readonly List<Button> buttons;
 		private readonly List<Slider> sliders;
 		private readonly Stopwatch stopwatch;
-		private readonly bool redrawEveryFrame;
 		private readonly List<char> pressedKeys;
 		private readonly List<char> releasedKeys;
 		private readonly Queue<double> frameRateSamples;
-		private Bitmap previousFrameBuffer;
 		private bool isFirstFrame;
 		private bool isMouseDragged;
 		private bool isMousePressed;
@@ -78,7 +72,6 @@ namespace DrawingBoardNET.Window
 			StartPosition = FormStartPosition.CenterScreen;
 			Application.Idle += Run;
 
-			previousFrameBuffer = null;
 			buttons = new List<Button>();
 			sliders = new List<Slider>();
 			pressedKeys = new List<char>();
@@ -98,15 +91,14 @@ namespace DrawingBoardNET.Window
 			isPaused = false;
 		}
 
-		internal MainForm(int width, int height, bool redrawEveryFrame) : this()
+		internal MainForm(int width, int height) : this()
 		{
-			this.redrawEveryFrame = redrawEveryFrame;
 			ClientSize = new Size(width, height);
 			mainPictureBox.Size = new Size(width, height);
 		}
 
-		internal MainForm(int width, int height, int x, int y, bool redrawEveryFrame)
-			: this(width, height, redrawEveryFrame) => Location = new Point(x, y);
+		internal MainForm(int width, int height, int x, int y)
+			: this(width, height) => Location = new Point(x, y);
 
 		#endregion
 
@@ -126,16 +118,6 @@ namespace DrawingBoardNET.Window
 
 				if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate)
 				{
-					if (previousFrameBuffer == null)
-					{
-						previousFrameBuffer = new Bitmap(Width, Height);
-					}
-
-					if (redrawEveryFrame)
-					{
-						DrawToBitmap(previousFrameBuffer, new Rectangle(Point.Empty, Size));
-					}
-
 					mainPictureBox.Invalidate();
 					lastRedrawTime = TotalElapsedTime;
 					TotalFrameCount++;
@@ -317,11 +299,6 @@ namespace DrawingBoardNET.Window
 
 			if (!isPaused)
 			{
-				if (previousFrameBuffer != null && redrawEveryFrame)
-				{
-					Graphics.DrawImage(previousFrameBuffer, PointToClient(Point.Empty));
-				}
-
 				Draw();
 				CheckKeyboardInput();
 				CheckMouseInput();
