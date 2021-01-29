@@ -2,11 +2,30 @@
 
 A simple C# 2D graphical library inspired by Processing (https://www.processing.org/).
 
+## Requirements
+
+This project is made with and requires the .NET 5.0 Framework.
+
+
+You will need to add two elements to your project's `.csproj` file, **UseWPF** and **UseWindowsForms** to the **PropertyGroup** element, and append **-windows** to the **TargetFramework** element's value, like so :
+
+```XML
+	...
+	<PropertyGroup>
+		...
+		<TargetFramework>net5.0-windows</TargetFramework>
+		...
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	...
+```
+
 ## Code Sample
 
 ```C#
-using DrawingBoardNET.DrawingBoardNET.Drawing;
-using DB = DrawingBoardNET.Drawing.DrawingBoard;
+using DrawingBoardNET.Drawing;
+using DrawingBoardNET.Window.UI;
 
 namespace DrawingBoardTest
 {
@@ -14,32 +33,32 @@ namespace DrawingBoardTest
 	{
 		public static void Main(string[] args)
 		{
-			DB db = new DB(600, 400, true, false);
+			DrawingBoard db = new DrawingBoard(600, 400);
 			db.Title = "DrawingBoardTest";
 			db.TargetFrameRate = 30;
 
-			Slider slider = new Slider(150, 450, 0, 255, db.Ycenter, 25);
+			Slider slider = new Slider(150, 450, 0, 255, db.Ycenter, 20);
 			db.AddSlider(slider);
 
 			// This is executed once before the first call to Draw()
 			db.Init = () =>
 			{
 				db.Stroke(255);
-				db.StrokeWidth(3);
+				db.StrokeWidth(2);
 			};
 
-			// This is executed at most 30 times per second, or once per frame
+			// This is executed once per frame
 			db.Draw = () =>
 			{
 				db.Background(0, (int) slider.Value, 0);
 			};
 
-			// This is executed once per slider per frame
-			db.DrawSlider = (s) =>
+			// This is executed once per frame per slider
+			db.DrawSlider = (slider) =>
 			{
 				db.Fill(0, 255 - (int) slider.Value, 0);
-				db.Line(s.MinX, s.Y, s.MaxX, s.Y);
-				db.Circle(s.X, s.Y, s.Radius);
+				db.Line(slider.MinX, slider.Y, slider.MaxX, slider.Y);
+				db.Circle(slider.X, slider.Y, slider.Radius);
 			};
 
 			// Run the sketch
