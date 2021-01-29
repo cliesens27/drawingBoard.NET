@@ -51,7 +51,7 @@ namespace DrawingBoardNET.Window
 		private readonly Stopwatch stopwatch;
 		private readonly List<char> pressedKeys;
 		private readonly List<char> releasedKeys;
-		private readonly Queue<double> frameRateSamples;
+		private readonly Queue<double> frameRateValues;
 		private bool isFirstFrame;
 		private bool isMouseDragged;
 		private bool isMousePressed;
@@ -59,7 +59,7 @@ namespace DrawingBoardNET.Window
 		private bool isPaused;
 		private double currentElapsedTime;
 		private double lastRedrawTime;
-		private double sampleAccumulator;
+		private double accumulator;
 		private int currentFrameCount;
 
 		#endregion
@@ -76,7 +76,7 @@ namespace DrawingBoardNET.Window
 			sliders = new List<Slider>();
 			pressedKeys = new List<char>();
 			releasedKeys = new List<char>();
-			frameRateSamples = new Queue<double>();
+			frameRateValues = new Queue<double>();
 
 			stopwatch = new Stopwatch();
 			stopwatch.Start();
@@ -265,19 +265,19 @@ namespace DrawingBoardNET.Window
 
 				if (currentFrameCount >= MIN_NB_FRAMES)
 				{
-					double newSample = currentFrameCount / timeSinceLast;
+					double newValue = currentFrameCount / timeSinceLast;
 					currentElapsedTime = TotalElapsedTime;
 					currentFrameCount = 0;
 
-					sampleAccumulator += newSample;
-					frameRateSamples.Enqueue(newSample);
+					accumulator += newValue;
+					frameRateValues.Enqueue(newValue);
 
-					if (frameRateSamples.Count > WINDOW_SIZE)
+					if (frameRateValues.Count > WINDOW_SIZE)
 					{
-						sampleAccumulator -= frameRateSamples.Dequeue();
+						accumulator -= frameRateValues.Dequeue();
 					}
 
-					double newFrameRate = sampleAccumulator / frameRateSamples.Count;
+					double newFrameRate = accumulator / frameRateValues.Count;
 					FrameRate = (newFrameRate * SMOOTHING) + (FrameRate * (1 - SMOOTHING));
 				}
 			}

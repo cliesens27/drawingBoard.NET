@@ -130,20 +130,18 @@ namespace DrawingBoardNET.Drawing
 
 		#region Constructors
 
-		public DrawingBoard(int width, int height, bool isConsoleApplication = true)
+		public DrawingBoard(int width, int height, bool isConsoleApp = true)
 		{
-			IsConsoleApplication = isConsoleApplication;
 			form = new MainForm(width, height);
-			(Width, Height) = (width, height);
+			(IsConsoleApplication, Width, Height) = (isConsoleApp, width, height);
 
 			SetDefaultSettings();
 		}
 
-		public DrawingBoard(int width, int height, int x, int y, bool isConsoleApplication = true)
+		public DrawingBoard(int width, int height, int x, int y, bool isConsoleApp = true)
 		{
-			IsConsoleApplication = isConsoleApplication;
 			form = new MainForm(width, height, x, y);
-			(Width, Height) = (width, height);
+			(IsConsoleApplication, Width, Height) = (isConsoleApp, width, height);
 
 			SetDefaultSettings();
 		}
@@ -164,8 +162,8 @@ namespace DrawingBoardNET.Drawing
 			MouseWheelUp = null;
 			MouseWheelDown = null;
 
-			TargetFrameRate = DEFAULT_FRAMERATE;
 			Title = "Application";
+			TargetFrameRate = DEFAULT_FRAMERATE;
 
 			currentFont = new Font("cambria", 12);
 			currentPen = new Pen(Color.Black, 1);
@@ -259,20 +257,19 @@ namespace DrawingBoardNET.Drawing
 
 		public void SaveAs(string path, ImageFormat format)
 		{
-			Bitmap fullBitmap = new Bitmap(form.Width, form.Height);
-			form.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, form.Size));
+			using (Bitmap fullBitmap = new Bitmap(form.Width, form.Height))
+			{
+				form.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, form.Size));
 
-			Point clientOrigin = form.PointToScreen(System.Drawing.Point.Empty);
+				Point clientOrigin = form.PointToScreen(System.Drawing.Point.Empty);
+				Point diff = new Point(clientOrigin.X - form.Bounds.X, clientOrigin.Y - form.Bounds.Y);
+				Rectangle clientRect = new Rectangle(diff, form.ClientSize);
 
-			Rectangle clientRect = new Rectangle(
-				new Point(clientOrigin.X - form.Bounds.X, clientOrigin.Y - form.Bounds.Y),
-				form.ClientSize);
-
-			Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb);
-			clientAreaBitmap.Save(path, format);
-
-			fullBitmap.Dispose();
-			clientAreaBitmap.Dispose();
+				using (Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb))
+				{
+					clientAreaBitmap.Save(path, format);
+				}
+			}
 		}
 
 		public void DrawImage(Image image) => DrawImage(image, 0, 0);
@@ -296,40 +293,40 @@ namespace DrawingBoardNET.Drawing
 
 		private void CheckColorArguments(int r, int g, int b)
 		{
-			const int max = 255;
+			const int MAX = 255;
 
 			if (ColorMode == DBColorMode.Rgb)
 			{
-				if (r < 0 || r > max)
+				if (r < 0 || r > MAX)
 				{
-					throw new ColorModeValueRangeException("R", r, max, ColorMode);
+					throw new ColorModeValueRangeException("R", r, MAX, ColorMode);
 				}
 
-				if (g < 0 || g > max)
+				if (g < 0 || g > MAX)
 				{
-					throw new ColorModeValueRangeException("G", g, max, ColorMode);
+					throw new ColorModeValueRangeException("G", g, MAX, ColorMode);
 				}
 
-				if (r < 0 || r > max)
+				if (r < 0 || r > MAX)
 				{
-					throw new ColorModeValueRangeException("B", b, max, ColorMode);
+					throw new ColorModeValueRangeException("B", b, MAX, ColorMode);
 				}
 			}
 			else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
 			{
-				if (r < 0 || r > max)
+				if (r < 0 || r > MAX)
 				{
-					throw new ColorModeValueRangeException("R (hue, remapped to [0, 360])", r, max, ColorMode);
+					throw new ColorModeValueRangeException("R (hue, remapped to [0, 360])", r, MAX, ColorMode);
 				}
 
-				if (g < 0 || g > max)
+				if (g < 0 || g > MAX)
 				{
-					throw new ColorModeValueRangeException("G (saturation, remapped to [0, 1])", g, max, ColorMode);
+					throw new ColorModeValueRangeException("G (saturation, remapped to [0, 1])", g, MAX, ColorMode);
 				}
 
-				if (r < 0 || r > max)
+				if (r < 0 || r > MAX)
 				{
-					throw new ColorModeValueRangeException("B (brightness/lightness, remapped to [0, 1])", b, max, ColorMode);
+					throw new ColorModeValueRangeException("B (brightness/lightness, remapped to [0, 1])", b, MAX, ColorMode);
 				}
 			}
 		}
