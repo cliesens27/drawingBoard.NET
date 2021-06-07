@@ -4,22 +4,7 @@ A simple C# 2D graphical library inspired by Processing (https://www.processing.
 
 ## Requirements
 
-This project is made with and requires the .NET 5.0 Framework.
-
-
-You will need to add two elements to your project's `.csproj` file, **UseWPF** and **UseWindowsForms** to the **PropertyGroup** element, and append **-windows** to the **TargetFramework** element's value, like so :
-
-```XML
-	...
-	<PropertyGroup>
-		...
-		<TargetFramework>net5.0-windows</TargetFramework>
-		...
-		<UseWPF>true</UseWPF>
-		<UseWindowsForms>true</UseWindowsForms>
-	</PropertyGroup>
-	...
-```
+This project is made with and requires the .NET Core 3.1 Framework.
 
 ## Code Sample
 
