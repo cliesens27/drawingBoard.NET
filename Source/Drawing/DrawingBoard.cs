@@ -77,21 +77,17 @@ namespace DrawingBoardNET.Drawing
 
 		public string Title { get => form.Text; set => form.Text = value; }
 
-		public RectangleMode RectMode
-		{
-			get => form.rectMode;
-			private set => form.rectMode = value;
-		}
+		public RectangleMode RectMode { get => form.rectMode; set => form.rectMode = value; }
 
-		public ImageMode ImageMode { get; private set; }
+		public ImageMode ImageMode { get; set; }
 
 		public LineCap StrokeMode
 		{
 			get => currentPen.StartCap;
-			private set => currentPen.StartCap = currentPen.EndCap = value;
+			set => currentPen.StartCap = currentPen.EndCap = value;
 		}
 
-		public DBColorMode ColorMode { get; private set; }
+		public DBColorMode ColorMode { get; set; }
 
 		public int Width { get; private set; } = -1;
 		public int Height { get; private set; } = -1;
