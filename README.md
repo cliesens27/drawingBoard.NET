@@ -4,7 +4,7 @@ A simple C# 2D graphical library inspired by Processing (https://www.processing.
 
 ## Requirements
 
-This project is made with and requires the .NET Core 3.1 Framework.
+This library is made with and requires the .NET 5.0 Framework. In order to use it, you must append *-windows* to the value of your project's *TargetFramework* property.
 
 ## Code Sample
 
