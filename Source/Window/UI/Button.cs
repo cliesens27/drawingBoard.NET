@@ -6,19 +6,21 @@ namespace DrawingBoardNET.Window.UI
 {
 	public delegate void ButtonAction();
 
-	public class Button : UIElement
+	public class Button
 	{
+		public int X { get; protected set; }
+		public int Y { get; protected set; }
 		public int Width { get; }
 		public int Height { get; }
-		public string Title { get; }
+		public string Label { get; }
 
 		public bool IsHovered { get; internal set; } = false;
 		public bool IsPressed { get; internal set; } = false;
 
 		internal ButtonAction Action { get; }
 
-		public Button(string title, int x, int y, int w, int h, ButtonAction action) : base(x, y)
-			=> (Action, Width, Height, Title) = (action, w, h, title);
+		public Button(string title, int x, int y, int w, int h, ButtonAction action)
+			=> (Action, Width, Height, Label) = (action, w, h, title);
 
 		internal bool IsSelected(RectangleMode rectMode, int mouseX, int mouseY)
 		{

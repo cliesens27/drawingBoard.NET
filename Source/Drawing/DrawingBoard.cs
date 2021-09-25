@@ -239,7 +239,7 @@ namespace DrawingBoardNET.Drawing
 
 		public void AddButton(Button button) => form.AddButton(button);
 
-		public void AddSlider(Slider slider) => form.AddSlider(slider);
+		public void AddSlider(HorizontalSlider slider) => form.AddSlider(slider);
 
 		#region Image
 

@@ -8,6 +8,9 @@
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.0.0.2</Version>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>

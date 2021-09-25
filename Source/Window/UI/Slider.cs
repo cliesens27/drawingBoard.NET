@@ -1,37 +1,27 @@
-﻿using DrawingBoardNET.Drawing;
-
-namespace DrawingBoardNET.Window.UI
+﻿namespace DrawingBoardNET.Window.UI
 {
-	public class Slider : UIElement
+	public abstract class Slider
 	{
-		public int Radius { get; }
-		public int MinX { get; }
-		public int MaxX { get; }
-		public float MinValue { get; }
-		public float MaxValue { get; }
+		public int HandleSize { get; }
+		public double InitialValue { get; }
+		public double MinValue { get; }
+		public double MaxValue { get; }
+		public string Label { get; }
 
 		public bool IsLocked { get; private set; } = false;
 
-		public float Value => DrawingBoard.Lerp(X, MinX, MaxX, MinValue, MaxValue);
+		public abstract double Value { get; }
 
-		public Slider(int minX, int maxX, float minVal, float maxVal, int y, int r)
-			: this(minX, maxX, minVal, maxVal, y, r, (minX + maxX) / 2) { }
+		public Slider(string label, int handleSize, double minVal, double maxVal)
+			: this(label, handleSize, minVal, maxVal, minVal) { }
 
-		public Slider(int minX, int maxX, float minVal, float maxVal, int y, int r, int x) : base(x, y)
-			=> (Radius, MinX, MaxX, MinValue, MaxValue) = (r, minX, maxX, minVal, maxVal);
+		public Slider(string label, int handleSize, double minValue, double maxValue, double initialValue)
+			=> (Label, HandleSize, MinValue, MaxValue, InitialValue) =
+				(label, handleSize, minValue, maxValue, initialValue);
 
-		internal void Update(int mouseX)
-		{
-			if (IsLocked)
-			{
-				X = mouseX;
-				X = X < MinX ? MinX : X;
-				X = X > MaxX ? MaxX : X;
-			}
-		}
+		internal abstract void Update(int mouseLocation);
 
-		internal bool IsSelected(int mx, int my)
-			=> ((mx - X) * (mx - X) + (my - Y) * (my - Y)) <= Radius * Radius;
+		internal abstract bool IsSelected(int mx, int my);
 
 		internal void Lock() => IsLocked = true;
 

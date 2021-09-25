@@ -13,7 +13,7 @@ namespace DrawingBoardNET.Window
 	public delegate void InitMethod();
 	public delegate void DrawMethod();
 	public delegate void DrawButtonMethod(Button button);
-	public delegate void DrawSliderMethod(Slider slider);
+	public delegate void DrawSliderMethod(HorizontalSlider slider);
 	public delegate void KeyPressedMethod(char key);
 	public delegate void KeyReleasedMethod(char key);
 	public delegate void MousePressedMethod();
@@ -47,7 +47,7 @@ namespace DrawingBoardNET.Window
 		internal RectangleMode rectMode;
 
 		private readonly List<Button> buttons;
-		private readonly List<Slider> sliders;
+		private readonly List<HorizontalSlider> sliders;
 		private readonly Stopwatch stopwatch;
 		private readonly List<char> pressedKeys;
 		private readonly List<char> releasedKeys;
@@ -73,7 +73,7 @@ namespace DrawingBoardNET.Window
 			Application.Idle += Run;
 
 			buttons = new List<Button>();
-			sliders = new List<Slider>();
+			sliders = new List<HorizontalSlider>();
 			pressedKeys = new List<char>();
 			releasedKeys = new List<char>();
 			frameRateValues = new Queue<double>();
@@ -108,7 +108,7 @@ namespace DrawingBoardNET.Window
 
 		internal void AddButton(Button button) => buttons.Add(button);
 
-		internal void AddSlider(Slider slider) => sliders.Add(slider);
+		internal void AddSlider(HorizontalSlider slider) => sliders.Add(slider);
 
 		private void Run(object sender, EventArgs e)
 		{
@@ -224,7 +224,7 @@ namespace DrawingBoardNET.Window
 
 		private void UpdateSliders(int mx)
 		{
-			foreach (Slider s in sliders)
+			foreach (HorizontalSlider s in sliders)
 			{
 				s.Update(mx);
 			}
@@ -232,7 +232,7 @@ namespace DrawingBoardNET.Window
 
 		private void LockSliders(int mx, int my)
 		{
-			foreach (Slider s in sliders)
+			foreach (HorizontalSlider s in sliders)
 			{
 				if (s.IsSelected(mx, my))
 				{
@@ -243,7 +243,7 @@ namespace DrawingBoardNET.Window
 
 		private void UnlockSliders(int mx, int my)
 		{
-			foreach (Slider s in sliders)
+			foreach (HorizontalSlider s in sliders)
 			{
 				if (s.IsSelected(mx, my))
 				{
@@ -303,7 +303,7 @@ namespace DrawingBoardNET.Window
 				CheckKeyboardInput();
 				CheckMouseInput();
 
-				foreach (Slider s in sliders)
+				foreach (HorizontalSlider s in sliders)
 				{
 					DrawSlider?.Invoke(s);
 				}
