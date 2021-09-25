@@ -28,11 +28,14 @@ namespace DrawingBoardTest
 			};
 
 			// This is executed once per frame per slider
-			db.DrawSlider = (slider) =>
+			db.DrawSlider = (s) =>
 			{
-				db.Fill(0, 255 - (int) slider.Value, 0);
-				db.Line(slider.X1, slider.Y, slider.X2, slider.Y);
-				db.Circle(slider.CurrentX, slider.Y, slider.HandleSize);
+				if (s is HorizontalSlider slider)
+				{
+					db.Fill(0, 255 - (int) slider.Value, 0);
+					db.Line(slider.X1, slider.Y, slider.X2, slider.Y);
+					db.Circle(slider.CurrentX, slider.Y, slider.HandleSize);
+				}
 			};
 
 			// Run the sketch
