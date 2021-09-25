@@ -4,10 +4,11 @@ namespace DrawingBoardNET.Window.UI
 {
 	public class HorizontalSlider : Slider
 	{
-		public int CurrentX { get; private set; }
-		public int Y { get; private set; }
+		public int Y { get; }
 		public int X1 { get; }
 		public int X2 { get; }
+
+		public int CurrentX { get; private set; }
 
 		public override double Value => DrawingBoard.Lerp(CurrentX, X1, X2, MinValue, MaxValue);
 
@@ -31,6 +32,11 @@ namespace DrawingBoardNET.Window.UI
 		}
 
 		internal override bool IsSelected(int mx, int my)
-			=> (mx - CurrentX) * (mx - CurrentX) + (my - Y) * (my - Y) <= (HandleSize * HandleSize);
+		{
+			double dx = mx - CurrentX;
+			double dy = my - Y;
+
+			return (dx * dx + dy * dy) <= (HandleSize * HandleSize);
+		}
 	}
 }

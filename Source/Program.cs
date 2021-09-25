@@ -11,7 +11,7 @@ namespace DrawingBoardTest
 			db.Title = "DrawingBoardTest";
 			db.TargetFrameRate = 30;
 
-			HorizontalSlider slider = new("", 20, 0, 255, 150, 450, db.Ycenter);
+			HorizontalSlider slider = new("", 20, 0, 255, 150, 450, db.Ycenter - 50);
 			db.AddSlider(slider);
 
 			// This is executed once before the first call to Draw()
