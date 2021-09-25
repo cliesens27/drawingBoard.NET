@@ -186,7 +186,7 @@ namespace DrawingBoardNET.Window
 				MouseReleased?.Invoke();
 				isMouseReleased = false;
 
-				UnlockSliders(mx, my);
+				UnlockSliders();
 				TriggerButtons(mx, my);
 			}
 		}
@@ -241,14 +241,11 @@ namespace DrawingBoardNET.Window
 			}
 		}
 
-		private void UnlockSliders(int mx, int my)
+		private void UnlockSliders()
 		{
 			foreach (Slider s in sliders)
 			{
-				if (s.IsSelected(mx, my))
-				{
-					s.Unlock();
-				}
+				s.Unlock();
 			}
 		}
 

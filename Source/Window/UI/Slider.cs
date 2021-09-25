@@ -8,9 +8,9 @@
 		public double MaxValue { get; }
 		public string Label { get; }
 
-		public bool IsLocked { get; private set; } = false;
-
 		public abstract double Value { get; }
+
+		public bool IsLocked { get; private set; } = false;
 
 		public Slider(string label, int handleSize, double minVal, double maxVal)
 			: this(label, handleSize, minVal, maxVal, minVal) { }
