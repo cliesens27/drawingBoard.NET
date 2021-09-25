@@ -199,7 +199,7 @@ namespace DrawingBoardNET.Drawing
 			}
 			else
 			{
-				Thread t = new Thread((ThreadStart) delegate
+				Thread t = new((ThreadStart) delegate
 				{
 					Application.Run(form);
 				});
@@ -253,13 +253,13 @@ namespace DrawingBoardNET.Drawing
 
 		public void SaveAs(string path, ImageFormat format)
 		{
-			using (Bitmap fullBitmap = new Bitmap(form.Width, form.Height))
+			using (Bitmap fullBitmap = new(form.Width, form.Height))
 			{
 				form.DrawToBitmap(fullBitmap, new Rectangle(System.Drawing.Point.Empty, form.Size));
 
 				Point clientOrigin = form.PointToScreen(System.Drawing.Point.Empty);
-				Point diff = new Point(clientOrigin.X - form.Bounds.X, clientOrigin.Y - form.Bounds.Y);
-				Rectangle clientRect = new Rectangle(diff, form.ClientSize);
+				Point diff = new(clientOrigin.X - form.Bounds.X, clientOrigin.Y - form.Bounds.Y);
+				Rectangle clientRect = new(diff, form.ClientSize);
 
 				using (Bitmap clientAreaBitmap = fullBitmap.Clone(clientRect, PixelFormat.Format32bppArgb))
 				{
@@ -727,7 +727,7 @@ namespace DrawingBoardNET.Drawing
 		public void Text(string str, float x, float y, bool bold, bool italic)
 		{
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
-			Font font = new Font(currentFont.FontFamily, currentFont.Size, style);
+			Font font = new(currentFont.FontFamily, currentFont.Size, style);
 
 			Graphics.DrawString(str, font, currentTextBrush, x, y, currentFormat);
 		}
