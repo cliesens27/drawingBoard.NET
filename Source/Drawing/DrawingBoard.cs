@@ -18,16 +18,6 @@ namespace DrawingBoardNET.Drawing
 	{
 		#region Fields & Properties	
 
-		public static int RandomSeed
-		{
-			get => seed;
-			set
-			{
-				seed = value;
-				rng = new Random(seed);
-			}
-		}
-
 		public InitMethod Init { get => form.Init; set => form.Init = value; }
 
 		public DrawMethod Draw { get => form.Draw; set => form.Draw = value; }
@@ -108,10 +98,7 @@ namespace DrawingBoardNET.Drawing
 		private Graphics Graphics => form.Graphics;
 
 		private const double DEFAULT_FRAMERATE = 30;
-		private const float RADIANS_TO_DEGREES = 180.0f / (float) Math.PI;
-		private const float DEGREES_TO_RADIANS = (float) Math.PI / 180.0f;
-		private static Random rng;
-		private static int seed;
+
 		private readonly MainForm form;
 		private readonly bool IsConsoleApplication;
 		private Stack<Stack<Transform>> transformStacks;
@@ -123,10 +110,10 @@ namespace DrawingBoardNET.Drawing
 		private StringFormat currentFormat;
 		private bool fill;
 		private bool saveTransforms;
-		private bool popping;
-		private float currentRotation;
-		private float currentTranslationX;
-		private float currentTranslationY;
+		private bool poppingTransformStack;
+		private double currentRotation;
+		private double currentTranslationX;
+		private double currentTranslationY;
 
 		#endregion
 
@@ -172,7 +159,7 @@ namespace DrawingBoardNET.Drawing
 			currentFormat = new StringFormat();
 			fill = false;
 			saveTransforms = false;
-			popping = false;
+			poppingTransformStack = false;
 
 			ImageMode = ImageMode.Center;
 			RectMode = RectangleMode.Center;
@@ -187,9 +174,6 @@ namespace DrawingBoardNET.Drawing
 			currentRotation = 0;
 			currentTranslationX = 0;
 			currentTranslationY = 0;
-
-			RandomSeed = (int) DateTime.Now.Ticks;
-			rng = new Random(seed);
 		}
 
 		#endregion
@@ -278,17 +262,17 @@ namespace DrawingBoardNET.Drawing
 
 		public void DrawImage(Image image) => DrawImage(image, 0, 0);
 
-		public void DrawImage(Image image, float x, float y) => DrawImage(image, x, y, image.Width, image.Height);
+		public void DrawImage(Image image, double x, double y) => DrawImage(image, x, y, image.Width, image.Height);
 
-		public void DrawImage(Image image, float x, float y, float w, float h)
+		public void DrawImage(Image image, double x, double y, double w, double h)
 		{
 			switch (ImageMode)
 			{
 				case ImageMode.Corner:
-					Graphics.DrawImage(image, x, y, w, h);
+					Graphics.DrawImage(image, (float) x, (float) y, (float) w, (float) h);
 					break;
 				case ImageMode.Center:
-					Graphics.DrawImage(image, x - 0.5f * w, y - 0.5f * h, w, h);
+					Graphics.DrawImage(image, (float) (x - 0.5f * w), (float) (y - 0.5f * h), (float) w, (float) h);
 					break;
 			}
 		}
@@ -385,7 +369,7 @@ namespace DrawingBoardNET.Drawing
 			}
 		}
 
-		public void StrokeWidth(float w) => currentPen.Width = w;
+		public void StrokeWidth(double w) => currentPen.Width = (float) w;
 
 		public void NoStroke() => currentPen.Color = Color.FromArgb(0, 0, 0, 0);
 
@@ -506,7 +490,7 @@ namespace DrawingBoardNET.Drawing
 
 		#region Shapes
 
-		public void Point(float x, float y)
+		public void Point(double x, double y)
 		{
 			SaveStyle();
 
@@ -517,13 +501,23 @@ namespace DrawingBoardNET.Drawing
 			RestoreStyle();
 		}
 
-		public void Line(float x1, float y1, float x2, float y2) => Graphics.DrawLine(currentPen, x1, y1, x2, y2);
+		public void Line(double x1, double y1, double x2, double y2)
+			=> Graphics.DrawLine(currentPen, (float) x1, (float) y1, (float) x2, (float) y2);
 
-		public void Arc(float x, float y, float width, float height, float startAngle, float sweepAngle)
-			=> Graphics.DrawArc(currentPen, x, y, width, height, startAngle, sweepAngle);
+		public void Arc(double x, double y, double width, double height, double startAngle, double sweepAngle)
+			=> Graphics.DrawArc(
+				currentPen,
+				(float) x, (float) y,
+				(float) width, (float) height,
+				(float) startAngle, (float) sweepAngle
+			);
 
-		public void Bezier(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
-			=> Graphics.DrawBezier(currentPen, x1, y1, x2, y2, x3, y3, x4, y4);
+		public void Bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+			=> Graphics.DrawBezier(
+				currentPen,
+				(float) x1, (float) y1, (float) x2, (float) y2,
+				(float) x3, (float) y3, (float) x4, (float) y4
+			);
 
 		public void Rectangle(Rectangle rect)
 		{
@@ -535,39 +529,49 @@ namespace DrawingBoardNET.Drawing
 			Graphics.DrawRectangle(currentPen, rect);
 		}
 
-		public void Rectangle(float x, float y, float w, float h)
+		public void Rectangle(double x, double y, double w, double h)
 		{
 			switch (RectMode)
 			{
 				case RectangleMode.Corner:
 					if (fill)
 					{
-						Graphics.FillRectangle(currentBrush, x, y, w, h);
+						Graphics.FillRectangle(currentBrush, (float) x, (float) y, (float) w, (float) h);
 					}
 
-					Graphics.DrawRectangle(currentPen, x, y, w, h);
+					Graphics.DrawRectangle(currentPen, (float) x, (float) y, (float) w, (float) h);
 					break;
 				case RectangleMode.Corners:
 					if (fill)
 					{
-						Graphics.FillRectangle(currentBrush, x, y, w - x, h - y);
+						Graphics.FillRectangle(currentBrush, (float) x, (float) y, (float) (w - x), (float) (h - y));
 					}
 
-					Graphics.DrawRectangle(currentPen, x, y, w - x, h - y);
+					Graphics.DrawRectangle(currentPen, (float) x, (float) y, (float) (w - x), (float) (h - y));
 					break;
 				case RectangleMode.Center:
 					if (fill)
 					{
-						Graphics.FillRectangle(currentBrush, x - w, y - h, 2 * w, 2 * h);
+						Graphics.FillRectangle(
+							currentBrush,
+							(float) (x - w), (float) (y - h), (float) (2 * w), (float) (2 * h)
+						);
 					}
 
-					Graphics.DrawRectangle(currentPen, x - w, y - h, 2 * w, 2 * h);
+					Graphics.DrawRectangle(
+						currentPen,
+						(float) (x - w), (float) (y - h), (float) (2 * w), (float) (2 * h)
+					);
 					break;
 			}
 		}
 
-		public void Triangle(float x1, float y1, float x2, float y2, float x3, float y3)
-			=> Polygon(new PointF[] { new PointF(x1, y1), new PointF(x2, y2), new PointF(x3, y3) });
+		public void Triangle(double x1, double y1, double x2, double y2, double x3, double y3)
+			=> Polygon(new PointF[] {
+				new PointF((float) x1, (float) y1),
+				new PointF((float) x2, (float) y2),
+				new PointF((float) x3, (float) y3)
+			});
 
 		public void Polygon(List<PointF> points)
 		{
@@ -589,61 +593,67 @@ namespace DrawingBoardNET.Drawing
 			Graphics.DrawPolygon(currentPen, points);
 		}
 
-		public void Square(float x, float y, float r) => Rectangle(x, y, r, r);
+		public void Square(double x, double y, double r) => Rectangle(x, y, r, r);
 
-		public void Ellipse(float x, float y, float rx, float ry)
+		public void Ellipse(double x, double y, double rx, double ry)
 		{
 			if (fill)
 			{
-				Graphics.FillEllipse(currentBrush, x - rx, y - ry, 2 * rx, 2 * ry);
+				Graphics.FillEllipse(
+					currentBrush,
+					(float) (x - rx), (float) (y - ry), (float) (2 * rx), (float) (2 * ry)
+				);
 			}
 
-			Graphics.DrawEllipse(currentPen, x - rx, y - ry, 2 * rx, 2 * ry);
+			Graphics.DrawEllipse(
+				currentPen,
+				(float) (x - rx), (float) (y - ry), (float) (2 * rx), (float) (2 * ry)
+			);
 		}
 
-		public void Circle(float x, float y, float r) => Ellipse(x, y, r, r);
+		public void Circle(double x, double y, double r) => Ellipse(x, y, r, r);
 
 		#endregion
 
 		#region Transformations
 
-		public void RotateDegrees(float degrees)
+		public void RotateDegrees(double degrees)
 		{
-			if (saveTransforms && !popping && transformStacks.Count > 0)
+			if (saveTransforms && !poppingTransformStack && transformStacks.Count > 0)
 			{
 				transformStacks.Peek().Push(new Transform(TransformType.Rotation, degrees));
 			}
-			else if (!saveTransforms && !popping)
+			else if (!saveTransforms && !poppingTransformStack)
 			{
 				currentRotation += degrees;
 			}
 
-			Graphics.RotateTransform(degrees);
+			Graphics.RotateTransform((float) degrees);
 		}
 
-		public void RotateRadians(float radians) => RotateDegrees(RadiansToDegrees(radians));
+		public void RotateRadians(double radians) => RotateDegrees(MathUtils.RadiansToDegrees(radians));
 
-		public void Translate(float x, float y)
+		public void Translate(double x, double y)
 		{
-			if (saveTransforms && !popping && transformStacks.Count > 0)
+			if (saveTransforms && !poppingTransformStack && transformStacks.Count > 0)
 			{
 				transformStacks.Peek().Push(new Transform(TransformType.TranslationX, x));
 			}
-			else if (!saveTransforms && !popping)
+			else if (!saveTransforms && !poppingTransformStack)
 			{
 				currentTranslationX += x;
 			}
 
-			if (saveTransforms && !popping && transformStacks.Count > 0)
+			if (saveTransforms && !poppingTransformStack && transformStacks.Count > 0)
 			{
 				transformStacks.Peek().Push(new Transform(TransformType.TranslationY, y));
 			}
-			else if (!saveTransforms && !popping)
+			else if (!saveTransforms && !poppingTransformStack)
 			{
 				currentTranslationY += y;
 			}
 
-			Graphics.TranslateTransform(x, y);
+			Graphics.TranslateTransform((float) x, (float) y);
 		}
 
 		public void PushMatrix()
@@ -654,7 +664,7 @@ namespace DrawingBoardNET.Drawing
 
 		public void PopMatrix()
 		{
-			popping = true;
+			poppingTransformStack = true;
 			var states = transformStacks.Pop();
 
 			while (states.Count > 0)
@@ -680,18 +690,18 @@ namespace DrawingBoardNET.Drawing
 				saveTransforms = false;
 			}
 
-			popping = false;
+			poppingTransformStack = false;
 		}
 
 		public void UndoRotations()
 		{
-			Graphics.RotateTransform(-currentRotation);
+			Graphics.RotateTransform((float) -currentRotation);
 			currentRotation = 0;
 		}
 
 		public void UndoTranslations()
 		{
-			Graphics.TranslateTransform(-currentTranslationX, -currentTranslationY);
+			Graphics.TranslateTransform((float) -currentTranslationX, (float) -currentTranslationY);
 			currentTranslationX = 0;
 			currentTranslationY = 0;
 		}
@@ -700,7 +710,7 @@ namespace DrawingBoardNET.Drawing
 
 		#region Text
 
-		public static Font CreateFont(string name, float size) => new Font(name, size);
+		public static Font CreateFont(string name, double size) => new Font(name, (float) size);
 
 		public void HorizontalTextAlign(HorizontalTextAlignment mode)
 		{
@@ -736,11 +746,11 @@ namespace DrawingBoardNET.Drawing
 
 		public void Font(Font font) => currentFont = font;
 
-		public void Font(string name, float size) => currentFont = new Font(name, size);
+		public void Font(string name, double size) => currentFont = new Font(name, (float) size);
 
 		public void Font(string name) => currentFont = new Font(name, currentFont.Size);
 
-		public void FontSize(float size) => currentFont = new Font(currentFont.FontFamily, size);
+		public void FontSize(double size) => currentFont = new Font(currentFont.FontFamily, (float) size);
 
 		public void TextColor(Color color) => currentTextBrush.Color = color;
 
@@ -790,94 +800,15 @@ namespace DrawingBoardNET.Drawing
 			}
 		}
 
-		public void Text(string str, float x, float y)
-			=> Graphics.DrawString(str, currentFont, currentTextBrush, x, y, currentFormat);
+		public void Text(string str, double x, double y)
+			=> Graphics.DrawString(str, currentFont, currentTextBrush, (float) x, (float) y, currentFormat);
 
-		public void Text(string str, float x, float y, bool bold, bool italic)
+		public void Text(string str, double x, double y, bool bold, bool italic)
 		{
 			FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
 			Font font = new(currentFont.FontFamily, currentFont.Size, style);
 
-			Graphics.DrawString(str, font, currentTextBrush, x, y, currentFormat);
-		}
-
-		#endregion
-
-		#region Static Utility Methods
-
-		public static float RadiansToDegrees(float radians) => radians * RADIANS_TO_DEGREES;
-
-		public static float DegreesToRadians(float degrees) => degrees * DEGREES_TO_RADIANS;
-
-		public static double Rand() => rng.NextDouble();
-
-		public static int Rand(int max) => (int) (rng.NextDouble() * max);
-
-		public static float Rand(float max) => (float) (rng.NextDouble() * max);
-
-		public static double Rand(double max) => rng.NextDouble() * max;
-
-		public static int Rand(int min, int max)
-		{
-			if (min >= max)
-			{
-				throw new ArgumentException($"Max should be smaller than min" +
-					$"\n\tmin = {min}\n\tmax = {max}");
-			}
-
-			return (int) (rng.NextDouble() * (max - min) + min);
-		}
-
-		public static float Rand(float min, float max)
-		{
-			if (min >= max)
-			{
-				throw new ArgumentException($"Max should be smaller than min" +
-					$"\n\tmin = {min}\n\tmax = {max}");
-			}
-
-			return (float) (rng.NextDouble() * (max - min) + min);
-		}
-
-		public static double Rand(double min, double max)
-		{
-			if (min >= max)
-			{
-				throw new ArgumentException($"Max should be smaller than min" +
-					$"\n\tmin = {min}\n\tmax = {max}");
-			}
-
-			return rng.NextDouble() * (max - min) + min;
-		}
-
-		public static float Lerp(float val, float x1, float x2, float y1, float y2)
-		{
-			if (val == x1)
-			{
-				return y1;
-			}
-
-			if (val == x2)
-			{
-				return y2;
-			}
-
-			return (y2 - y1) / (x2 - x1) * (val - x1) + y1;
-		}
-
-		public static double Lerp(double val, double x1, double x2, double y1, double y2)
-		{
-			if (val == x1)
-			{
-				return y1;
-			}
-
-			if (val == x2)
-			{
-				return y2;
-			}
-
-			return (y2 - y1) / (x2 - x1) * (val - x1) + y1;
+			Graphics.DrawString(str, font, currentTextBrush, (float) x, (float) y, currentFormat);
 		}
 
 		#endregion
