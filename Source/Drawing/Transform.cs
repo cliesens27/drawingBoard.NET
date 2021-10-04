@@ -5,8 +5,8 @@ namespace DrawingBoardNET.Drawing
 	internal struct Transform
 	{
 		internal TransformType Type { get; }
-		internal float Value { get; }
+		internal double Value { get; }
 
-		public Transform(TransformType type, float value) => (Type, Value) = (type, value);
+		public Transform(TransformType type, double value) => (Type, Value) = (type, value);
 	}
 }

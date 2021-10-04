@@ -9,7 +9,7 @@ namespace DrawingBoardNET.Window.UI
 		public int Y1 { get; }
 		public int Y2 { get; }
 
-		public override double Value => DrawingBoard.Lerp(CurrentY, Y1, Y2, MinValue, MaxValue);
+		public override double Value => MathUtils.Lerp(CurrentY, Y1, Y2, MinValue, MaxValue);
 
 		public VerticalSlider(
 				string label, int handleSize, double minVal, double maxVal, int x1, int x2, int y
