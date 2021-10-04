@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -13,7 +14,7 @@ using Button = DrawingBoardNET.Window.UI.Button;
 
 namespace DrawingBoardNET.Drawing
 {
-	public class DrawingBoard
+	public partial class DrawingBoard
 	{
 		#region Fields & Properties	
 
@@ -107,10 +108,13 @@ namespace DrawingBoardNET.Drawing
 		private Graphics Graphics => form.Graphics;
 
 		private const double DEFAULT_FRAMERATE = 30;
+		private const float RADIANS_TO_DEGREES = 180.0f / (float) Math.PI;
+		private const float DEGREES_TO_RADIANS = (float) Math.PI / 180.0f;
 		private static Random rng;
 		private static int seed;
 		private readonly MainForm form;
 		private readonly bool IsConsoleApplication;
+		private Stack<Stack<Transform>> transformStacks;
 		private Style oldStyle;
 		private Font currentFont;
 		private Pen currentPen;
@@ -118,6 +122,8 @@ namespace DrawingBoardNET.Drawing
 		private SolidBrush currentTextBrush;
 		private StringFormat currentFormat;
 		private bool fill;
+		private bool saveTransforms;
+		private bool popping;
 		private float currentRotation;
 		private float currentTranslationX;
 		private float currentTranslationY;
@@ -130,7 +136,6 @@ namespace DrawingBoardNET.Drawing
 		{
 			form = new MainForm(width, height);
 			(IsConsoleApplication, Width, Height) = (isConsoleApp, width, height);
-
 			SetDefaultSettings();
 		}
 
@@ -138,7 +143,6 @@ namespace DrawingBoardNET.Drawing
 		{
 			form = new MainForm(width, height, x, y);
 			(IsConsoleApplication, Width, Height) = (isConsoleApp, width, height);
-
 			SetDefaultSettings();
 		}
 
@@ -167,6 +171,8 @@ namespace DrawingBoardNET.Drawing
 			currentTextBrush = new SolidBrush(Color.Black);
 			currentFormat = new StringFormat();
 			fill = false;
+			saveTransforms = false;
+			popping = false;
 
 			ImageMode = ImageMode.Center;
 			RectMode = RectangleMode.Center;
@@ -175,6 +181,8 @@ namespace DrawingBoardNET.Drawing
 
 			HorizontalTextAlign(HorizontalTextAlignment.Left);
 			VerticalTextAlign(VerticalTextAlignment.Top);
+
+			transformStacks = new Stack<Stack<Transform>>();
 
 			currentRotation = 0;
 			currentTranslationX = 0;
@@ -599,19 +607,80 @@ namespace DrawingBoardNET.Drawing
 
 		#region Transformations
 
-		public void RotateDegrees(float angle)
+		public void RotateDegrees(float degrees)
 		{
-			currentRotation += angle;
-			Graphics.RotateTransform(angle);
+			if (saveTransforms && !popping && transformStacks.Count > 0)
+			{
+				transformStacks.Peek().Push(new Transform(TransformType.Rotation, degrees));
+			}
+			else if (!saveTransforms && !popping)
+			{
+				currentRotation += degrees;
+			}
+
+			Graphics.RotateTransform(degrees);
 		}
 
-		public void RotateRadians(float angle) => RotateDegrees((float) (180.0 * angle / Math.PI));
+		public void RotateRadians(float radians) => RotateDegrees(RadiansToDegrees(radians));
 
 		public void Translate(float x, float y)
 		{
-			currentTranslationX += x;
-			currentTranslationY += y;
+			if (saveTransforms && !popping && transformStacks.Count > 0)
+			{
+				transformStacks.Peek().Push(new Transform(TransformType.TranslationX, x));
+			}
+			else if (!saveTransforms && !popping)
+			{
+				currentTranslationX += x;
+			}
+
+			if (saveTransforms && !popping && transformStacks.Count > 0)
+			{
+				transformStacks.Peek().Push(new Transform(TransformType.TranslationY, y));
+			}
+			else if (!saveTransforms && !popping)
+			{
+				currentTranslationY += y;
+			}
+
 			Graphics.TranslateTransform(x, y);
+		}
+
+		public void PushMatrix()
+		{
+			saveTransforms = true;
+			transformStacks.Push(new Stack<Transform>());
+		}
+
+		public void PopMatrix()
+		{
+			popping = true;
+			var states = transformStacks.Pop();
+
+			while (states.Count > 0)
+			{
+				var transform = states.Pop();
+
+				switch (transform.Type)
+				{
+					case TransformType.TranslationX:
+						Translate(-transform.Value, 0);
+						break;
+					case TransformType.TranslationY:
+						Translate(0, -transform.Value);
+						break;
+					case TransformType.Rotation:
+						RotateDegrees(-transform.Value);
+						break;
+				}
+			}
+
+			if (transformStacks.Count == 0)
+			{
+				saveTransforms = false;
+			}
+
+			popping = false;
 		}
 
 		public void UndoRotations()
@@ -736,6 +805,10 @@ namespace DrawingBoardNET.Drawing
 
 		#region Static Utility Methods
 
+		public static float RadiansToDegrees(float radians) => radians * RADIANS_TO_DEGREES;
+
+		public static float DegreesToRadians(float degrees) => degrees * DEGREES_TO_RADIANS;
+
 		public static double Rand() => rng.NextDouble();
 
 		public static int Rand(int max) => (int) (rng.NextDouble() * max);
@@ -808,38 +881,5 @@ namespace DrawingBoardNET.Drawing
 		}
 
 		#endregion
-
-		private class Style
-		{
-			internal Font Font { get; private set; }
-			internal Pen Pen { get; private set; }
-			internal SolidBrush Brush { get; private set; }
-			internal SolidBrush TextBrush { get; private set; }
-			internal StringFormat Format { get; private set; }
-			internal RectangleMode RectMode { get; private set; }
-			internal ImageMode ImageMode { get; private set; }
-			internal LineCap StrokeMode { get; private set; }
-			internal DBColorMode ColorMode { get; private set; }
-			internal bool Fill { get; private set; }
-
-			internal Style(Font font, Pen pen, SolidBrush brush, SolidBrush textBrush, StringFormat format,
-				RectangleMode rectMode, ImageMode imageMode, LineCap strokeMode, DBColorMode colorMode, bool fill)
-			{
-				Font = new Font(font.FontFamily, font.Size);
-				Pen = new Pen(pen.Color, pen.Width);
-				Brush = new SolidBrush(brush.Color);
-				TextBrush = new SolidBrush(textBrush.Color);
-
-				Format = new StringFormat();
-				Format.LineAlignment = format.LineAlignment;
-				Format.Alignment = format.Alignment;
-
-				RectMode = rectMode;
-				ImageMode = imageMode;
-				StrokeMode = strokeMode;
-				ColorMode = colorMode;
-				Fill = fill;
-			}
-		}
 	}
 }
