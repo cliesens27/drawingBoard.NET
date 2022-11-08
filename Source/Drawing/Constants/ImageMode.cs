@@ -1,8 +1,7 @@
-﻿namespace DrawingBoardNET.Drawing.Constants
+﻿namespace DrawingBoardNET.Drawing.Constants;
+
+public enum ImageMode
 {
-	public enum ImageMode
-	{
-		Corner,
-		Center
-	}
+	Corner,
+	Center
 }

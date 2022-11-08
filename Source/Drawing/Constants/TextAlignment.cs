@@ -1,9 +1,8 @@
-﻿namespace DrawingBoardNET.Drawing.Constants
+﻿namespace DrawingBoardNET.Drawing.Constants;
+
+public enum HorizontalTextAlignment
 {
-	public enum HorizontalTextAlignment
-	{
-		Right,
-		Left,
-		Center
-	}
+	Right,
+	Left,
+	Center
 }

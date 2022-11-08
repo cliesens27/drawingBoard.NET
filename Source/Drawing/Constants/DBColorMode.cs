@@ -1,9 +1,8 @@
-﻿namespace DrawingBoardNET.Drawing.Constants
+﻿namespace DrawingBoardNET.Drawing.Constants;
+
+public enum DBColorMode
 {
-	public enum DBColorMode
-	{
-		Rgb,
-		Hsb,
-		Hsl
-	}
+	Rgb,
+	Hsb,
+	Hsl
 }

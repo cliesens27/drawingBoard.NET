@@ -1,9 +1,8 @@
-﻿namespace DrawingBoardNET.Drawing.Constants
+﻿namespace DrawingBoardNET.Drawing.Constants;
+
+public enum VerticalTextAlignment
 {
-	public enum VerticalTextAlignment
-	{
-		Top,
-		Bottom,
-		Center
-	}
+	Top,
+	Bottom,
+	Center
 }

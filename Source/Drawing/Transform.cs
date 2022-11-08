@@ -1,12 +1,12 @@
 ﻿using DrawingBoardNET.Drawing.Constants;
 
-namespace DrawingBoardNET.Drawing
-{
-	internal struct Transform
-	{
-		internal TransformType Type { get; }
-		internal double Value { get; }
+namespace DrawingBoardNET.Drawing;
 
-		public Transform(TransformType type, double value) => (Type, Value) = (type, value);
-	}
+internal struct Transform
+{
+	internal TransformType Type { get; }
+
+	internal double Value { get; }
+
+	public Transform(TransformType type, double value) => (Type, Value) = (type, value);
 }

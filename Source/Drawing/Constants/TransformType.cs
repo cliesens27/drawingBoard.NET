@@ -1,9 +1,8 @@
-﻿namespace DrawingBoardNET.Drawing.Constants
+﻿namespace DrawingBoardNET.Drawing.Constants;
+
+internal enum TransformType
 {
-	internal enum TransformType
-	{
-		TranslationX,
-		TranslationY,
-		Rotation
-	}
+	TranslationX,
+	TranslationY,
+	Rotation
 }
