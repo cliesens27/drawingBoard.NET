@@ -32,4 +32,12 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\C#\drawingBoard.NET\Source\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\C#\drawingBoard.NET\Source\.editorconfig" />
+  </ItemGroup>
+
 </Project>
