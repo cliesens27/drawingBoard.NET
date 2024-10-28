@@ -2,7 +2,7 @@
 
 namespace DrawingBoardNET.Drawing;
 
-internal struct Transform
+internal readonly struct Transform
 {
     internal TransformType Type { get; }
 

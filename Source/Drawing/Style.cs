@@ -5,7 +5,7 @@ using DrawingBoardNET.Drawing.Constants;
 
 namespace DrawingBoardNET.Drawing;
 
-internal struct Style
+internal readonly struct Style
 {
     internal Font Font { get; }
 
