@@ -20,9 +20,9 @@ public delegate void DrawButtonMethod(Button button);
 
 public delegate void DrawSliderMethod(Slider slider);
 
-public delegate void KeyPressedMethod(char key);
+public delegate void KeyPressedMethod(Keys key);
 
-public delegate void KeyReleasedMethod(char key);
+public delegate void KeyReleasedMethod(Keys key);
 
 public delegate void MousePressedMethod();
 
@@ -75,8 +75,8 @@ internal partial class MainForm : Form
     private readonly List<Button> buttons;
     private readonly List<Slider> sliders;
     private readonly Stopwatch stopwatch;
-    private readonly List<char> pressedKeys;
-    private readonly List<char> releasedKeys;
+    private readonly List<Keys> pressedKeys;
+    private readonly List<Keys> releasedKeys;
     private readonly Queue<double> frameRateValues;
     private bool isFirstFrame;
     private bool isMouseDragged;
@@ -159,7 +159,7 @@ internal partial class MainForm : Form
         {
             if (KeyPressed != null)
             {
-                foreach (char key in pressedKeys)
+                foreach (Keys key in pressedKeys)
                 {
                     KeyPressed(key);
                 }
@@ -167,7 +167,7 @@ internal partial class MainForm : Form
 
             if (KeyReleased != null)
             {
-                foreach (char key in releasedKeys)
+                foreach (Keys key in releasedKeys)
                 {
                     KeyReleased(key);
                 }
@@ -175,7 +175,7 @@ internal partial class MainForm : Form
 
             releasedKeys.Clear();
 
-            foreach (char key in pressedKeys)
+            foreach (Keys key in pressedKeys)
             {
                 releasedKeys.Add(key);
             }
@@ -364,7 +364,9 @@ internal partial class MainForm : Form
         }
     }
 
-    private void MainForm_KeyPress(object sender, KeyPressEventArgs e) => pressedKeys.Add(e.KeyChar);
+    private void MainForm_KeyUp(object sender, KeyEventArgs e) => pressedKeys.Add(e.KeyData);
+
+    private void MainForm_KeyDown(object sender, KeyEventArgs e) => releasedKeys.Add(e.KeyData);
 
     private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 
