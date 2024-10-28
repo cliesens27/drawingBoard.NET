@@ -2,7 +2,7 @@
 
 public enum HorizontalTextAlignment
 {
-	Right,
-	Left,
-	Center
+    Right,
+    Left,
+    Center
 }

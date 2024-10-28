@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
 	<UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>DrawingBoardNET</RootNamespace>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.0.1</Version>
+    <Version>1.2.0.0</Version>
     <ApplicationIcon />
     <OutputType>WinExe</OutputType>
     <StartupObject></StartupObject>
@@ -30,6 +30,14 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\C#\drawingBoard.NET\Source\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\C#\drawingBoard.NET\Source\.editorconfig" />
   </ItemGroup>
 
 </Project>

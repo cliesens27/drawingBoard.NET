@@ -2,7 +2,7 @@
 
 internal enum TransformType
 {
-	TranslationX,
-	TranslationY,
-	Rotation
+    TranslationX,
+    TranslationY,
+    Rotation
 }
