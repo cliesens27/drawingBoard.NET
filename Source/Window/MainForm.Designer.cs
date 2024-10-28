@@ -20,51 +20,52 @@
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			this.mainPictureBox = new System.Windows.Forms.PictureBox();
-			((System.ComponentModel.ISupportInitialize) (this.mainPictureBox)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// mainPictureBox
-			// 
-			this.mainPictureBox.BackColor = System.Drawing.Color.White;
-			this.mainPictureBox.Location = new System.Drawing.Point(0, 0);
-			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(121, 73);
-			this.mainPictureBox.TabIndex = 0;
-			this.mainPictureBox.TabStop = false;
-			this.mainPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPictureBox_Paint);
-			this.mainPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mainPictureBox_MouseDown);
-			this.mainPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.mainPictureBox_MouseUp);
-			this.mainPictureBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.mainPictureBox_MouseWheel);
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            mainPictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize) mainPictureBox).BeginInit();
+            SuspendLayout();
+            // 
+            // mainPictureBox
+            // 
+            mainPictureBox.BackColor = System.Drawing.Color.White;
+            mainPictureBox.Location = new System.Drawing.Point(0, 0);
+            mainPictureBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            mainPictureBox.Name = "mainPictureBox";
+            mainPictureBox.Size = new System.Drawing.Size(141, 84);
+            mainPictureBox.TabIndex = 0;
+            mainPictureBox.TabStop = false;
+            mainPictureBox.Paint += mainPictureBox_Paint;
+            mainPictureBox.MouseDown += mainPictureBox_MouseDown;
+            mainPictureBox.MouseUp += mainPictureBox_MouseUp;
+            mainPictureBox.MouseWheel += mainPictureBox_MouseWheel;
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            ClientSize = new System.Drawing.Size(140, 84);
+            Controls.Add(mainPictureBox);
+            ForeColor = System.Drawing.Color.White;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "MainForm";
+            Text = "Program";
+            KeyDown += MainForm_KeyDown;
+            KeyUp += MainForm_KeyUp;
+            ((System.ComponentModel.ISupportInitialize) mainPictureBox).EndInit();
+            ResumeLayout(false);
+        }
 
-			// 
-			// MainForm
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-			this.ClientSize = new System.Drawing.Size(120, 73);
-			this.Controls.Add(this.mainPictureBox);
-			this.ForeColor = System.Drawing.Color.White;
-			this.Name = "MainForm";
-			this.Text = "Program";
-			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MainForm_KeyPress);
-			((System.ComponentModel.ISupportInitialize) (this.mainPictureBox)).EndInit();
-			this.ResumeLayout(false);
+        #endregion
 
-		}
-
-		#endregion
-
-		private System.Windows.Forms.PictureBox mainPictureBox;
+        private System.Windows.Forms.PictureBox mainPictureBox;
 	}
 }
 
