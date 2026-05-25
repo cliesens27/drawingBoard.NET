@@ -113,5 +113,5 @@ internal class Program
 ```
 
 <p align="center">
-  <img src="https://imgur.com/xUCOGRO"/>
+  <img src="https://i.imgur.com/xUCOGRO.gif"/>
 </p>
