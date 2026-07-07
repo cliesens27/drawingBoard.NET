@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 using DrawingBoardNET.Drawing.Constants;
@@ -124,7 +125,11 @@ internal partial class MainForm : Form
     }
 
     internal MainForm(int width, int height, int x, int y)
-        : this(width, height) => Location = new Point(x, y);
+        : this(width, height)
+    {
+        StartPosition = FormStartPosition.Manual;
+        Location = new Point(x, y);
+    }
 
     #endregion
 
@@ -186,8 +191,8 @@ internal partial class MainForm : Form
 
     private void CheckMouseInput()
     {
-        int mx = PointToClient(MousePosition).X;
-        int my = PointToClient(MousePosition).Y;
+        Point mouse = PointToClient(MousePosition);
+        int mx = mouse.X, my = mouse.Y;
 
         HoverButtons(mx, my);
 
@@ -347,6 +352,7 @@ internal partial class MainForm : Form
     private void mainPictureBox_MouseUp(object sender, MouseEventArgs e)
     {
         isMouseReleased = true;
+        isMousePressed = false;
         isMouseDragged = false;
     }
 
@@ -364,9 +370,9 @@ internal partial class MainForm : Form
         }
     }
 
-    private void MainForm_KeyUp(object sender, KeyEventArgs e) => pressedKeys.Add(e.KeyData);
+    private void MainForm_KeyUp(object sender, KeyEventArgs e) => releasedKeys.Add(e.KeyData);
 
-    private void MainForm_KeyDown(object sender, KeyEventArgs e) => releasedKeys.Add(e.KeyData);
+    private void MainForm_KeyDown(object sender, KeyEventArgs e) => pressedKeys.Add(e.KeyData);
 
     private bool IsIdle() => PeekMessage(out Message result, IntPtr.Zero, 0, 0, 0) == 0;
 

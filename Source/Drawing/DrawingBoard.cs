@@ -88,7 +88,11 @@ public class DrawingBoard
     public double TargetFrameRate
     {
         get => form.TargetFrameRate;
-        set => form.TargetFrameRate = value;
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfZero(value);
+            form.TargetFrameRate = value;
+        }
     }
 
     public string Title
@@ -147,6 +151,7 @@ public class DrawingBoard
     private readonly bool isConsoleApplication;
     private Stack<Stack<Transform>> transformStacks;
     private Style oldStyle;
+    private Style _oldStyle;
     private Font currentFont;
     private Pen currentPen;
     private SolidBrush currentBrush;
@@ -235,9 +240,8 @@ public class DrawingBoard
         }
         else
         {
-            Thread t = new((ThreadStart) delegate
-            { Application.Run(form); });
-
+            Thread t = new((ThreadStart) delegate { Application.Run(form); });
+            t.SetApartmentState(ApartmentState.STA);
             t.Start();
         }
     }
@@ -251,6 +255,22 @@ public class DrawingBoard
     public void SaveStyle()
     {
         oldStyle = new Style(
+            currentFont,
+            currentPen,
+            currentBrush,
+            currentTextBrush,
+            currentFormat,
+            RectMode,
+            ImageMode,
+            StrokeMode,
+            ColorMode,
+            fill
+        );
+    }
+   
+    private void _SaveStyle()
+    {
+        _oldStyle = new Style(
             currentFont,
             currentPen,
             currentBrush,
@@ -279,6 +299,23 @@ public class DrawingBoard
         ColorMode = oldStyle.ColorMode;
 
         fill = oldStyle.Fill;
+    }
+
+    private void _RestoreStyle()
+    {
+        Font(_oldStyle.Font);
+
+        currentPen = _oldStyle.Pen;
+        currentBrush = _oldStyle.Brush;
+        currentTextBrush = _oldStyle.TextBrush;
+        currentFormat = _oldStyle.Format;
+
+        RectMode = _oldStyle.RectMode;
+        ImageMode = _oldStyle.ImageMode;
+        StrokeMode = _oldStyle.StrokeMode;
+        ColorMode = _oldStyle.ColorMode;
+
+        fill = _oldStyle.Fill;
     }
 
     public void AddButton(Button button) => form.AddButton(button);
@@ -349,7 +386,7 @@ public class DrawingBoard
                 throw new ColorModeValueRangeException("G", g, max, ColorMode);
             }
 
-            if (r < 0 || r > max)
+            if (b < 0 || b > max)
             {
                 throw new ColorModeValueRangeException("B", b, max, ColorMode);
             }
@@ -366,7 +403,7 @@ public class DrawingBoard
                 throw new ColorModeValueRangeException("G (saturation, remapped to [0, 1])", g, max, ColorMode);
             }
 
-            if (r < 0 || r > max)
+            if (b < 0 || b > max)
             {
                 throw new ColorModeValueRangeException(
                     "B (brightness/lightness, remapped to [0, 1])",
@@ -503,13 +540,13 @@ public class DrawingBoard
 
     public void Background(Color color)
     {
-        SaveStyle();
+        _SaveStyle();
 
         NoStroke();
         Fill(color);
         Rectangle(Xmin, Ymin, Width, Height);
 
-        RestoreStyle();
+        _RestoreStyle();
     }
 
     public void Background(int grey)
@@ -542,13 +579,13 @@ public class DrawingBoard
     {
         CheckColorArguments(r, g, b);
 
-        SaveStyle();
+        _SaveStyle();
 
         NoStroke();
         Fill(r, g, b, a);
         Rectangle(Xmin, Ymin, Width, Height);
 
-        RestoreStyle();
+        _RestoreStyle();
     }
 
     #endregion
@@ -557,13 +594,13 @@ public class DrawingBoard
 
     public void Point(double x, double y)
     {
-        SaveStyle();
+        _SaveStyle();
 
-        NoStroke();
         Fill(currentPen.Color);
+        NoStroke();
         Circle(x, y, currentPen.Width);
 
-        RestoreStyle();
+        _RestoreStyle();
     }
 
     public void Line(double x1, double y1, double x2, double y2) => Graphics.DrawLine(
