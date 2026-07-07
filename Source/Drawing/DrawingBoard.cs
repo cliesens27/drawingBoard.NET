@@ -240,7 +240,8 @@ public class DrawingBoard
         }
         else
         {
-            Thread t = new((ThreadStart) delegate { Application.Run(form); });
+            Thread t = new((ThreadStart) delegate
+            { Application.Run(form); });
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
         }
@@ -267,7 +268,7 @@ public class DrawingBoard
             fill
         );
     }
-   
+
     private void _SaveStyle()
     {
         _oldStyle = new Style(
@@ -370,7 +371,7 @@ public class DrawingBoard
 
     #endregion
 
-    private void CheckColorArguments(int r, int g, int b)
+    private void CheckColorArguments(double r, double g, double b)
     {
         const int max = 255;
 
@@ -419,7 +420,7 @@ public class DrawingBoard
 
     public void Stroke(Color color) => currentPen.Color = color;
 
-    public void Stroke(int grey)
+    public void Stroke(double grey)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -431,7 +432,7 @@ public class DrawingBoard
         }
     }
 
-    public void Stroke(int grey, int a)
+    public void Stroke(double grey, double a)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -443,27 +444,24 @@ public class DrawingBoard
         }
     }
 
-    public void Stroke(int r, int g, int b) => Stroke(r, g, b, 255);
+    public void Stroke(double r, double g, double b) => Stroke(r, g, b, 255);
 
-    public void Stroke(int r, int g, int b, int a)
+    public void Stroke(double r, double g, double b, double a)
     {
         CheckColorArguments(r, g, b);
 
         switch (ColorMode)
         {
             case DBColorMode.Rgb:
-                currentPen.Color = Color.FromArgb(a, r, g, b);
-
+                currentPen.Color = Color.FromArgb((int) Math.Round(a), (int) Math.Round(r), (int) Math.Round(g), (int) Math.Round(b));
                 break;
             case DBColorMode.Hsb:
                 Color fromHSB = ColorUtils.HSBtoRGB(r, g, b);
-                currentPen.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
-
+                currentPen.Color = Color.FromArgb((int) Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
                 break;
             case DBColorMode.Hsl:
                 Color fromHSL = ColorUtils.HSLtoRGB(r, g, b);
-                currentPen.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
-
+                currentPen.Color = Color.FromArgb((int) Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
                 break;
         }
     }
@@ -482,7 +480,7 @@ public class DrawingBoard
         currentBrush.Color = color;
     }
 
-    public void Fill(int grey)
+    public void Fill(double grey)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -494,7 +492,7 @@ public class DrawingBoard
         }
     }
 
-    public void Fill(int grey, int a)
+    public void Fill(double grey, double a)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -506,9 +504,9 @@ public class DrawingBoard
         }
     }
 
-    public void Fill(int r, int g, int b) => Fill(r, g, b, 255);
+    public void Fill(double r, double g, double b) => Fill(r, g, b, 255);
 
-    public void Fill(int r, int g, int b, int a)
+    public void Fill(double r, double g, double b, double a)
     {
         CheckColorArguments(r, g, b);
         fill = true;
@@ -516,18 +514,15 @@ public class DrawingBoard
         switch (ColorMode)
         {
             case DBColorMode.Rgb:
-                currentBrush.Color = Color.FromArgb(a, r, g, b);
-
+                currentBrush.Color = Color.FromArgb((int) Math.Round(a), (int) Math.Round(r), (int) Math.Round(g), (int) Math.Round(b));
                 break;
             case DBColorMode.Hsb:
                 Color fromHSB = ColorUtils.HSBtoRGB(r, g, b);
-                currentBrush.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
-
+                currentBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
                 break;
             case DBColorMode.Hsl:
                 Color fromHSL = ColorUtils.HSLtoRGB(r, g, b);
-                currentBrush.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
-
+                currentBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
                 break;
         }
     }
@@ -549,7 +544,7 @@ public class DrawingBoard
         _RestoreStyle();
     }
 
-    public void Background(int grey)
+    public void Background(double grey)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -561,7 +556,7 @@ public class DrawingBoard
         }
     }
 
-    public void Background(int grey, int a)
+    public void Background(double grey, double a)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -573,9 +568,9 @@ public class DrawingBoard
         }
     }
 
-    public void Background(int r, int g, int b) => Background(r, g, b, 255);
+    public void Background(double r, double g, double b) => Background(r, g, b, 255);
 
-    public void Background(int r, int g, int b, int a)
+    public void Background(double r, double g, double b, double a)
     {
         CheckColorArguments(r, g, b);
 
@@ -896,7 +891,7 @@ public class DrawingBoard
 
     public void TextColor(Color color) => currentTextBrush.Color = color;
 
-    public void TextColor(int grey)
+    public void TextColor(double grey)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -908,7 +903,7 @@ public class DrawingBoard
         }
     }
 
-    public void TextColor(int grey, int a)
+    public void TextColor(double grey, double a)
     {
         if (ColorMode == DBColorMode.Rgb)
         {
@@ -920,27 +915,24 @@ public class DrawingBoard
         }
     }
 
-    public void TextColor(int r, int g, int b) => TextColor(r, g, b, 255);
+    public void TextColor(double r, double g, double b) => TextColor(r, g, b, 255);
 
-    public void TextColor(int r, int g, int b, int a)
+    public void TextColor(double r, double g, double b, double a)
     {
         CheckColorArguments(r, g, b);
 
         switch (ColorMode)
         {
             case DBColorMode.Rgb:
-                currentTextBrush.Color = Color.FromArgb(a, r, g, b);
-
+                currentTextBrush.Color = Color.FromArgb((int) Math.Round(a), (int) Math.Round(r), (int) Math.Round(g), (int) Math.Round(b));
                 break;
             case DBColorMode.Hsb:
                 Color fromHSB = ColorUtils.HSBtoRGB(r, g, b);
-                currentTextBrush.Color = Color.FromArgb(a, fromHSB.R, fromHSB.G, fromHSB.B);
-
+                currentTextBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
                 break;
             case DBColorMode.Hsl:
                 Color fromHSL = ColorUtils.HSLtoRGB(r, g, b);
-                currentTextBrush.Color = Color.FromArgb(a, fromHSL.R, fromHSL.G, fromHSL.B);
-
+                currentTextBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
                 break;
         }
     }

@@ -5,7 +5,7 @@ namespace DrawingBoardNET.Drawing;
 
 public static class ColorUtils
 {
-	public static Color HSBtoRGB(int hue, int saturation, int brightness)
+	public static Color HSBtoRGB(double hue, double saturation, double brightness)
 	{
 		double h = 360 * (hue / 255.0);
 		double s = saturation / 255.0;
@@ -13,10 +13,10 @@ public static class ColorUtils
 
 		double f = h / 60 - Math.Floor(h / 60);
 
-		int w = brightness;
-		int x = (int) (b * (1 - s));
-		int y = (int) (b * (1 - f * s));
-		int z = (int) (b * (1 - (1 - f) * s));
+		int w = (int) Math.Round(brightness);
+		int x = (int) Math.Round(b * (1 - s));
+		int y = (int) Math.Round(b * (1 - f * s));
+		int z = (int) Math.Round(b * (1 - (1 - f) * s));
 
 		int i = (int) Math.Floor(h / 60) % 6;
 
@@ -31,7 +31,7 @@ public static class ColorUtils
 		};
 	}
 
-	public static Color HSLtoRGB(int hue, int saturation, int lightness)
+	public static Color HSLtoRGB(double hue, double saturation, double lightness)
 	{
 		double h = 360 * (hue / 255.0);
 		double s = saturation / 255.0;
@@ -41,7 +41,7 @@ public static class ColorUtils
 
 		if (saturation == 0)
 		{
-			r = g = b = lightness;
+			r = g = b = (int) Math.Round(lightness);
 		}
 		else
 		{
