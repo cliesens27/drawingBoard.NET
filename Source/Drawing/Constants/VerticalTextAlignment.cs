@@ -4,5 +4,5 @@ public enum VerticalTextAlignment
 {
     Top,
     Bottom,
-    Center
+    Center,
 }

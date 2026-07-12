@@ -1,13 +1,13 @@
 ﻿using System;
-
 using DrawingBoardNET.Drawing.Constants;
 
 namespace DrawingBoardNET.Exceptions;
 
-public class ColorModeValueRangeException(string component, double value, double maxValue, DBColorMode colorMode) : ArgumentOutOfRangeException(WriteErrorMessage(component, value, maxValue, colorMode))
+public class ColorModeValueRangeException(string component, double value, double maxValue, DBColorMode colorMode)
+    : ArgumentOutOfRangeException(WriteErrorMessage(component, value, maxValue, colorMode))
 {
     private static string WriteErrorMessage(string component, double value, double maxValue, DBColorMode colorMode) =>
-        $"\nError, the value of {component} should be between 0 and {maxValue} " +
-        $"in {colorMode} color mode\n" +
-        $"\t{component} = {value}\n";
+        $"\nError, the value of {component} should be between 0 and {maxValue} "
+        + $"in {colorMode} color mode\n"
+        + $"\t{component} = {value}\n";
 }

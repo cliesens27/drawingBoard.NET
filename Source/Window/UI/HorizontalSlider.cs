@@ -14,14 +14,21 @@ public class HorizontalSlider : Slider
 
     public override double Value => MathUtils.Lerp(CurrentX, X1, X2, MinValue, MaxValue);
 
-    public HorizontalSlider(
-        string label, int handleSize, double minVal, double maxVal, int x1, int x2, int y
-    ) : this(label, handleSize, minVal, maxVal, x1, x2, y, minVal) { }
+    public HorizontalSlider(string label, int handleSize, double minVal, double maxVal, int x1, int x2, int y)
+        : this(label, handleSize, minVal, maxVal, x1, x2, y, minVal) { }
 
     public HorizontalSlider(
-        string label, int handleSize, double minVal, double maxVal, int x1, int x2, int y, double initialVal
-    ) : base(label, handleSize, minVal, maxVal, initialVal) => (X1, X2, Y, CurrentX) =
-        (x1, x2, y, (int) MathUtils.Lerp(initialVal, minVal, maxVal, x1, x2));
+        string label,
+        int handleSize,
+        double minVal,
+        double maxVal,
+        int x1,
+        int x2,
+        int y,
+        double initialVal
+    )
+        : base(label, handleSize, minVal, maxVal, initialVal) =>
+        (X1, X2, Y, CurrentX) = (x1, x2, y, (int)MathUtils.Lerp(initialVal, minVal, maxVal, x1, x2));
 
     internal override void Update(int mouseX)
     {

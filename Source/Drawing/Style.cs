@@ -1,19 +1,22 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
-
 using DrawingBoardNET.Drawing.Constants;
 
 namespace DrawingBoardNET.Drawing;
 
 internal readonly struct Style
 {
-    internal Font Font { get; }
+    internal FontFamily FontFamily { get; }
 
-    internal Pen Pen { get; }
+    internal float FontSize { get; }
 
-    internal SolidBrush Brush { get; }
+    internal Color PenColor { get; }
 
-    internal SolidBrush TextBrush { get; }
+    internal float PenWidth { get; }
+
+    internal Color BrushColor { get; }
+
+    internal Color TextBrushColor { get; }
 
     internal StringFormat Format { get; }
 
@@ -28,14 +31,24 @@ internal readonly struct Style
     internal bool Fill { get; }
 
     internal Style(
-        Font font, Pen pen, SolidBrush brush, SolidBrush textBrush, StringFormat format,
-        RectangleMode rectMode, ImageMode imageMode, LineCap strokeMode, DBColorMode colorMode, bool fill
+        Font font,
+        Pen pen,
+        SolidBrush brush,
+        SolidBrush textBrush,
+        StringFormat format,
+        RectangleMode rectMode,
+        ImageMode imageMode,
+        LineCap strokeMode,
+        DBColorMode colorMode,
+        bool fill
     )
     {
-        Font = new Font(font.FontFamily, font.Size);
-        Pen = new Pen(pen.Color, pen.Width);
-        Brush = new SolidBrush(brush.Color);
-        TextBrush = new SolidBrush(textBrush.Color);
+        FontFamily = font.FontFamily;
+        FontSize = font.Size;
+        PenColor = pen.Color;
+        PenWidth = pen.Width;
+        BrushColor = brush.Color;
+        TextBrushColor = textBrush.Color;
 
         Format = new StringFormat();
         Format.LineAlignment = format.LineAlignment;

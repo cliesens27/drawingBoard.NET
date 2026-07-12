@@ -5,12 +5,10 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
-
 using DrawingBoardNET.Drawing.Constants;
 using DrawingBoardNET.Exceptions;
 using DrawingBoardNET.Window;
 using DrawingBoardNET.Window.UI;
-
 using Button = DrawingBoardNET.Window.UI.Button;
 
 namespace DrawingBoardNET.Drawing;
@@ -143,6 +141,12 @@ public class DrawingBoard
 
     public int Ymax => Height;
 
+    public SmoothingMode SmoothingMode
+    {
+        get => form.SmoothingMode;
+        set => form.SmoothingMode = value;
+    }
+
     private Graphics Graphics => form.Graphics;
 
     private const double DefaultFramerate = 30;
@@ -240,8 +244,14 @@ public class DrawingBoard
         }
         else
         {
-            Thread t = new((ThreadStart) delegate
-            { Application.Run(form); });
+            Thread t = new(
+                (ThreadStart)
+                    delegate
+                    {
+                        Application.Run(form);
+                    }
+            );
+
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
         }
@@ -287,11 +297,12 @@ public class DrawingBoard
 
     public void RestoreStyle()
     {
-        Font(oldStyle.Font);
+        Font(new Font(oldStyle.FontFamily, oldStyle.FontSize));
 
-        currentPen = oldStyle.Pen;
-        currentBrush = oldStyle.Brush;
-        currentTextBrush = oldStyle.TextBrush;
+        currentPen.Color = oldStyle.PenColor;
+        currentPen.Width = oldStyle.PenWidth;
+        currentBrush.Color = oldStyle.BrushColor;
+        currentTextBrush.Color = oldStyle.TextBrushColor;
         currentFormat = oldStyle.Format;
 
         RectMode = oldStyle.RectMode;
@@ -304,11 +315,12 @@ public class DrawingBoard
 
     private void _RestoreStyle()
     {
-        Font(_oldStyle.Font);
+        Font(new Font(_oldStyle.FontFamily, _oldStyle.FontSize));
 
-        currentPen = _oldStyle.Pen;
-        currentBrush = _oldStyle.Brush;
-        currentTextBrush = _oldStyle.TextBrush;
+        currentPen.Color = _oldStyle.PenColor;
+        currentPen.Width = _oldStyle.PenWidth;
+        currentBrush.Color = _oldStyle.BrushColor;
+        currentTextBrush.Color = _oldStyle.TextBrushColor;
         currentFormat = _oldStyle.Format;
 
         RectMode = _oldStyle.RectMode;
@@ -359,11 +371,11 @@ public class DrawingBoard
         switch (ImageMode)
         {
             case ImageMode.Corner:
-                Graphics.DrawImage(image, (float) x, (float) y, (float) w, (float) h);
+                Graphics.DrawImage(image, (float)x, (float)y, (float)w, (float)h);
 
                 break;
             case ImageMode.Center:
-                Graphics.DrawImage(image, (float) (x - 0.5f * w), (float) (y - 0.5f * h), (float) w, (float) h);
+                Graphics.DrawImage(image, (float)(x - 0.5f * w), (float)(y - 0.5f * h), (float)w, (float)h);
 
                 break;
         }
@@ -453,20 +465,25 @@ public class DrawingBoard
         switch (ColorMode)
         {
             case DBColorMode.Rgb:
-                currentPen.Color = Color.FromArgb((int) Math.Round(a), (int) Math.Round(r), (int) Math.Round(g), (int) Math.Round(b));
+                currentPen.Color = Color.FromArgb(
+                    (int)Math.Round(a),
+                    (int)Math.Round(r),
+                    (int)Math.Round(g),
+                    (int)Math.Round(b)
+                );
                 break;
             case DBColorMode.Hsb:
                 Color fromHSB = ColorUtils.HSBtoRGB(r, g, b);
-                currentPen.Color = Color.FromArgb((int) Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
+                currentPen.Color = Color.FromArgb((int)Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
                 break;
             case DBColorMode.Hsl:
                 Color fromHSL = ColorUtils.HSLtoRGB(r, g, b);
-                currentPen.Color = Color.FromArgb((int) Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
+                currentPen.Color = Color.FromArgb((int)Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
                 break;
         }
     }
 
-    public void StrokeWidth(double w) => currentPen.Width = (float) w;
+    public void StrokeWidth(double w) => currentPen.Width = (float)w;
 
     public void NoStroke() => currentPen.Color = Color.FromArgb(0, 0, 0, 0);
 
@@ -514,15 +531,20 @@ public class DrawingBoard
         switch (ColorMode)
         {
             case DBColorMode.Rgb:
-                currentBrush.Color = Color.FromArgb((int) Math.Round(a), (int) Math.Round(r), (int) Math.Round(g), (int) Math.Round(b));
+                currentBrush.Color = Color.FromArgb(
+                    (int)Math.Round(a),
+                    (int)Math.Round(r),
+                    (int)Math.Round(g),
+                    (int)Math.Round(b)
+                );
                 break;
             case DBColorMode.Hsb:
                 Color fromHSB = ColorUtils.HSBtoRGB(r, g, b);
-                currentBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
+                currentBrush.Color = Color.FromArgb((int)Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
                 break;
             case DBColorMode.Hsl:
                 Color fromHSL = ColorUtils.HSLtoRGB(r, g, b);
-                currentBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
+                currentBrush.Color = Color.FromArgb((int)Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
                 break;
         }
     }
@@ -598,36 +620,31 @@ public class DrawingBoard
         _RestoreStyle();
     }
 
-    public void Line(double x1, double y1, double x2, double y2) => Graphics.DrawLine(
-        currentPen,
-        (float) x1,
-        (float) y1,
-        (float) x2,
-        (float) y2
-    );
+    public void Line(double x1, double y1, double x2, double y2) =>
+        Graphics.DrawLine(currentPen, (float)x1, (float)y1, (float)x2, (float)y2);
 
     public void Arc(double x, double y, double width, double height, double startAngle, double sweepAngle) =>
         Graphics.DrawArc(
             currentPen,
-            (float) x,
-            (float) y,
-            (float) width,
-            (float) height,
-            (float) startAngle,
-            (float) sweepAngle
+            (float)x,
+            (float)y,
+            (float)width,
+            (float)height,
+            (float)startAngle,
+            (float)sweepAngle
         );
 
     public void Bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) =>
         Graphics.DrawBezier(
             currentPen,
-            (float) x1,
-            (float) y1,
-            (float) x2,
-            (float) y2,
-            (float) x3,
-            (float) y3,
-            (float) x4,
-            (float) y4
+            (float)x1,
+            (float)y1,
+            (float)x2,
+            (float)y2,
+            (float)x3,
+            (float)y3,
+            (float)x4,
+            (float)y4
         );
 
     public void Rectangle(Rectangle rect)
@@ -647,19 +664,19 @@ public class DrawingBoard
             case RectangleMode.Corner:
                 if (fill)
                 {
-                    Graphics.FillRectangle(currentBrush, (float) x, (float) y, (float) w, (float) h);
+                    Graphics.FillRectangle(currentBrush, (float)x, (float)y, (float)w, (float)h);
                 }
 
-                Graphics.DrawRectangle(currentPen, (float) x, (float) y, (float) w, (float) h);
+                Graphics.DrawRectangle(currentPen, (float)x, (float)y, (float)w, (float)h);
 
                 break;
             case RectangleMode.Corners:
                 if (fill)
                 {
-                    Graphics.FillRectangle(currentBrush, (float) x, (float) y, (float) (w - x), (float) (h - y));
+                    Graphics.FillRectangle(currentBrush, (float)x, (float)y, (float)(w - x), (float)(h - y));
                 }
 
-                Graphics.DrawRectangle(currentPen, (float) x, (float) y, (float) (w - x), (float) (h - y));
+                Graphics.DrawRectangle(currentPen, (float)x, (float)y, (float)(w - x), (float)(h - y));
 
                 break;
             case RectangleMode.Center:
@@ -667,33 +684,21 @@ public class DrawingBoard
                 {
                     Graphics.FillRectangle(
                         currentBrush,
-                        (float) (x - w),
-                        (float) (y - h),
-                        (float) (2 * w),
-                        (float) (2 * h)
+                        (float)(x - w),
+                        (float)(y - h),
+                        (float)(2 * w),
+                        (float)(2 * h)
                     );
                 }
 
-                Graphics.DrawRectangle(
-                    currentPen,
-                    (float) (x - w),
-                    (float) (y - h),
-                    (float) (2 * w),
-                    (float) (2 * h)
-                );
+                Graphics.DrawRectangle(currentPen, (float)(x - w), (float)(y - h), (float)(2 * w), (float)(2 * h));
 
                 break;
         }
     }
 
-    public void Triangle(double x1, double y1, double x2, double y2, double x3, double y3) => Polygon(
-        new PointF[]
-        {
-            new((float) x1, (float) y1),
-            new((float) x2, (float) y2),
-            new((float) x3, (float) y3)
-        }
-    );
+    public void Triangle(double x1, double y1, double x2, double y2, double x3, double y3) =>
+        Polygon(new PointF[] { new((float)x1, (float)y1), new((float)x2, (float)y2), new((float)x3, (float)y3) });
 
     public void Polygon(List<PointF> points)
     {
@@ -721,22 +726,10 @@ public class DrawingBoard
     {
         if (fill)
         {
-            Graphics.FillEllipse(
-                currentBrush,
-                (float) (x - rx),
-                (float) (y - ry),
-                (float) (2 * rx),
-                (float) (2 * ry)
-            );
+            Graphics.FillEllipse(currentBrush, (float)(x - rx), (float)(y - ry), (float)(2 * rx), (float)(2 * ry));
         }
 
-        Graphics.DrawEllipse(
-            currentPen,
-            (float) (x - rx),
-            (float) (y - ry),
-            (float) (2 * rx),
-            (float) (2 * ry)
-        );
+        Graphics.DrawEllipse(currentPen, (float)(x - rx), (float)(y - ry), (float)(2 * rx), (float)(2 * ry));
     }
 
     public void Circle(double x, double y, double r) => Ellipse(x, y, r, r);
@@ -756,7 +749,7 @@ public class DrawingBoard
             currentRotation += degrees;
         }
 
-        Graphics.RotateTransform((float) degrees);
+        Graphics.RotateTransform((float)degrees);
     }
 
     public void RotateRadians(double radians) => RotateDegrees(MathUtils.RadiansToDegrees(radians));
@@ -781,7 +774,7 @@ public class DrawingBoard
             currentTranslationY += y;
         }
 
-        Graphics.TranslateTransform((float) x, (float) y);
+        Graphics.TranslateTransform((float)x, (float)y);
     }
 
     public void PushMatrix()
@@ -826,13 +819,13 @@ public class DrawingBoard
 
     public void UndoRotations()
     {
-        Graphics.RotateTransform((float) -currentRotation);
+        Graphics.RotateTransform((float)-currentRotation);
         currentRotation = 0;
     }
 
     public void UndoTranslations()
     {
-        Graphics.TranslateTransform((float) -currentTranslationX, (float) -currentTranslationY);
+        Graphics.TranslateTransform((float)-currentTranslationX, (float)-currentTranslationY);
         currentTranslationX = 0;
         currentTranslationY = 0;
     }
@@ -841,7 +834,7 @@ public class DrawingBoard
 
     #region Text
 
-    public static Font CreateFont(string name, double size) => new(name, (float) size);
+    public static Font CreateFont(string name, double size) => new(name, (float)size);
 
     public void HorizontalTextAlign(HorizontalTextAlignment mode)
     {
@@ -883,11 +876,11 @@ public class DrawingBoard
 
     public void Font(Font font) => currentFont = font;
 
-    public void Font(string name, double size) => currentFont = new Font(name, (float) size);
+    public void Font(string name, double size) => currentFont = new Font(name, (float)size);
 
     public void Font(string name) => currentFont = new Font(name, currentFont.Size);
 
-    public void FontSize(double size) => currentFont = new Font(currentFont.FontFamily, (float) size);
+    public void FontSize(double size) => currentFont = new Font(currentFont.FontFamily, (float)size);
 
     public void TextColor(Color color) => currentTextBrush.Color = color;
 
@@ -924,34 +917,33 @@ public class DrawingBoard
         switch (ColorMode)
         {
             case DBColorMode.Rgb:
-                currentTextBrush.Color = Color.FromArgb((int) Math.Round(a), (int) Math.Round(r), (int) Math.Round(g), (int) Math.Round(b));
+                currentTextBrush.Color = Color.FromArgb(
+                    (int)Math.Round(a),
+                    (int)Math.Round(r),
+                    (int)Math.Round(g),
+                    (int)Math.Round(b)
+                );
                 break;
             case DBColorMode.Hsb:
                 Color fromHSB = ColorUtils.HSBtoRGB(r, g, b);
-                currentTextBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
+                currentTextBrush.Color = Color.FromArgb((int)Math.Round(a), fromHSB.R, fromHSB.G, fromHSB.B);
                 break;
             case DBColorMode.Hsl:
                 Color fromHSL = ColorUtils.HSLtoRGB(r, g, b);
-                currentTextBrush.Color = Color.FromArgb((int) Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
+                currentTextBrush.Color = Color.FromArgb((int)Math.Round(a), fromHSL.R, fromHSL.G, fromHSL.B);
                 break;
         }
     }
 
-    public void Text(string str, double x, double y) => Graphics.DrawString(
-        str,
-        currentFont,
-        currentTextBrush,
-        (float) x,
-        (float) y,
-        currentFormat
-    );
+    public void Text(string str, double x, double y) =>
+        Graphics.DrawString(str, currentFont, currentTextBrush, (float)x, (float)y, currentFormat);
 
     public void Text(string str, double x, double y, bool bold, bool italic)
     {
         FontStyle style = (bold ? FontStyle.Bold : 0) | (italic ? FontStyle.Italic : 0);
         Font font = new(currentFont.FontFamily, currentFont.Size, style);
 
-        Graphics.DrawString(str, font, currentTextBrush, (float) x, (float) y, currentFormat);
+        Graphics.DrawString(str, font, currentTextBrush, (float)x, (float)y, currentFormat);
     }
 
     #endregion

@@ -3,5 +3,5 @@
 public enum ImageMode
 {
     Corner,
-    Center
+    Center,
 }

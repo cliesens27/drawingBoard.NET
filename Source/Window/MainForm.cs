@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-
 using DrawingBoardNET.Drawing.Constants;
 using DrawingBoardNET.Window.UI;
-
 using Button = DrawingBoardNET.Window.UI.Button;
 
 namespace DrawingBoardNET.Window;
@@ -71,6 +70,8 @@ internal partial class MainForm : Form
 
     internal int TotalFrameCount { get; private set; }
 
+    internal SmoothingMode SmoothingMode { get; set; } = SmoothingMode.HighSpeed;
+
     internal RectangleMode RectMode;
 
     private readonly List<Button> buttons;
@@ -118,7 +119,8 @@ internal partial class MainForm : Form
         isPaused = false;
     }
 
-    internal MainForm(int width, int height) : this()
+    internal MainForm(int width, int height)
+        : this()
     {
         ClientSize = new Size(width, height);
         mainPictureBox.Size = new Size(width, height);
@@ -145,7 +147,7 @@ internal partial class MainForm : Form
     {
         while (IsIdle())
         {
-            TotalElapsedTime = stopwatch.ElapsedTicks / (double) Stopwatch.Frequency;
+            TotalElapsedTime = stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
 
             if (TotalElapsedTime - lastRedrawTime > 1.0 / TargetFrameRate)
             {
@@ -192,7 +194,8 @@ internal partial class MainForm : Form
     private void CheckMouseInput()
     {
         Point mouse = PointToClient(MousePosition);
-        int mx = mouse.X, my = mouse.Y;
+        int mx = mouse.X,
+            my = mouse.Y;
 
         HoverButtons(mx, my);
 
@@ -318,6 +321,7 @@ internal partial class MainForm : Form
     private void mainPictureBox_Paint(object sender, PaintEventArgs e)
     {
         Graphics = e.Graphics;
+        Graphics.SmoothingMode = SmoothingMode;
 
         if (isFirstFrame)
         {
