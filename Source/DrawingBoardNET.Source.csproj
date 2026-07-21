@@ -7,7 +7,7 @@
     <RootNamespace>DrawingBoardNET</RootNamespace>
     <Platforms>AnyCPU</Platforms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.1.0.1</Version>
+    <Version>2.1.0.2</Version>
     <ApplicationIcon />
     <OutputType>WinExe</OutputType>
     <StartupObject></StartupObject>

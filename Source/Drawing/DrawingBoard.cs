@@ -105,47 +105,35 @@ public class DrawingBoard
         set => form.RectMode = value;
     }
 
-    public ImageMode ImageMode { get; set; }
-
     public LineCap StrokeMode
     {
         get => currentPen.StartCap;
         set => currentPen.StartCap = currentPen.EndCap = value;
     }
 
-    public DBColorMode ColorMode { get; set; }
-
-    public int Width { get; } = -1;
-
-    public int Height { get; } = -1;
-
-    public double FrameRate => form.FrameRate;
-
-    public double TotalElapsedTime => form.TotalElapsedTime;
-
-    public int FrameCount => form.TotalFrameCount;
-
-    public int MouseX => form.PointToClient(Control.MousePosition).X;
-
-    public int MouseY => form.PointToClient(Control.MousePosition).Y;
-
-    public int Xmin => 0;
-
-    public int Ymin => 0;
-
-    public int Xcenter => Width / 2;
-
-    public int Ycenter => Height / 2;
-
-    public int Xmax => Width;
-
-    public int Ymax => Height;
-
     public SmoothingMode SmoothingMode
     {
         get => form.SmoothingMode;
         set => form.SmoothingMode = value;
     }
+
+    public ImageMode ImageMode { get; set; }
+    public DBColorMode ColorMode { get; set; }
+    public int Width { get; } = -1;
+    public int Height { get; } = -1;
+
+    public Pen Pen => currentPen;
+    public double FrameRate => form.FrameRate;
+    public double TotalElapsedTime => form.TotalElapsedTime;
+    public int FrameCount => form.TotalFrameCount;
+    public int MouseX => form.PointToClient(Control.MousePosition).X;
+    public int MouseY => form.PointToClient(Control.MousePosition).Y;
+    public int Xmin => 0;
+    public int Ymin => 0;
+    public int Xcenter => Width / 2;
+    public int Ycenter => Height / 2;
+    public int Xmax => Width;
+    public int Ymax => Height;
 
     private Graphics Graphics => form.Graphics;
 
@@ -162,6 +150,7 @@ public class DrawingBoard
     private SolidBrush currentTextBrush;
     private StringFormat currentFormat;
     private bool fill;
+    private bool stroke;
     private bool saveTransforms;
     private bool poppingTransformStack;
     private double currentRotation;
@@ -211,6 +200,7 @@ public class DrawingBoard
         currentTextBrush = new SolidBrush(Color.Black);
         currentFormat = new StringFormat();
         fill = false;
+        stroke = false;
         saveTransforms = false;
         poppingTransformStack = false;
 
@@ -275,7 +265,8 @@ public class DrawingBoard
             ImageMode,
             StrokeMode,
             ColorMode,
-            fill
+            fill,
+            stroke
         );
     }
 
@@ -291,7 +282,8 @@ public class DrawingBoard
             ImageMode,
             StrokeMode,
             ColorMode,
-            fill
+            fill,
+            stroke
         );
     }
 
@@ -311,6 +303,7 @@ public class DrawingBoard
         ColorMode = oldStyle.ColorMode;
 
         fill = oldStyle.Fill;
+        stroke = oldStyle.Stroke;
     }
 
     private void _RestoreStyle()
@@ -329,6 +322,7 @@ public class DrawingBoard
         ColorMode = _oldStyle.ColorMode;
 
         fill = _oldStyle.Fill;
+        stroke = _oldStyle.Stroke;
     }
 
     public void AddButton(Button button) => form.AddButton(button);
@@ -389,34 +383,34 @@ public class DrawingBoard
 
         if (ColorMode == DBColorMode.Rgb)
         {
-            if (r < 0 || r > max)
+            if (r is < 0 or > max)
             {
                 throw new ColorModeValueRangeException("R", r, max, ColorMode);
             }
 
-            if (g < 0 || g > max)
+            if (g is < 0 or > max)
             {
                 throw new ColorModeValueRangeException("G", g, max, ColorMode);
             }
 
-            if (b < 0 || b > max)
+            if (b is < 0 or > max)
             {
                 throw new ColorModeValueRangeException("B", b, max, ColorMode);
             }
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
-            if (r < 0 || r > max)
+            if (r is < 0 or > max)
             {
                 throw new ColorModeValueRangeException("R (hue, remapped to [0, 360])", r, max, ColorMode);
             }
 
-            if (g < 0 || g > max)
+            if (g is < 0 or > max)
             {
                 throw new ColorModeValueRangeException("G (saturation, remapped to [0, 1])", g, max, ColorMode);
             }
 
-            if (b < 0 || b > max)
+            if (b is < 0 or > max)
             {
                 throw new ColorModeValueRangeException(
                     "B (brightness/lightness, remapped to [0, 1])",
@@ -430,15 +424,21 @@ public class DrawingBoard
 
     #region Stroke
 
-    public void Stroke(Color color) => currentPen.Color = color;
+    public void Stroke(Color color)
+    {
+        stroke = true;
+        currentPen.Color = color;
+    }
 
     public void Stroke(double grey)
     {
+        stroke = true;
+
         if (ColorMode == DBColorMode.Rgb)
         {
             Stroke(grey, grey, grey);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             Stroke(0, 0, grey);
         }
@@ -446,11 +446,13 @@ public class DrawingBoard
 
     public void Stroke(double grey, double a)
     {
+        stroke = true;
+
         if (ColorMode == DBColorMode.Rgb)
         {
             Stroke(grey, grey, grey, a);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             Stroke(0, 0, grey, a);
         }
@@ -461,6 +463,8 @@ public class DrawingBoard
     public void Stroke(double r, double g, double b, double a)
     {
         CheckColorArguments(r, g, b);
+
+        stroke = true;
 
         switch (ColorMode)
         {
@@ -485,7 +489,7 @@ public class DrawingBoard
 
     public void StrokeWidth(double w) => currentPen.Width = (float)w;
 
-    public void NoStroke() => currentPen.Color = Color.FromArgb(0, 0, 0, 0);
+    public void NoStroke() => stroke = false;
 
     #endregion
 
@@ -503,7 +507,7 @@ public class DrawingBoard
         {
             Fill(grey, grey, grey);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             Fill(0, 0, grey);
         }
@@ -515,7 +519,7 @@ public class DrawingBoard
         {
             Fill(grey, grey, grey, a);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             Fill(0, 0, grey, a);
         }
@@ -572,7 +576,7 @@ public class DrawingBoard
         {
             Background(grey, grey, grey);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             Background(0, 0, grey);
         }
@@ -584,7 +588,7 @@ public class DrawingBoard
         {
             Background(grey, grey, grey, a);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             Background(0, 0, grey, a);
         }
@@ -654,7 +658,10 @@ public class DrawingBoard
             Graphics.FillRectangle(currentBrush, rect);
         }
 
-        Graphics.DrawRectangle(currentPen, rect);
+        if (stroke)
+        {
+            Graphics.DrawRectangle(currentPen, rect);
+        }
     }
 
     public void Rectangle(double x, double y, double w, double h)
@@ -667,7 +674,10 @@ public class DrawingBoard
                     Graphics.FillRectangle(currentBrush, (float)x, (float)y, (float)w, (float)h);
                 }
 
-                Graphics.DrawRectangle(currentPen, (float)x, (float)y, (float)w, (float)h);
+                if (stroke)
+                {
+                    Graphics.DrawRectangle(currentPen, (float)x, (float)y, (float)w, (float)h);
+                }
 
                 break;
             case RectangleMode.Corners:
@@ -676,7 +686,10 @@ public class DrawingBoard
                     Graphics.FillRectangle(currentBrush, (float)x, (float)y, (float)(w - x), (float)(h - y));
                 }
 
-                Graphics.DrawRectangle(currentPen, (float)x, (float)y, (float)(w - x), (float)(h - y));
+                if (stroke)
+                {
+                    Graphics.DrawRectangle(currentPen, (float)x, (float)y, (float)(w - x), (float)(h - y));
+                }
 
                 break;
             case RectangleMode.Center:
@@ -691,7 +704,10 @@ public class DrawingBoard
                     );
                 }
 
-                Graphics.DrawRectangle(currentPen, (float)(x - w), (float)(y - h), (float)(2 * w), (float)(2 * h));
+                if (stroke)
+                {
+                    Graphics.DrawRectangle(currentPen, (float)(x - w), (float)(y - h), (float)(2 * w), (float)(2 * h));
+                }
 
                 break;
         }
@@ -707,7 +723,10 @@ public class DrawingBoard
             Graphics.FillPolygon(currentBrush, points.ToArray());
         }
 
-        Graphics.DrawPolygon(currentPen, points.ToArray());
+        if (stroke)
+        {
+            Graphics.DrawPolygon(currentPen, points.ToArray());
+        }
     }
 
     public void Polygon(PointF[] points)
@@ -717,7 +736,10 @@ public class DrawingBoard
             Graphics.FillPolygon(currentBrush, points);
         }
 
-        Graphics.DrawPolygon(currentPen, points);
+        if (stroke)
+        {
+            Graphics.DrawPolygon(currentPen, points);
+        }
     }
 
     public void Square(double x, double y, double r) => Rectangle(x, y, r, r);
@@ -729,7 +751,10 @@ public class DrawingBoard
             Graphics.FillEllipse(currentBrush, (float)(x - rx), (float)(y - ry), (float)(2 * rx), (float)(2 * ry));
         }
 
-        Graphics.DrawEllipse(currentPen, (float)(x - rx), (float)(y - ry), (float)(2 * rx), (float)(2 * ry));
+        if (stroke)
+        {
+            Graphics.DrawEllipse(currentPen, (float)(x - rx), (float)(y - ry), (float)(2 * rx), (float)(2 * ry));
+        }
     }
 
     public void Circle(double x, double y, double r) => Ellipse(x, y, r, r);
@@ -890,7 +915,7 @@ public class DrawingBoard
         {
             TextColor(grey, grey, grey);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             TextColor(0, 0, grey);
         }
@@ -902,7 +927,7 @@ public class DrawingBoard
         {
             TextColor(grey, grey, grey, a);
         }
-        else if (ColorMode == DBColorMode.Hsb || ColorMode == DBColorMode.Hsl)
+        else if (ColorMode is DBColorMode.Hsb or DBColorMode.Hsl)
         {
             TextColor(0, 0, grey, a);
         }
